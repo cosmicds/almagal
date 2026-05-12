@@ -208,7 +208,10 @@ onMounted(() => {
       positionSet.value = true;
       layersLoaded.value = true;
     });
-    
+      
+    useWtmlLoader('./gal_plane_toast/index_rel.wtml', {
+      goTo: (_, i) => i === 0,
+    })
     
     // const { ready: loaded, fetchingComplete } = useWtmlLoader("wtml_file.wtml", {
     //   prefetch: true,
