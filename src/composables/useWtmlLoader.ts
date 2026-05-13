@@ -121,11 +121,10 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
     }
 
     const children = folder.value.get_children();
-    if (children == null) {
+    if (children === null || children === undefined) {
       console.warn(`No children found in the provided WTML file at ${wtmlUrl}`);
       return;
     }
-
     // i don't knw why we usually do the "isinstance of Place" check instead of just
     // casting the type, but whoami to question it...
     places.value = thumbnails2Places(children);
@@ -144,7 +143,7 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
 
     const toFetch: string[] = [];
 
-    places.value.forEach(async (child: Place, _index: number) => {
+    const layerPromises = places.value.map(async (child: Place, _index: number) => {
       const imageset = child.get_backgroundImageset() ?? child.get_studyImageset();
 
       if (imageset == null) {
@@ -189,6 +188,8 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
     }
     const fetchPromises = toFetch.map((url, index) => timeoutFetch(() => fetch(url), index * interval));
     Promise.all(fetchPromises).then(() => fetchingComplete.value = true);
+
+    await Promise.all(layerPromises);
 
     // this is not getting set, so just skip it
     // if (!_addedAtLeastOneLayer) {
