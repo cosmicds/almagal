@@ -211,6 +211,31 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
   });
 }
 
+const { ready: glimpseReady, imagesetLayers: glimpseLayers } = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
+const { ready: layersReady, places, } = useWtmlLoader('./index.wtml', 
+// const { ready: layersReady } = useWtmlLoader('./gal_plane_toast/index_rel.wtml',
+  { 
+    onNewPlace: (place, index) => {
+      console.log(`Loaded place ${place.get_name()} at index ${index}`);
+      // we'll go to the 101899 source
+      if (index === 2) {
+        // if this is the first place, go there immediately
+        store.gotoTarget({
+          place,
+          instant: true,
+          noZoom: false,
+          trackObject: false,
+        });
+      }
+    },
+    onNewLayer: (layer, index) => {
+      layer.set_opacity(0.8);
+      layers.value[index] = layer;
+    },
+    goTo: false,
+    useFits: true 
+  });
+
 
 onMounted(() => {
 
@@ -237,22 +262,9 @@ onMounted(() => {
       positionSet.value = true;
     });
     
-    const _layers: ImageSetLayer[] = [];
     
 
-    const { ready: glimpseReady, imagesetLayers: glimpseLayers } = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
-    const { ready: layersReady } = useWtmlLoader('./index.wtml', { 
-    // const { ready: layersReady } = useWtmlLoader('./gal_plane_toast/index_rel.wtml', {
-      onNewLayer: (layer, index) => {
-        layer.set_opacity(0.8);
-        layers.value.push(layer);
-        if (index === 0) {
-          moveToImageset(layer, true);
-        }
-      },
-      goTo: false,
-      useFits: true 
-    });
+    
     
     layersReady.then(() => {
       // push all at once
