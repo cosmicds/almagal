@@ -4,7 +4,6 @@
     :style="cssVars"
     :class="[smallSize ? 'app-is-small' : '', isLandscape ? 'app-is-landscape' : '']"
   >
-
     <div
       id="main-content"
     >
@@ -34,15 +33,22 @@
           </div> -->
           <!-- <div id="right-buttons">
           </div> -->
-          <div id="layer-list">
-            <div v-if="layers.length > 0" v-for="layer in layers" class="layer-list__item" :key="layer.id.toString()">
+          <div
+            v-if="ready"
+            id="layer-list"
+          >
+            <div
+              v-for="layer in layers"
+              
+              :key="layer.id.toString()"
+              class="layer-list__item"
+            >
               <v-btn
-                class="pointer-events-auto"
+                class="pointer-events-auto my-1"
                 @click="() => moveToImageset(layer)"
               >
-                {{  layer.get_name() }} 
+                {{ layer.get_name() }} 
               </v-btn>
-              
             </div>
           </div>
         </div>
@@ -51,8 +57,6 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
-          
-
           <div
             id="body-logos"
             :class="{'small-logos': smallSize}"
@@ -193,26 +197,17 @@ const imagesets = ref<Imageset[]>([]);
 
 function moveToImageset(layer: ImageSetLayer, instant = true) {
   const imageset = layer.get_imageSet();
-  const centerX = imageset.get_centerX(); // degrees
-  const centerY = imageset.get_centerY(); // degrees
-  const offsetX = imageset.get_offsetX();
-  
-  const roll = imageset.get_rotation() * D2R;
+  // const roll = imageset.get_rotation() * D2R;
 
-  const s = Math.sin(roll);
-  const c = Math.cos(roll);
-
-  const angularHeight = imageset.get_baseTileDegrees();
-  const angularWidth = angularHeight * (imageset.get_widthFactor() === 1 ? 2 : 1);
-  const xSize = Math.abs(c * angularHeight) + Math.abs(s * angularWidth);
-  const ySize = Math.abs(s * angularHeight) + Math.abs(c * angularWidth);
+  // @ts-expect-error _guessZoomSetting is internal; gives projection-aware zoom
+  const zoomDeg = imageset._guessZoomSetting(Number.POSITIVE_INFINITY);
 
   return store.gotoRADecZoom({
-    raRad: centerX * D2R,
-    decRad: centerY * D2R,
-    zoomDeg: Math.max(xSize, ySize) * 10,
-    rollRad:roll,
-    instant: instant,
+    raRad: imageset.get_centerX() * D2R,
+    decRad: imageset.get_centerY() * D2R,
+    zoomDeg,
+    rollRad: store.rollRad,
+    instant,
   });
 }
 
@@ -240,27 +235,29 @@ onMounted(() => {
       instant: true,
     }).then(() => {
       positionSet.value = true;
-      layersLoaded.value = true;
     });
     
     const _layers: ImageSetLayer[] = [];
     
-    useWtmlLoader('./gal_plane_toast/index_rel.wtml')
-    const { ready: layersReady } = useWtmlLoader('./index.wtml', {
+
+    const { ready: glimpseReady, imagesetLayers: glimpseLayers } = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
+    const { ready: layersReady } = useWtmlLoader('./index.wtml', { 
     // const { ready: layersReady } = useWtmlLoader('./gal_plane_toast/index_rel.wtml', {
       onNewLayer: (layer, index) => {
-        _layers.push(layer)
+        layer.set_opacity(0.8);
+        layers.value.push(layer);
         if (index === 0) {
-          moveToImageset(layer, true)
+          moveToImageset(layer, true);
         }
       },
       goTo: false,
-    })
+      useFits: true 
+    });
     
     layersReady.then(() => {
       // push all at once
-      layers.value = _layers;
-    })
+      layersLoaded.value = true;
+    });
     // const { ready: loaded, fetchingComplete } = useWtmlLoader("wtml_file.wtml", {
     //   prefetch: true,
     //   onNewImageset: (imageset, index) => {},
