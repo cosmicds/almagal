@@ -34,6 +34,17 @@
           </div> -->
           <!-- <div id="right-buttons">
           </div> -->
+          <div id="layer-list">
+            <div v-if="layers.length > 0" v-for="layer in layers" class="layer-list__item" :key="layer.id.toString()">
+              <v-btn
+                class="pointer-events-auto"
+                @click="() => moveToImageset(layer)"
+              >
+                {{  layer.get_name() }} 
+              </v-btn>
+              
+            </div>
+          </div>
         </div>
 
 
@@ -168,7 +179,7 @@ const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
 
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const showInfoSheet = ref(false);
-const showSplashScreen = ref(!skipSplash);
+const showSplashScreen = ref(false);
 const layersLoaded = ref(false);
 const positionSet = ref(false);
 const accentColor = ref("#306C9F");
@@ -180,7 +191,30 @@ const layers = ref<ImageSetLayer[]>([]);
 const imagesets = ref<Imageset[]>([]);
 
 
+function moveToImageset(layer: ImageSetLayer, instant = true) {
+  const imageset = layer.get_imageSet();
+  const centerX = imageset.get_centerX(); // degrees
+  const centerY = imageset.get_centerY(); // degrees
+  const offsetX = imageset.get_offsetX();
+  
+  const roll = imageset.get_rotation() * D2R;
 
+  const s = Math.sin(roll);
+  const c = Math.cos(roll);
+
+  const angularHeight = imageset.get_baseTileDegrees();
+  const angularWidth = angularHeight * (imageset.get_widthFactor() === 1 ? 2 : 1);
+  const xSize = Math.abs(c * angularHeight) + Math.abs(s * angularWidth);
+  const ySize = Math.abs(s * angularHeight) + Math.abs(c * angularWidth);
+
+  return store.gotoRADecZoom({
+    raRad: centerX * D2R,
+    decRad: centerY * D2R,
+    zoomDeg: Math.max(xSize, ySize) * 10,
+    rollRad:roll,
+    instant: instant,
+  });
+}
 
 
 onMounted(() => {
@@ -208,11 +242,25 @@ onMounted(() => {
       positionSet.value = true;
       layersLoaded.value = true;
     });
-      
-    useWtmlLoader('./gal_plane_toast/index_rel.wtml', {
-      goTo: (_, i) => i === 0,
+    
+    const _layers: ImageSetLayer[] = [];
+    
+    useWtmlLoader('./gal_plane_toast/index_rel.wtml')
+    const { ready: layersReady } = useWtmlLoader('./index.wtml', {
+    // const { ready: layersReady } = useWtmlLoader('./gal_plane_toast/index_rel.wtml', {
+      onNewLayer: (layer, index) => {
+        _layers.push(layer)
+        if (index === 0) {
+          moveToImageset(layer, true)
+        }
+      },
+      goTo: false,
     })
     
+    layersReady.then(() => {
+      // push all at once
+      layers.value = _layers;
+    })
     // const { ready: loaded, fetchingComplete } = useWtmlLoader("wtml_file.wtml", {
     //   prefetch: true,
     //   onNewImageset: (imageset, index) => {},
@@ -558,5 +606,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   // background-color: black;
   backdrop-filter: blur(6px);
 }
+
+
 
 </style>

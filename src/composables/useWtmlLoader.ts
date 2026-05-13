@@ -11,6 +11,7 @@ interface WtmlLoaderOptions {
   goTo?: ((iset: Imageset) => boolean) | ((iset: Imageset, index: number) => boolean) | boolean;
   verbose?: boolean; // whether to log verbose messages about the loading process, defaults to false
   prefetch?: boolean;
+  useFits?: boolean; // wether to allow auto or force fits mode for loading the imageset collection. should be true for fits imagesets
 }
 
 function isTemplateURL(url: string): boolean {
@@ -163,7 +164,7 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
 
       await store.addImageSetLayer({
         url,
-        mode: "autodetect",
+        mode: options?.useFits ? "fits" : "autodetect",
         name: imageset.get_name(),
         goto: resolveGoTo(imageset, _index),
       }).then(layer => {

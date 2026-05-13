@@ -2,6 +2,7 @@ import { createApp, type DirectiveBinding, type Plugin } from "vue";
 
 import { FundingAcknowledgement, IconButton, CreditLogos } from "@cosmicds/vue-toolkit";
 import ALMAGAL from "./ALMAGAL.vue";
+import Loader from "./components/Loader.vue";
 
 import vuetify from "./plugins/vuetify";
 
@@ -54,6 +55,7 @@ createApp(ALMAGAL, {
   .component('icon-button', IconButton)
   .component('funding-acknowledgement', FundingAcknowledgement)
   .component('credit-logos', CreditLogos)
+  .component('wwt-loader', Loader)
 
   // Mount
   .mount("#app-mount");
