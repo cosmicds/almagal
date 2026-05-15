@@ -1,29 +1,172 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<Folder Browseable="True" Group="Explorer" Name="ALMAGAL Images" Searchable="True">
-  <Place Angle="0" AngularSize="0" Classification="DarkNebula" Constellation="CIR" DataSetType="Sky" Dec="-59.738358333329984" Magnitude="0" Name="744391_cont_7MTM2TM1_jointdeconv.image.pbcor" Opacity="100" RA="14.738844444446666" Rotation="0" ZoomLevel="0.10368583333335885">
+<Folder Browseable="True"
+  Group="Explorer"
+  Name="ALMAGAL Images"
+  Searchable="True">
+  <Place Angle="0"
+    AngularSize="0"
+    Classification="DarkNebula"
+    Constellation="CIR"
+    DataSetType="Sky"
+    Dec="-59.738358333329984"
+    Magnitude="0"
+    Name="744391_cont_7MTM2TM1_jointdeconv.image.pbcor"
+    Opacity="100"
+    RA="14.738844444446666"
+    Rotation="0"
+    ZoomLevel="0.10368583333335885">
     <ForegroundImageSet>
-      <ImageSet BandPass="Microwave" BaseDegreesPerTile="1.805555555556e-05" BaseTileLevel="0" BottomsUp="True" CenterX="221.0826666667" CenterY="-59.73835833333" DataMax="0.0023563657887279987" DataMin="-0.0010669000912457705" DataSetType="Sky" ElevationModel="False" FileType="fits" Generic="False" Name="744391_cont_7MTM2TM1_jointdeconv.image.pbcor" OffsetX="281.5" OffsetY="281.5" PixelCutHigh="0.0005512956832535588" PixelCutLow="-0.0005610955611336976" Projection="SkyImage" QuadTreeMap="" Rotation="180" Sparse="True" StockSet="False" TileLevels="0" Url="./reprojected/744391_cont_7MTM2TM1_jointdeconv.image.pbcor.fits" WidthFactor="2">
+      <ImageSet BandPass="Microwave"
+        BaseDegreesPerTile="1.805555555556e-05"
+        BaseTileLevel="0"
+        BottomsUp="True"
+        CenterX="221.0826666667"
+        CenterY="-59.73835833333"
+        DataMax="0.0023563657887279987"
+        DataMin="-0.0010669000912457705"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="fits"
+        Generic="False"
+        Name="744391_cont_7MTM2TM1_jointdeconv.image.pbcor"
+        OffsetX="281.5"
+        OffsetY="281.5"
+        PixelCutHigh="0.0005512956832535588"
+        PixelCutLow="-0.0005610955611336976"
+        Projection="SkyImage"
+        QuadTreeMap=""
+        Rotation="180"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="0"
+        Url="./reprojected/744391_cont_7MTM2TM1_jointdeconv.image.pbcor.fits"
+        WidthFactor="2">
         <ThumbnailUrl />
       </ImageSet>
     </ForegroundImageSet>
   </Place>
-  <Place Angle="0" AngularSize="0" Classification="DarkNebula" Constellation="CIR" DataSetType="Sky" Dec="-59.80956666667001" Magnitude="0" Name="744588_cont_7MTM2TM1_jointdeconv.image.pbcor" Opacity="100" RA="14.750177777780001" Rotation="0" ZoomLevel="0.10390400000001299">
+  <Place Angle="0"
+    AngularSize="0"
+    Classification="DarkNebula"
+    Constellation="CIR"
+    DataSetType="Sky"
+    Dec="-59.80956666667001"
+    Magnitude="0"
+    Name="744588_cont_7MTM2TM1_jointdeconv.image.pbcor"
+    Opacity="100"
+    RA="14.750177777780001"
+    Rotation="0"
+    ZoomLevel="0.10390400000001299">
     <ForegroundImageSet>
-      <ImageSet BandPass="Microwave" BaseDegreesPerTile="1.777777777778e-05" BaseTileLevel="0" BottomsUp="True" CenterX="221.2526666667" CenterY="-59.80956666667" DataMax="0.010072251781821251" DataMin="-0.0017798439366742969" DataSetType="Sky" ElevationModel="False" FileType="fits" Generic="False" Name="744588_cont_7MTM2TM1_jointdeconv.image.pbcor" OffsetX="286.5" OffsetY="286.5" PixelCutHigh="0.001998229213058946" PixelCutLow="-0.0008077549980953335" Projection="SkyImage" QuadTreeMap="" Rotation="180" Sparse="True" StockSet="False" TileLevels="0" Url="./reprojected/744588_cont_7MTM2TM1_jointdeconv.image.pbcor.fits" WidthFactor="2">
+      <ImageSet BandPass="Microwave"
+        BaseDegreesPerTile="1.777777777778e-05"
+        BaseTileLevel="0"
+        BottomsUp="True"
+        CenterX="221.2526666667"
+        CenterY="-59.80956666667"
+        DataMax="0.010072251781821251"
+        DataMin="-0.0017798439366742969"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="fits"
+        Generic="False"
+        Name="744588_cont_7MTM2TM1_jointdeconv.image.pbcor"
+        OffsetX="286.5"
+        OffsetY="286.5"
+        PixelCutHigh="0.001998229213058946"
+        PixelCutLow="-0.0008077549980953335"
+        Projection="SkyImage"
+        QuadTreeMap=""
+        Rotation="180"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="0"
+        Url="./reprojected/744588_cont_7MTM2TM1_jointdeconv.image.pbcor.fits"
+        WidthFactor="2">
         <ThumbnailUrl />
       </ImageSet>
     </ForegroundImageSet>
   </Place>
-  <Place Angle="0" AngularSize="0" Classification="DarkNebula" Constellation="SCT" DataSetType="Sky" Dec="-9.009511111118996" Magnitude="0" Name="101899_cont_7MTM2TM1_jointdeconv.image.pbcor" Opacity="100" RA="18.577861111113336" Rotation="0" ZoomLevel="0.10421000000002086">
+  <Place Angle="0"
+    AngularSize="0"
+    Classification="DarkNebula"
+    Constellation="SCT"
+    DataSetType="Sky"
+    Dec="-9.009511111118996"
+    Magnitude="0"
+    Name="101899_cont_7MTM2TM1_jointdeconv.image.pbcor"
+    Opacity="100"
+    RA="18.577861111113336"
+    Rotation="0"
+    ZoomLevel="0.10421000000002086">
     <ForegroundImageSet>
-      <ImageSet BandPass="Microwave" BaseDegreesPerTile="1.666666666667e-05" BaseTileLevel="0" BottomsUp="True" CenterX="278.6679166667" CenterY="-9.009511111119" DataMax="0.04673318937420845" DataMin="-0.0023647951893508434" DataSetType="Sky" ElevationModel="False" FileType="fits" Generic="False" Name="101899_cont_7MTM2TM1_jointdeconv.image.pbcor" OffsetX="306.5" OffsetY="306.5" PixelCutHigh="0.0026376026589422764" PixelCutLow="-0.00120455808006227" Projection="SkyImage" QuadTreeMap="" Rotation="180" Sparse="True" StockSet="False" TileLevels="0" Url="./reprojected/101899_cont_7MTM2TM1_jointdeconv.image.pbcor.fits" WidthFactor="2">
+      <ImageSet BandPass="Microwave"
+        BaseDegreesPerTile="1.666666666667e-05"
+        BaseTileLevel="0"
+        BottomsUp="True"
+        CenterX="278.6679166667"
+        CenterY="-9.009511111119"
+        DataMax="0.04673318937420845"
+        DataMin="-0.0023647951893508434"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="fits"
+        Generic="False"
+        Name="101899_cont_7MTM2TM1_jointdeconv.image.pbcor"
+        OffsetX="306.5"
+        OffsetY="306.5"
+        PixelCutHigh="0.0026376026589422764"
+        PixelCutLow="-0.00120455808006227"
+        Projection="SkyImage"
+        QuadTreeMap=""
+        Rotation="180"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="0"
+        Url="./reprojected/101899_cont_7MTM2TM1_jointdeconv.image.pbcor.fits"
+        WidthFactor="2">
         <ThumbnailUrl />
       </ImageSet>
     </ForegroundImageSet>
   </Place>
-  <Place Angle="0" AngularSize="0" Classification="DarkNebula" Constellation="CIR" DataSetType="Sky" Dec="-59.82461666667001" Magnitude="0" Name="744714_cont_7MTM2TM1_jointdeconv.image.pbcor" Opacity="100" RA="14.755894444446666" Rotation="0" ZoomLevel="0.10406549999999999">
+  <Place Angle="0"
+    AngularSize="0"
+    Classification="DarkNebula"
+    Constellation="CIR"
+    DataSetType="Sky"
+    Dec="-59.82461666667001"
+    Magnitude="0"
+    Name="744714_cont_7MTM2TM1_jointdeconv.image.pbcor"
+    Opacity="100"
+    RA="14.755894444446666"
+    Rotation="0"
+    ZoomLevel="0.10406549999999999">
     <ForegroundImageSet>
-      <ImageSet BandPass="Microwave" BaseDegreesPerTile="1.75e-05" BaseTileLevel="0" BottomsUp="True" CenterX="221.3384166667" CenterY="-59.82461666667" DataMax="0.01807590387761593" DataMin="-0.002758908551186323" DataSetType="Sky" ElevationModel="False" FileType="fits" Generic="False" Name="744714_cont_7MTM2TM1_jointdeconv.image.pbcor" OffsetX="291.5" OffsetY="291.5" PixelCutHigh="0.004797871587797998" PixelCutLow="-0.001309125537518412" Projection="SkyImage" QuadTreeMap="" Rotation="180" Sparse="True" StockSet="False" TileLevels="0" Url="./reprojected/744714_cont_7MTM2TM1_jointdeconv.image.pbcor.fits" WidthFactor="2">
+      <ImageSet BandPass="Microwave"
+        BaseDegreesPerTile="1.75e-05"
+        BaseTileLevel="0"
+        BottomsUp="True"
+        CenterX="221.3384166667"
+        CenterY="-59.82461666667"
+        DataMax="0.01807590387761593"
+        DataMin="-0.002758908551186323"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="fits"
+        Generic="False"
+        Name="744714_cont_7MTM2TM1_jointdeconv.image.pbcor"
+        OffsetX="291.5"
+        OffsetY="291.5"
+        PixelCutHigh="0.004797871587797998"
+        PixelCutLow="-0.001309125537518412"
+        Projection="SkyImage"
+        QuadTreeMap=""
+        Rotation="180"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="0"
+        Url="./reprojected/744714_cont_7MTM2TM1_jointdeconv.image.pbcor.fits"
+        WidthFactor="2">
         <ThumbnailUrl />
       </ImageSet>
     </ForegroundImageSet>

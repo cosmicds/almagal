@@ -34,11 +34,11 @@
           <!-- <div id="right-buttons">
           </div> -->
           <div
-            v-if="ready"
+            v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
             id="layer-list"
           >
             <div
-              v-for="layer in layers"
+              v-for="layer in almagalSources.imagesetLayers"
               
               :key="layer.id.toString()"
               class="layer-list__item"
@@ -191,9 +191,6 @@ const accentColor2 = ref("#FC9954");
 
 
 
-const layers = ref<ImageSetLayer[]>([]);
-const imagesets = ref<Imageset[]>([]);
-
 
 function moveToImageset(layer: ImageSetLayer, instant = true) {
   const imageset = layer.get_imageSet();
@@ -211,31 +208,41 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
   });
 }
 
-const { ready: glimpseReady, imagesetLayers: glimpseLayers } = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
-const { ready: layersReady, places, } = useWtmlLoader('./index.wtml', 
-// const { ready: layersReady } = useWtmlLoader('./gal_plane_toast/index_rel.wtml',
-  { 
+
+/** Load an older version of GLIMPSE - less coverage, higher resolution. We
+ *  We don't need to adjust the layer in any way. This will by default be visible
+ *  So we don't need to assign it to a variable. Just leave it. */
+useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
+/** We're not using the newer GLIMPSE360 layer here. This is the layer that is 
+ *  used in the WWT web client. It is slightly lower resolution. 
+ *  It was generated using the `get_wtml_for_wwt_catalog_entry.py` script in public. 
+*/
+// useWtmlLoader('./GLIMPSE_360.wtml');
+
+/** load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
+ * - The individual images will give you finer grained control over the display of each image, and the places that 
+ *   come along with it can be used for labeling and positioning. However, all data loads at once, which is alot for many images.
+ *   The individual images need to be loaded with 'useFits: true' so the engine can load them properly
+ * - The tiled version allows you to load only what is needed for the current view, at increasing resolution as you zoom in. 
+ *   However all tiles will have the same opacity, color scale, etc. 
+*/
+const useTiledVersion = false; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
+const url = useTiledVersion ? './gal_plane_toast/index_rel.wtml' : './index.wtml';
+
+const almagalSources = ref(useWtmlLoader(url, { 
     onNewPlace: (place, index) => {
       console.log(`Loaded place ${place.get_name()} at index ${index}`);
-      // we'll go to the 101899 source
-      if (index === 2) {
-        // if this is the first place, go there immediately
-        store.gotoTarget({
-          place,
-          instant: true,
-          noZoom: false,
-          trackObject: false,
-        });
-      }
     },
     onNewLayer: (layer, index) => {
-      layer.set_opacity(0.8);
-      layers.value[index] = layer;
+    layer.set_opacity(0.3);
+    layer.set_colorMapperName('plasma');
+    console.log(layer.getFitsImage()?.fitsProperties);
     },
-    goTo: false,
-    useFits: true 
-  });
-
+  goTo: (_, index) => index === 0, // this will make a long move. we will move to the first place manually in onNewPlace
+  instant: true,
+  useFits: !useTiledVersion ,
+})
+);
 
 onMounted(() => {
 
@@ -255,29 +262,15 @@ onMounted(() => {
     store.applySetting(["showEquatorialGridText", true]);
     store.applySetting(["galacticMode", true]);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
-    store.gotoRADecZoom({
-      ...props.initialCameraParams,
-      instant: true,
-    }).then(() => {
+
       positionSet.value = true;
-    });
     
     
 
-    
-    
-    layersReady.then(() => {
+    almagalSources.value!.ready.then(() => {
       // push all at once
       layersLoaded.value = true;
     });
-    // const { ready: loaded, fetchingComplete } = useWtmlLoader("wtml_file.wtml", {
-    //   prefetch: true,
-    //   onNewImageset: (imageset, index) => {},
-    //   onNewLayer: (newLayer, index) => {},
-    //   // goTo: false, goTo is false by default if undefined
-    // });
-
-    // watch(fetchingComplete, (done: boolean) => layersLoaded.value = done);
   });
 });
 

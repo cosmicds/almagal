@@ -1,6 +1,6 @@
-import {ref, watch} from "vue";
+import {ref, watch, type Ref} from "vue";
 import { engineStore } from "@wwtelescope/engine-pinia";
-import { Folder, Place, Imageset, ImageSetLayer } from "@wwtelescope/engine";
+import { Folder, Place, Imageset, ImageSetLayer, FitsImage } from "@wwtelescope/engine";
 
 
 interface WtmlLoaderOptions {
@@ -9,10 +9,27 @@ interface WtmlLoaderOptions {
   onNewImageset?: (imageset: Imageset, index: number) => void; // callback for when a new imageset is found, with the imageset and its corresponding place as arguments
   onNewLayer?: ((layer: ImageSetLayer, index: number) => void); // callback for when a new layer is added, with the layer and its corresponding place as arguments
   goTo?: ((iset: Imageset) => boolean) | ((iset: Imageset, index: number) => boolean) | boolean;
+  instant?: boolean; // should the move be instant
   verbose?: boolean; // whether to log verbose messages about the loading process, defaults to false
   prefetch?: boolean;
   useFits?: boolean; // wether to allow auto or force fits mode for loading the imageset collection. should be true for fits imagesets
 }
+
+interface WtmlLoaderReturn {
+  ready: Promise<void>;
+  fetchingComplete: Ref<boolean>;
+  places: Ref<Place[]>;
+  imagesets: Ref<Imageset[]>;
+  imagesetLayers: Ref<ImageSetLayer[]>;
+  fitsImages: Ref<(FitsImage | null)[]>;
+  show: (name: string) => void;
+  hide: (name: string) => void;
+  opacities: Ref<Map<string, number>>;
+}
+
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
 
 function isTemplateURL(url: string): boolean {
   return url.match(/{[0-9]*}/) != null;
@@ -41,7 +58,7 @@ function isTemplateURL(url: string): boolean {
  *
  * imagesetLayers is usually the thing you want to use.
  **/
-export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
+export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions): Prettify<WtmlLoaderReturn> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function debugLog(...messages: any[]) {
@@ -62,6 +79,7 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
   const places = ref<Place[]>([]);
   const imagesets = ref<Imageset[]>([]);
   const imagesetLayers = ref<ImageSetLayer[]>([]);
+  const fitsImages = ref<(FitsImage | null)[]>([]);
 
   const opacities = ref<Map<string, number>>(new Map());
 
@@ -137,6 +155,7 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
     // keep track of the index so we don't need a sort operations
     const _isets: [number, Imageset][] = [];
     const _layers: [number, ImageSetLayer][] = [];
+    const _fits: [number, FitsImage | null][] = [];
     // let _addedAtLeastOneLayer = false;
 
     console.log(`Found ${places.value.length} places in the WTML file. Starting to load imageset layers...`);
@@ -160,17 +179,28 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
       if (options?.prefetch && !isTemplateURL(url)) {
         toFetch.push(url);
       }
-
+      
       await store.addImageSetLayer({
         url,
         mode: options?.useFits ? "fits" : "autodetect",
         name: imageset.get_name(),
-        goto: resolveGoTo(imageset, _index),
+        goto: resolveGoTo(imageset, _index) && !options?.instant,
       }).then(layer => {
         debugLog(`Successfully loaded layer for place with name ${child.get_name()} at index ${_index}`);
         _layers.push([_index,layer]);
+        _fits.push([_index, layer.getFitsImage()]);
         // _addedAtLeastOneLayer = true;
         if (options?.onNewLayer) options.onNewLayer(layer, _index);
+        
+        if (resolveGoTo(imageset, _index) && options?.instant) {
+          store.gotoTarget({
+            place: child,
+            instant: true,
+            noZoom: false,
+            trackObject: false,
+          });
+        }
+        
       }).catch(error => {
         console.error("Failed to load imageset from", error, imageset);
       });
@@ -201,6 +231,7 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
     // want to do a set so that a watcher or something will respond to these being ready
     imagesetLayers.value = getOrdered(_layers);
     imagesets.value = getOrdered(_isets);
+    fitsImages.value = getOrdered(_fits);
 
     promiseResolve();
   });
@@ -259,6 +290,7 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
     places,
     imagesets,
     imagesetLayers,
+    fitsImages,
     show,
     hide,
     opacities
@@ -266,5 +298,3 @@ export function useWtmlLoader(wtmlUrl: string, options?: WtmlLoaderOptions) {
 
 
 }
-
-
