@@ -12,7 +12,7 @@
       ></WorldWideTelescope>
       <wwt-loader v-model="isLoading" />
 
-
+      
       <!-- This contains the splash screen content -->
       <SplashScreen
         v-model="showSplashScreen"
@@ -29,27 +29,32 @@
       >
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
-          <!-- <div id="left-buttons">
-          </div> -->
-          <!-- <div id="right-buttons">
-          </div> -->
-          <div
-            v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
-            id="layer-list"
-          >
+          <div id="left-buttons">
             <div
-              v-for="layer in almagalSources.imagesetLayers"
-              
-              :key="layer.id.toString()"
-              class="layer-list__item"
+              v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
+              id="layer-list"
             >
-              <v-btn
-                class="pointer-events-auto my-1"
-                @click="() => moveToImageset(layer)"
+              <div
+                v-for="layer in almagalSources.imagesetLayers"
+                
+                :key="layer.id.toString()"
+                class="layer-list__item elevation-2 my-2"
               >
-                {{ layer.get_name() }} 
-              </v-btn>
+                <ImagesetItem
+                  style="color: black"
+                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                  instant
+                />
+              </div>
             </div>
+          </div>
+          <div id="right-buttons">
+            <v-btn
+              style="pointer-events: auto;"
+              @click="showInfoSheet = true"
+            >
+              Show Info
+            </v-btn>
           </div>
         </div>
 
@@ -107,7 +112,7 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ref, reactive, computed, onMounted, watch, nextTick } from "vue";
+import { ref, reactive, computed, onMounted, watch, nextTick, UnwrapNestedRefs } from "vue";
 import { useDisplay } from "vuetify";
 
 /* WWT imports */
@@ -140,9 +145,9 @@ const webglDisabled = ref(false);
 
 import SplashScreen from "./components/SplashScreen.vue";
 import InformationSheet from "./components/InformationSheet.vue";
+import ImagesetItem from "./components/ImagesetItem.vue";
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
-import { useSetInterval } from "./composables/useSetInterval";
 
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
@@ -270,7 +275,7 @@ onMounted(() => {
     WWTControl.singleton.renderOneFrame = function() {};
     return;
   }
-
+  
   store.waitForReady().then(async () => {
     // store.applySetting(["galacticMode", true]); /* stay in equatorial mode */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
@@ -447,7 +452,10 @@ and remember, position:absolute is still a positioned parent, so children can be
   justify-content: space-between; // pushes top and bottom content apart
 }
 
-
+#wwt-overlay > * {
+  // give all direct children their own stacking context, so they layer in order
+  isolation: isolate;
+}
 
 #app.app-is-landscape {
   .v-application__wrap {
@@ -466,7 +474,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   width: 100%; // 100% of the overlay less the padding
   pointer-events: none;
   display: flex;
-  flex-direction: column; // stack top-buttons-row and second-buttons-row vertically
+  flex-direction: row; // stack top-buttons-row and second-buttons-row vertically
   justify-content: space-between; // keeps left, center, and right buttons spread
   align-items: flex-start;
 }
@@ -618,6 +626,38 @@ and remember, position:absolute is still a positioned parent, so children can be
   backdrop-filter: blur(6px);
 }
 
+.tracked-places {
+  width: max-content;
+  font-size: 0.8em;
+  padding: 0.25em 0.5em;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.51);
+  border: 0.5px solid red;
+  backdrop-filter: blur(5px);
+  border-radius: 5px;
+  transform: translateY(-50%) translateX(1.5em);
+  // they mus be position absolute
+  position: absolute;
+}
 
+// add .circle-marker-class to make the simple circles and hide the text
+.tracked-places.circle-marker-only {
+  transform: translate(-50%, -50%);
+  border: 2px solid red;
+  border-radius: 50%;
+  width: 50px;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+}
 
+.tracked-places.circle-marker-only > span {
+  display: none;
+}
+
+.layer-list__item {
+  background-color: rgba(0, 0, 0, 0.364);
+  border: 1px solid rgba(255, 255, 255, 0.541);
+  border-radius: 5px;
+  backdrop-filter: blur(10px);
+}
 </style>
