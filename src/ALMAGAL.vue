@@ -128,6 +128,10 @@ import {
   Imageset, 
   TileCache,
 } from "@wwtelescope/engine";
+// scale types: linear, log, power, sqrt, histogramEqualization
+import { ScaleTypes } from "@wwtelescope/engine-types";
+import { COLORMAPS, type Colormaps } from "./types";
+
 
 /* local components and composables */
 import WebGlTest from "./components/WebGlTest.vue";
@@ -209,43 +213,54 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
 }
 
 
-/** Load an older version of GLIMPSE - less coverage, higher resolution. We
- *  We don't need to adjust the layer in any way. This will by default be visible
- *  So we don't need to assign it to a variable. Just leave it. */
-useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
-/** We're not using the newer GLIMPSE360 layer here. This is the layer that is 
- *  used in the WWT web client. It is slightly lower resolution. 
- *  It was generated using the `get_wtml_for_wwt_catalog_entry.py` script in public. 
-*/
-// useWtmlLoader('./GLIMPSE_360.wtml');
+// Load an older version of GLIMPSE - less coverage, higher resolution.
+const glimpse = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
 
-/** load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
- * - The individual images will give you finer grained control over the display of each image, and the places that 
- *   come along with it can be used for labeling and positioning. However, all data loads at once, which is alot for many images.
- *   The individual images need to be loaded with 'useFits: true' so the engine can load them properly
- * - The tiled version allows you to load only what is needed for the current view, at increasing resolution as you zoom in. 
- *   However all tiles will have the same opacity, color scale, etc. 
-*/
+// newer GLIMPSE 360 - lower resolution
+// const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
+
+// load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
 const useTiledVersion = false; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
 const url = useTiledVersion ? './gal_plane_toast/index_rel.wtml' : './index.wtml';
 
-const almagalSources = ref(useWtmlLoader(url, { 
-    onNewPlace: (place, index) => {
-      console.log(`Loaded place ${place.get_name()} at index ${index}`);
-    },
-    onNewLayer: (layer, index) => {
-    layer.set_opacity(0.3);
-    layer.set_colorMapperName('plasma');
-    console.log(layer.getFitsImage()?.fitsProperties);
-    },
-  goTo: (_, index) => index === 0, // this will make a long move. we will move to the first place manually in onNewPlace
+const almagalSources = reactive(useWtmlLoader(url, { 
+  autoload: true, 
+  onLoad: (out, index) => {
+    // out contains: folder, place, imageset, layer. 
+    console.log(`Loaded place ${out.place.get_name()} at index ${index}`);
+    if (out.layer) {
+      // there are simpler ways to set this
+      // but doing it this way makes sure the Vue state is in sync
+      store.applyFitsLayerSettings({
+        id: out.layer.id.toString(),
+        settings: [
+          ['colorMapperName', 'plasma'],
+          ['opacity', 0.8],
+        ]
+      });
+      const state = store.imagesetStateForLayer(out.layer.id.toString());
+      store.stretchFitsLayer({
+        id: out.layer.id.toString(),
+        stretch: ScaleTypes.linear,
+        vmin: -0.0005,
+        vmax: 0.0015 * (index + 1), // this scaling just happens to work the order of the images, can be set to anything
+        // if the FITS header has PXCUTMIN and PXCUTMAX, vmin and vmax will default to those values
+      });
+    }
+    console.log(out.fitsImage?.fitsProperties);
+  },
+  goTo: false, // to go to the first imageset in the WTML  replace false with (_, index) => index === 0
   instant: true,
   useFits: !useTiledVersion ,
 })
 );
+/* we could destructure this and have access to the individual properties */
+// const { ready, places, imagesetLayer, show, hide} = almagalSources;
 
 onMounted(() => {
 
+  // boiler plate to disable WWT and let warning be 
+  // shown to user if WebGL2 is not supported.
   if (webglDisabled.value) {
     showSplashScreen.value = false;
     // eslint-disable-next-lint @typescript-eslint/ban-ts-comment
@@ -257,20 +272,14 @@ onMounted(() => {
   }
 
   store.waitForReady().then(async () => {
-
-    store.applySetting(["showGrid", true]);
-    store.applySetting(["showEquatorialGridText", true]);
-    store.applySetting(["galacticMode", true]);
+    // store.applySetting(["galacticMode", true]); /* stay in equatorial mode */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
-
-      positionSet.value = true;
     
-    
-
-    almagalSources.value!.ready.then(() => {
-      // push all at once
+    almagalSources!.ready.then(() => {
       layersLoaded.value = true;
+      positionSet.value = true;
     });
+    
   });
 });
 
