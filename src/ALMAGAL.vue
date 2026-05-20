@@ -30,7 +30,7 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
-            <v-select
+            <v-autocomplete
               v-if="almagalSourceList"
               v-model="selectedAlmagalSource"
               class="almagal-v-select"
@@ -42,12 +42,14 @@
               label="ALMAGAL Source"
               :loading="loadingAlmagalSource"
             />
-            <ImagesetItem
-              v-if="selectedAlmaGalImagesetLayerState"
-              style="color: black"
-              :imageset="selectedAlmaGalImagesetLayerState"
-              instant
-            />
+            <div class="layer-list layer-list__item">
+              <ImagesetItem
+                v-if="selectedAlmaGalImagesetLayerState"
+                style="color: black"
+                :imageset="selectedAlmaGalImagesetLayerState"
+                instant
+              />
+            </div>
             <div
               v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
               id="layer-list"
@@ -167,6 +169,7 @@ import InformationSheet from "./components/InformationSheet.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
+import { useSpreadsheetLayer } from "./composables/useSpreadsheetLayer";
 
 import { 
   getAlmagalSources, 
@@ -175,6 +178,7 @@ import {
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
+import { B } from "vue-router/dist/index-D_VEAp3P.js";
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
 export interface WwtPlaygroundProps {
@@ -245,10 +249,10 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
 
 
 // Load an older version of GLIMPSE - less coverage, higher resolution.
-const glimpse = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
+// const glimpse = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
 
 // newer GLIMPSE 360 - lower resolution
-// const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
+const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
 const useTiledVersion = false; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
@@ -303,8 +307,10 @@ onMounted(() => {
   }
   
   store.waitForReady().then(async () => {
-    // store.applySetting(["galacticMode", true]); /* stay in equatorial mode */
+    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
+    console.log("Available background imagesets:", backgroundImagesets);
+    store.setBackgroundImageByName(backgroundImagesets[3].imagesetName);
     
     almagalSources!.ready.then(() => {
       layersLoaded.value = true;
@@ -316,6 +322,12 @@ onMounted(() => {
 
 
 const almagalSourceList = ref(getAlmagalSources());
+
+useSpreadsheetLayer(
+  almagalSourceList.value.map(s => [s.ra / 15, s.dec] as [number, number]),
+  { name: "ALMAGAL Sources", color: "#32CD32", markerSize: 5, markerType: "point" }
+);
+
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
 const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
 const loadingAlmagalSource = ref(false);
@@ -741,6 +753,7 @@ and remember, position:absolute is still a positioned parent, so children can be
 .almagal-v-select {
   pointer-events: auto;
   width: 100%;
+  background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(10px);
   outline: 1px solid white;
   border-radius: 4px;
