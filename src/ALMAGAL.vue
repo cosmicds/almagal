@@ -30,6 +30,24 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
+            <v-select
+              v-if="almagalSourceList"
+              v-model="selectedAlmagalSource"
+              class="almagal-v-select"
+              :items="almagalSourceList"
+              item-title="iid"
+              item-value="iid"
+              return-object
+              hide-details
+              label="ALMAGAL Source"
+              :loading="loadingAlmagalSource"
+            />
+            <ImagesetItem
+              v-if="selectedAlmaGalImagesetLayerState"
+              style="color: black"
+              :imageset="selectedAlmaGalImagesetLayerState"
+              instant
+            />
             <div
               v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
               id="layer-list"
@@ -101,9 +119,10 @@
           <p>
             ALMAGAL: ALMA Evolutionary study of High Mass Protocluster Formation in the Galaxy
           </p>
-          <p class="mt-2 mb-2">
-            ALMAGAL will observe for the first time a statistically significant and complete sample of high-mass star-forming regions with the ALMA interferometer to answer some of the open questions in the field of clump fragmentation and of formation of high-mass stars.
-          </p>
+          <AlmaGalSourceInfoDisplay
+            v-if="selectedAlmagalSource"
+            :source="selectedAlmagalSource"
+          />
         </div>
       </InformationSheet>
     </component>
@@ -149,6 +168,13 @@ import ImagesetItem from "./components/ImagesetItem.vue";
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
 
+import { 
+  getAlmagalSources, 
+  getAlmagalSourceById, 
+  getAlmagalSourceUrl,
+  type ALMAGalSource
+} from "./almagal_utils";
+import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
 export interface WwtPlaygroundProps {
@@ -289,10 +315,61 @@ onMounted(() => {
 });
 
 
-
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+const almagalSourceList = ref(getAlmagalSources());
+const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
+const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
+const loadingAlmagalSource = ref(false);
+function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer> {
+  if (almagalSourceLayers.value.has(iid)) {
+    return Promise.resolve(almagalSourceLayers.value.get(iid)!);
+  }
+  const source = getAlmagalSourceById(iid);
+  if (!source) {
+    throw new Error(`Source with id ${iid} not found`);
+  }
+  const url = getAlmagalSourceUrl(source);
+  console.log("Loading ALMAGAL source from url:", getAlmagalSourceById(iid), url);
+  console.warn("The CORS is ok. It takes a moment to fetch via WWT Proxy");
+  return store.addImageSetLayer({
+    url: url,
+    mode: "fits",
+    name: source.iid,
+    goto: false,
+  }).then(layer => {
+    almagalSourceLayers.value.set(iid, layer);
+    return layer;
+  });
 }
+
+watch(selectedAlmagalSource, (newSource, oldSource) => {
+  if (newSource) {
+    store.gotoRADecZoom({
+      raRad: newSource.ra * D2R,
+      decRad: newSource.dec * D2R,
+      zoomDeg: 0.1,
+      rollRad: 0,
+      instant: false,
+    });
+    loadingAlmagalSource.value = true;
+    loadAlmaGalFitsSource(newSource.iid).then(layer => {
+      loadingAlmagalSource.value = false;
+    });
+  }
+});
+
+const selectedAlmaGalImagesetLayerState = computed(() => {
+  if (!selectedAlmagalSource.value) {
+    return null;
+  }
+  const _layer = almagalSourceLayers.value.get(selectedAlmagalSource.value.iid);
+  const layer = store.imagesetLayerById(_layer?.id.toString() ?? "");
+  if (!layer) {
+    console.warn("Selected ALMAGAL source layer not found in store:", _layer);
+    return null;
+  }
+  console.log("Selected ALMAGAL source layer state:", layer,  store.imagesetStateForLayer(layer.id.toString()));
+  return store.imagesetStateForLayer(layer.id.toString());
+});
 
 
 const ready = computed(() => positionSet.value && layersLoaded.value);
@@ -659,5 +736,13 @@ and remember, position:absolute is still a positioned parent, so children can be
   border: 1px solid rgba(255, 255, 255, 0.541);
   border-radius: 5px;
   backdrop-filter: blur(10px);
+}
+
+.almagal-v-select {
+  pointer-events: auto;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  outline: 1px solid white;
+  border-radius: 4px;
 }
 </style>
