@@ -42,18 +42,23 @@
               label="ALMAGAL Source"
               :loading="loadingAlmagalSource"
             />
-            <div class="layer-list layer-list__item">
+            <div
+              v-for="layer in [...almagalSourceLayers.values()]"
+              :key="layer.id.toString()"
+              class="layer-list__item"
+            >
               <ImagesetItem
-                v-if="selectedAlmaGalImagesetLayerState"
+                v-if="store.imagesetStateForLayer(layer.id.toString())"
                 style="color: black"
-                :imageset="selectedAlmaGalImagesetLayerState"
+                :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                 instant
               />
             </div>
             <div
               v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
               id="layer-list"
-            >
+            > 
+              <h3> Preloaded FITS layers</h3>
               <div
                 v-for="layer in almagalSources.imagesetLayers"
                 
@@ -367,20 +372,6 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
       loadingAlmagalSource.value = false;
     });
   }
-});
-
-const selectedAlmaGalImagesetLayerState = computed(() => {
-  if (!selectedAlmagalSource.value) {
-    return null;
-  }
-  const _layer = almagalSourceLayers.value.get(selectedAlmagalSource.value.iid);
-  const layer = store.imagesetLayerById(_layer?.id.toString() ?? "");
-  if (!layer) {
-    console.warn("Selected ALMAGAL source layer not found in store:", _layer);
-    return null;
-  }
-  console.log("Selected ALMAGAL source layer state:", layer,  store.imagesetStateForLayer(layer.id.toString()));
-  return store.imagesetStateForLayer(layer.id.toString());
 });
 
 
@@ -715,32 +706,11 @@ and remember, position:absolute is still a positioned parent, so children can be
   backdrop-filter: blur(6px);
 }
 
-.tracked-places {
-  width: max-content;
-  font-size: 0.8em;
-  padding: 0.25em 0.5em;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.51);
-  border: 0.5px solid red;
-  backdrop-filter: blur(5px);
-  border-radius: 5px;
-  transform: translateY(-50%) translateX(1.5em);
-  // they mus be position absolute
-  position: absolute;
-}
-
-// add .circle-marker-class to make the simple circles and hide the text
-.tracked-places.circle-marker-only {
-  transform: translate(-50%, -50%);
-  border: 2px solid red;
-  border-radius: 50%;
-  width: 50px;
-  aspect-ratio: 1 / 1;
-  padding: 0;
-}
-
-.tracked-places.circle-marker-only > span {
-  display: none;
+#layer-list {
+  outline: 1px solid black;
+  border: 1px solid white;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 .layer-list__item {
@@ -748,6 +718,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   border: 1px solid rgba(255, 255, 255, 0.541);
   border-radius: 5px;
   backdrop-filter: blur(10px);
+  widtH: 100%;
 }
 
 .almagal-v-select {
