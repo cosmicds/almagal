@@ -51,6 +51,7 @@ export function useSpreadsheetLayer(
     l.set_scaleFactor(markerSize);
     l.set_plotType(MARKER_TYPE_MAP[markerType]);
     l.set_opacity(1);
+    console.log(l);
   });
 
   return { ready };

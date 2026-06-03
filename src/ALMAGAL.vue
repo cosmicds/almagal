@@ -8,7 +8,10 @@
       id="main-content"
     >
       <WorldWideTelescope
+        ref="wwt-container"
         :wwt-namespace="wwtNamespace"
+        @pointermove="onPointerMove"
+        @click="onPointerClick"
       ></WorldWideTelescope>
       <wwt-loader v-model="isLoading" />
 
@@ -87,6 +90,11 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
+          <div v-if="hoveredSource">
+            <AlmaGalSourceInfoDisplay
+              :source="hoveredSource"
+            />
+          </div>
           <div
             id="body-logos"
             :class="{'small-logos': smallSize}"
@@ -174,7 +182,7 @@ import InformationSheet from "./components/InformationSheet.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
-import { useSpreadsheetLayer } from "./composables/useSpreadsheetLayer";
+import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsheetLayer";
 
 import { 
   getAlmagalSources, 
@@ -183,7 +191,6 @@ import {
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
-import { B } from "vue-router/dist/index-D_VEAp3P.js";
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
 export interface WwtPlaygroundProps {
@@ -328,9 +335,22 @@ onMounted(() => {
 
 const almagalSourceList = ref(getAlmagalSources());
 
-useSpreadsheetLayer(
-  almagalSourceList.value.map(s => [s.ra / 15, s.dec] as [number, number]),
-  { name: "ALMAGAL Sources", color: "#32CD32", markerSize: 5, markerType: "point" }
+const hoveredSource = ref<ALMAGalSource | null>(null);
+
+const { onPointerMove, onPointerClick } = useHoverableSpreadsheetLayer(
+  almagalSourceList.value,
+  {
+    name: "ALMAGAL Sources",
+    color: "#32CD32",
+    markerSize: 5,
+    markerType: "point",
+    onHover: (row) => { hoveredSource.value = row as ALMAGalSource | null; },
+    onClick: (row) => { 
+      if (row) {
+        selectedAlmagalSource.value = row as ALMAGalSource;
+      }
+    },
+  }
 );
 
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);

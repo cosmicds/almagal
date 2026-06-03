@@ -36,6 +36,7 @@ const { source } = defineProps<{
 </script>
 <style scoped>
 .almagal-source-description {
+  font-size: 0.8em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -44,7 +45,7 @@ const { source } = defineProps<{
 
 .almgal-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5em;
   background-color: rgba(255, 255, 255, 0.7);
   color: black;

@@ -88,6 +88,7 @@ const {width, xs, height } = useDisplay();
 const isLandscape = computed(() => width.value > height.value * 1.25);
 
 export interface Props {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cssVars?: any;
   accentColor?: string;
   highlightColor?: string;

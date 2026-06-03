@@ -64,7 +64,7 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
             </p>
             <v-row
               align="center"
-              density="compact"
+              dense
               class="mt-2 mx-3"
             >
               <v-col cols="4">
@@ -86,7 +86,7 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
             </v-row>
             <v-row
               align="center"
-              density="compact"
+              dense
               class="mx-3"
             >
               <v-col cols="4">
@@ -108,7 +108,7 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
             </v-row>
             <v-row
               align="center"
-              density="compact"
+              dense
               class="mx-3"
             >
               <v-col cols="4">
