@@ -38,7 +38,7 @@
               v-model="selectedAlmagalSource"
               class="almagal-v-select"
               :items="almagalSourceList"
-              item-title="iid"
+              item-title="aid"
               item-value="iid"
               return-object
               hide-details
@@ -57,7 +57,8 @@
                 instant
               />
             </div>
-            <div
+            <!-- this is an example for if you preloaded individual files -->
+            <!-- <div
               v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
               id="layer-list"
             > 
@@ -74,7 +75,7 @@
                   instant
                 />
               </div>
-            </div>
+            </div> -->
           </div>
           <div id="right-buttons">
             <v-btn
@@ -266,10 +267,28 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
 // newer GLIMPSE 360 - lower resolution
 const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
 
+// a few other layers, but keep hidden
+const herschelPacs = useWtmlLoader('./Herschel_Color.wtml');
+herschelPacs.ready.then(() => {
+  herschelPacs.hide();
+});
+const unwise = useWtmlLoader('./allwise.wtml');
+unwise.ready.then(() => {
+  unwise.hide();
+});
+const allwise = useWtmlLoader('./allwise.wtml');
+allwise.ready.then(() => {
+  allwise.hide();
+});
+
+
+
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
-const useTiledVersion = false; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
+const useTiledVersion = true; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
 const url = useTiledVersion ? './gal_plane_toast/index_rel.wtml' : './index.wtml';
 
+// since we are dynamically loading the sources right now, we don't need any that are preloaded
+/* 
 const almagalSources = reactive(useWtmlLoader(url, { 
   autoload: true, 
   onLoad: (out, index) => {
@@ -301,6 +320,7 @@ const almagalSources = reactive(useWtmlLoader(url, {
   useFits: !useTiledVersion ,
 })
 );
+*/
 /* we could destructure this and have access to the individual properties */
 // const { ready, places, imagesetLayer, show, hide} = almagalSources;
 
@@ -321,14 +341,14 @@ onMounted(() => {
   store.waitForReady().then(async () => {
     store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
-    console.log("Available background imagesets:", backgroundImagesets);
-    store.setBackgroundImageByName(backgroundImagesets[3].imagesetName);
+    store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     
-    almagalSources!.ready.then(() => {
-      layersLoaded.value = true;
-      positionSet.value = true;
-    });
-    
+    // almagalSources!.ready.then(() => {
+    //   layersLoaded.value = true;
+    //   positionSet.value = true;
+    // });
+    layersLoaded.value = true;
+    positionSet.value = true;
   });
 });
 
@@ -744,6 +764,7 @@ and remember, position:absolute is still a positioned parent, so children can be
 .almagal-v-select {
   pointer-events: auto;
   width: 100%;
+  min-width: 250px;
   background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(10px);
   outline: 1px solid white;
