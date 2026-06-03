@@ -25,8 +25,8 @@ interface WtmlLoaderReturn {
   imagesets: Ref<Imageset[]>;
   imagesetLayers: Ref<ImageSetLayer[]>;
   fitsImages: Ref<(FitsImage | null)[]>;
-  show: (name: string) => void;
-  hide: (name: string) => void;
+  show: (name?: string) => void;
+  hide: (name?: string) => void;
   load: () => void;
   loaded: Ref<boolean>;
   opacities: Ref<Map<string, number>>;
@@ -323,7 +323,12 @@ export function useWtmlLoader(wtmlUrl: string, _options?: WtmlLoaderOptions): Pr
   }
 
 
-  const show = (name: string) => {
+  const show = (name?: string) => {
+    if (!name) {
+      // if no name is provided, show all layers
+      imagesetLayers.value.forEach(layer => layer.set_enabled(true));
+      return;
+    }
     const index = places.value.findIndex(p => p.get_name() === name);
     if (index === -1) {
       console.warn(`No place found with name ${name}`);
@@ -338,7 +343,12 @@ export function useWtmlLoader(wtmlUrl: string, _options?: WtmlLoaderOptions): Pr
     layer.set_opacity(getOpacity(name) ?? 1);
   };
 
-  const hide = (name: string) => {
+  const hide = (name?: string) => {
+    if (!name) {
+      // if no name is provided, hide all layers
+      imagesetLayers.value.forEach(layer => layer.set_enabled(false));
+      return;
+    }
     const index = places.value.findIndex(p => p.get_name() === name);
     if (index === -1) {
       console.warn(`No place found with name ${name}`);

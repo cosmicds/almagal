@@ -51,6 +51,7 @@ const { source } = defineProps<{
   color: black;
   padding: 0.5em;
   border-radius: 4px;
+  pointer-events: auto;
 }
 
 </style>

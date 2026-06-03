@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True"
+  Group="Explorer"
+  Name="Herschel PACS (color composition)"
+  Searchable="True">
+  <Place Angle="0"
+    AngularSize="0"
+    Constellation="PSC"
+    DataSetType="Sky"
+    Dec="0"
+    Magnitude="0"
+    Name="Herschel PACS (color composition)"
+    Opacity="100"
+    RA="0"
+    Rotation="0"
+    Thumbnail="http://skies.esac.esa.int/Herschel/PACS-color/preview.jpg"
+    ZoomLevel="0">
+    <ForegroundImageSet>
+      <ImageSet BandPass="IR"
+        BaseDegreesPerTile="180"
+        BaseTileLevel="0"
+        BottomsUp="False"
+        CenterX="0"
+        CenterY="0"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="jpeg"
+        Generic="False"
+        MeanRadius="1"
+        Name="Herschel PACS (color composition)"
+        Projection="Healpix"
+        QuadTreeMap="0123"
+        ReferenceFrame="Sky"
+        Rotation="0"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="9"
+        Url="http://skies.esac.esa.int/Herschel/PACS-color/Norder{0}/Dir{1}/Npix{2}"
+        WidthFactor="1">
+        <Credits>ESA/HSA</Credits>
+        <CreditsUrl>http://www.cosmos.esa.int/web/herschel/publishing-rules-guidelines</CreditsUrl>
+        <Description>HiPS List ID: ESAVO/P/HERSCHEL/PACS-color</Description>
+        <ThumbnailUrl>http://skies.esac.esa.int/Herschel/PACS-color/preview.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>
