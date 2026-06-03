@@ -8,7 +8,10 @@
       id="main-content"
     >
       <WorldWideTelescope
+        ref="wwt-container"
         :wwt-namespace="wwtNamespace"
+        @pointermove="onPointerMove"
+        @click="onPointerClick"
       ></WorldWideTelescope>
       <wwt-loader v-model="isLoading" />
 
@@ -30,10 +33,35 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
+            <v-autocomplete
+              v-if="almagalSourceList"
+              v-model="selectedAlmagalSource"
+              class="almagal-v-select"
+              :items="almagalSourceList"
+              item-title="iid"
+              item-value="iid"
+              return-object
+              hide-details
+              label="ALMAGAL Source"
+              :loading="loadingAlmagalSource"
+            />
+            <div
+              v-for="layer in [...almagalSourceLayers.values()]"
+              :key="layer.id.toString()"
+              class="layer-list__item"
+            >
+              <ImagesetItem
+                v-if="store.imagesetStateForLayer(layer.id.toString())"
+                style="color: black"
+                :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                instant
+              />
+            </div>
             <div
               v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
               id="layer-list"
-            >
+            > 
+              <h3> Preloaded FITS layers</h3>
               <div
                 v-for="layer in almagalSources.imagesetLayers"
                 
@@ -62,6 +90,11 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
+          <div v-if="hoveredSource">
+            <AlmaGalSourceInfoDisplay
+              :source="hoveredSource"
+            />
+          </div>
           <div
             id="body-logos"
             :class="{'small-logos': smallSize}"
@@ -101,9 +134,10 @@
           <p>
             ALMAGAL: ALMA Evolutionary study of High Mass Protocluster Formation in the Galaxy
           </p>
-          <p class="mt-2 mb-2">
-            ALMAGAL will observe for the first time a statistically significant and complete sample of high-mass star-forming regions with the ALMA interferometer to answer some of the open questions in the field of clump fragmentation and of formation of high-mass stars.
-          </p>
+          <AlmaGalSourceInfoDisplay
+            v-if="selectedAlmagalSource"
+            :source="selectedAlmagalSource"
+          />
         </div>
       </InformationSheet>
     </component>
@@ -148,7 +182,15 @@ import InformationSheet from "./components/InformationSheet.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
+import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsheetLayer";
 
+import { 
+  getAlmagalSources, 
+  getAlmagalSourceById, 
+  getAlmagalSourceUrl,
+  type ALMAGalSource
+} from "./almagal_utils";
+import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
 export interface WwtPlaygroundProps {
@@ -219,10 +261,10 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
 
 
 // Load an older version of GLIMPSE - less coverage, higher resolution.
-const glimpse = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
+// const glimpse = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
 
 // newer GLIMPSE 360 - lower resolution
-// const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
+const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
 const useTiledVersion = false; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
@@ -277,8 +319,10 @@ onMounted(() => {
   }
   
   store.waitForReady().then(async () => {
-    // store.applySetting(["galacticMode", true]); /* stay in equatorial mode */
+    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
+    console.log("Available background imagesets:", backgroundImagesets);
+    store.setBackgroundImageByName(backgroundImagesets[3].imagesetName);
     
     almagalSources!.ready.then(() => {
       layersLoaded.value = true;
@@ -289,10 +333,66 @@ onMounted(() => {
 });
 
 
+const almagalSourceList = ref(getAlmagalSources());
 
-function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+const hoveredSource = ref<ALMAGalSource | null>(null);
+
+const { onPointerMove, onPointerClick } = useHoverableSpreadsheetLayer(
+  almagalSourceList.value,
+  {
+    name: "ALMAGAL Sources",
+    color: "#32CD32",
+    markerSize: 5,
+    markerType: "point",
+    onHover: (row) => { hoveredSource.value = row as ALMAGalSource | null; },
+    onClick: (row) => { 
+      if (row) {
+        selectedAlmagalSource.value = row as ALMAGalSource;
+      }
+    },
+  }
+);
+
+const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
+const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
+const loadingAlmagalSource = ref(false);
+function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer> {
+  if (almagalSourceLayers.value.has(iid)) {
+    return Promise.resolve(almagalSourceLayers.value.get(iid)!);
+  }
+  const source = getAlmagalSourceById(iid);
+  if (!source) {
+    throw new Error(`Source with id ${iid} not found`);
+  }
+  const url = getAlmagalSourceUrl(source);
+  console.log("Loading ALMAGAL source from url:", getAlmagalSourceById(iid), url);
+  console.warn("The CORS is ok. It takes a moment to fetch via WWT Proxy");
+  return store.addImageSetLayer({
+    url: url,
+    mode: "fits",
+    name: source.iid,
+    goto: false,
+  }).then(layer => {
+    almagalSourceLayers.value.set(iid, layer);
+    return layer;
+  });
 }
+
+watch(selectedAlmagalSource, (newSource, oldSource) => {
+  if (newSource) {
+    store.gotoRADecZoom({
+      raRad: newSource.ra * D2R,
+      decRad: newSource.dec * D2R,
+      zoomDeg: 0.1,
+      rollRad: 0,
+      instant: false,
+    });
+    loadingAlmagalSource.value = true;
+    loadAlmaGalFitsSource(newSource.iid).then(layer => {
+      loadingAlmagalSource.value = false;
+    });
+  }
+});
 
 
 const ready = computed(() => positionSet.value && layersLoaded.value);
@@ -626,32 +726,11 @@ and remember, position:absolute is still a positioned parent, so children can be
   backdrop-filter: blur(6px);
 }
 
-.tracked-places {
-  width: max-content;
-  font-size: 0.8em;
-  padding: 0.25em 0.5em;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.51);
-  border: 0.5px solid red;
-  backdrop-filter: blur(5px);
-  border-radius: 5px;
-  transform: translateY(-50%) translateX(1.5em);
-  // they mus be position absolute
-  position: absolute;
-}
-
-// add .circle-marker-class to make the simple circles and hide the text
-.tracked-places.circle-marker-only {
-  transform: translate(-50%, -50%);
-  border: 2px solid red;
-  border-radius: 50%;
-  width: 50px;
-  aspect-ratio: 1 / 1;
-  padding: 0;
-}
-
-.tracked-places.circle-marker-only > span {
-  display: none;
+#layer-list {
+  outline: 1px solid black;
+  border: 1px solid white;
+  padding: 4px;
+  border-radius: 4px;
 }
 
 .layer-list__item {
@@ -659,5 +738,15 @@ and remember, position:absolute is still a positioned parent, so children can be
   border: 1px solid rgba(255, 255, 255, 0.541);
   border-radius: 5px;
   backdrop-filter: blur(10px);
+  widtH: 100%;
+}
+
+.almagal-v-select {
+  pointer-events: auto;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.364);
+  backdrop-filter: blur(10px);
+  outline: 1px solid white;
+  border-radius: 4px;
 }
 </style>
