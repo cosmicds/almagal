@@ -49,6 +49,7 @@
     
     // recommended by https://www.typescriptlang.org/docs/handbook/modules/guides/choosing-compiler-options.html#im-using-a-bundler
     "allowArbitraryExtensions": true,
-    
+    "skipLibCheck": true,
+
   }
 }
