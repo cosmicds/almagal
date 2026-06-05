@@ -58,13 +58,13 @@
               />
             </div>
             <!-- this is an example for if you preloaded individual files -->
-            <!-- <div
-              v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
+            <div
+              v-if="ready && almagalWtml && almagalWtml.imagesetLayers?.length > 0"
               id="layer-list"
             > 
               <h3> Preloaded FITS layers</h3>
               <div
-                v-for="layer in almagalSources.imagesetLayers"
+                v-for="layer in almagalWtml.imagesetLayers"
                 
                 :key="layer.id.toString()"
                 class="layer-list__item elevation-2 my-2"
@@ -75,7 +75,7 @@
                   instant
                 />
               </div>
-            </div> -->
+            </div>
           </div>
           <div id="right-buttons">
             <v-btn
@@ -266,66 +266,79 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
 
 // newer GLIMPSE 360 - lower resolution
 const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
+glimpse.ready.then(() => {
+  // glimpse.hide();
+  return; // no empty functions
+});
 
 // a few other layers, but keep hidden
 const herschelPacs = useWtmlLoader('./Herschel_Color.wtml');
 herschelPacs.ready.then(() => {
   herschelPacs.hide();
 });
-const unwise = useWtmlLoader('./allwise.wtml');
-unwise.ready.then(() => {
-  unwise.hide();
-});
-const allwise = useWtmlLoader('./allwise.wtml');
-allwise.ready.then(() => {
-  allwise.hide();
-});
 
+function setFitsLayerSettings(layer: ImageSetLayer, options: {cmap?: Colormaps, opacity?: number, stretch?: {stretch: ScaleTypes, vmin: number, vmax:number}} = {}) {
+  if (options.cmap) {
+    store.applyFitsLayerSettings({
+      id: layer.id.toString(),
+      settings: [
+        ['colorMapperName', options.cmap as Colormaps],
+      ]
+    });
+  }
+  if (options.opacity) {
+    store.applyFitsLayerSettings({
+      id: layer.id.toString(),
+      settings: [
+        ['opacity', options.opacity],
+      ]
+    });
+  }
+  if (options.stretch) {
+    store.stretchFitsLayer({
+      id: layer.id.toString(),
+      stretch: options.stretch.stretch,
+      vmin: options.stretch.vmin,
+      vmax: options.stretch.vmax,
+    });
+  }
+}
+
+const DEFAULT_FITS_LAYER_SETTINGS = {
+  cmap: 'rdylbu' as Colormaps,
+  opacity: 1.0,
+  stretch: {
+    stretch: ScaleTypes.linear,
+    vmin: -0.0005,
+    vmax: 0.0015,
+  }
+};
 
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
 const useTiledVersion = true; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
-const url = useTiledVersion ? './gal_plane_toast/index_rel.wtml' : './index.wtml';
+const url = 'https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/main/almagal/almagal_toast/almagal.wtml';
 
-// since we are dynamically loading the sources right now, we don't need any that are preloaded
-/* 
-const almagalSources = reactive(useWtmlLoader(url, { 
+// Load the WTML. This goes down to level 12
+const almagalWtml = reactive(useWtmlLoader(url, { 
   autoload: true, 
   onLoad: (out, index) => {
     // out contains: folder, place, imageset, layer. 
     console.log(`Loaded place ${out.place.get_name()} at index ${index}`);
     if (out.layer) {
-      // there are simpler ways to set this
-      // but doing it this way makes sure the Vue state is in sync
-      store.applyFitsLayerSettings({
-        id: out.layer.id.toString(),
-        settings: [
-          ['colorMapperName', 'plasma'],
-          ['opacity', 0.8],
-        ]
-      });
-      const state = store.imagesetStateForLayer(out.layer.id.toString());
-      store.stretchFitsLayer({
-        id: out.layer.id.toString(),
-        stretch: ScaleTypes.linear,
-        vmin: -0.0005,
-        vmax: 0.0015 * (index + 1), // this scaling just happens to work the order of the images, can be set to anything
-        // if the FITS header has PXCUTMIN and PXCUTMAX, vmin and vmax will default to those values
-      });
+      setFitsLayerSettings(out.layer, DEFAULT_FITS_LAYER_SETTINGS);
     }
-    console.log(out.fitsImage?.fitsProperties);
+
   },
   goTo: false, // to go to the first imageset in the WTML  replace false with (_, index) => index === 0
   instant: true,
   useFits: !useTiledVersion ,
 })
 );
-*/
 /* we could destructure this and have access to the individual properties */
-// const { ready, places, imagesetLayer, show, hide} = almagalSources;
+// const { ready, places, imagesetLayer, show, hide} = almagalToastedImages;
 
 onMounted(() => {
-
   // boiler plate to disable WWT and let warning be 
   // shown to user if WebGL2 is not supported.
   if (webglDisabled.value) {
@@ -343,12 +356,12 @@ onMounted(() => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     
-    // almagalSources!.ready.then(() => {
-    //   layersLoaded.value = true;
-    //   positionSet.value = true;
-    // });
-    layersLoaded.value = true;
-    positionSet.value = true;
+    almagalWtml!.ready.then(() => {
+      layersLoaded.value = true;
+      positionSet.value = true;
+    });
+    // layersLoaded.value = true;
+    // positionSet.value = true;
   });
 });
 
@@ -409,6 +422,7 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
     });
     loadingAlmagalSource.value = true;
     loadAlmaGalFitsSource(newSource.iid).then(layer => {
+      setFitsLayerSettings(layer, DEFAULT_FITS_LAYER_SETTINGS);
       loadingAlmagalSource.value = false;
     });
   }
