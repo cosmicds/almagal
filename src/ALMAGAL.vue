@@ -368,7 +368,7 @@ const almagalSourceList = ref(getAlmagalSources());
 
 const hoveredSource = ref<ALMAGalSource | null>(null);
 
-const { onPointerMove, onPointerClick } = useHoverableSpreadsheetLayer(
+const { onPointerMove, onPointerClick, ready: spreadsheetReady } = useHoverableSpreadsheetLayer(
   almagalSourceList.value,
   {
     name: "ALMAGAL Sources",
@@ -384,6 +384,9 @@ const { onPointerMove, onPointerClick } = useHoverableSpreadsheetLayer(
     },
   }
 );
+spreadsheetReady.then((layer) => {
+  console.log("Spreadsheet layer ready", layer);
+});
 
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
 const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());

@@ -23,7 +23,9 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   const { pixelThreshold = 20, onHover, ...spreadsheetOptions } = options;
 
   // ra in hours for the WWT layer column
-  const points = rows.map(r => [r.ra / 15, r.dec] as [number, number]);
+  // const points = rows.map(r => [r.ra / 15, r.dec] as [number, number]);
+  // convert row to have ra in hours
+  const points = rows.map(r => ({ ...r, ra: r.ra / 15 }));
   const spreadsheet = useSpreadsheetLayer(points, spreadsheetOptions); // create the underlying spreadsheet layer
 
   // add mouse/pointer trackings (like green-comet, brute force)
