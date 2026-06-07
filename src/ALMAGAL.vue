@@ -55,26 +55,23 @@
                 style="color: black"
                 :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                 instant
+                log-stretch-slider
               />
             </div>
             <!-- this is an example for if you preloaded individual files -->
             <div
-              v-if="ready && almagalWtml && almagalWtml.imagesetLayers?.length > 0"
-              id="layer-list"
-            > 
-              <h3> Preloaded FITS layers</h3>
-              <div
-                v-for="layer in almagalWtml.imagesetLayers"
-                
-                :key="layer.id.toString()"
-                class="layer-list__item elevation-2 my-2"
-              >
-                <ImagesetItem
-                  style="color: black"
-                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                  instant
-                />
-              </div>
+              v-for="layer in almagalWtml.imagesetLayers"
+              
+              :key="layer.id.toString()"
+              class="layer-list__item elevation-2 my-2"
+            >
+              <ImagesetItem
+                style="color: black"
+                :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                instant
+                :crange="{min: -0.001, max: 0.02}"
+                log-stretch-slider
+              />
             </div>
           </div>
           <div id="right-buttons">
@@ -170,8 +167,8 @@ import {
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
 import { ScaleTypes } from "@wwtelescope/engine-types";
-import { COLORMAPS, type Colormaps } from "./types";
-
+import { addCustomColormaps, COLORMAPS, type Colormaps  } from "./wwt-colormaps/colormaps";
+addCustomColormaps();
 
 /* local components and composables */
 import WebGlTest from "./components/WebGlTest.vue";
@@ -305,7 +302,7 @@ function setFitsLayerSettings(layer: ImageSetLayer, options: {cmap?: Colormaps, 
 }
 
 const DEFAULT_FITS_LAYER_SETTINGS = {
-  cmap: 'rdylbu' as Colormaps,
+  cmap: 'rdbu' as Colormaps,
   opacity: 1.0,
   stretch: {
     stretch: ScaleTypes.linear,

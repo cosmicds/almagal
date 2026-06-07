@@ -95,14 +95,15 @@
             type="text"
             class="cutoff-input"
           />
-          <v-slider
+          <component 
+            :is="logStretchSlider ? 'v-log-slider' : 'v-slider'"
             v-model="twoWayVMin"
             class="scrubber"
             :min="fitsDataMin"
             :max="fitsDataMax"
             :step="cutoffStep"
             hide-details
-          ></v-slider>
+          ></component>
         </div>
         <div class="detail-row">
           <span class="prompt cutoff">High:</span>
@@ -111,14 +112,15 @@
             type="text"
             class="cutoff-input"
           />
-          <v-slider
+          <component 
+            :is="logStretchSlider ? 'v-log-slider' : 'v-slider'"
             v-model="twoWayVMax"
             class="scrubber"
             :min="fitsDataMin"
             :max="fitsDataMax"
             :step="cutoffStep"
             hide-details
-          ></v-slider>
+          ></component>
         </div>
       </div>
     </transition-expand>
@@ -138,6 +140,8 @@ import {
 } from "@wwtelescope/engine-pinia";
 
 import { computed, ref } from "vue";
+
+
 
 interface UiColorMaps {
   wwt: string;
@@ -177,7 +181,9 @@ const uiScaleTypes: UiScaleTypes[] = [
 
 const props = defineProps({
   imageset: { type: ImageSetLayerState, required: true },
-  instant: {type: Boolean, required: false, default: false }
+  instant: {type: Boolean, required: false, default: false },
+  crange: { type: Object as () => { min: number; max: number }, required: false, default: undefined },
+  logStretchSlider: { type: Boolean, required: false, default: false },
 });
 
 const store = engineStore();
@@ -250,11 +256,17 @@ const twoWayVMax = computed({
 });
 
 const fitsDataMin = computed((): number => {
+  if (props.crange) {
+    return props.crange.min;
+  }
   const imgset = store.imagesetForLayer(props.imageset.getGuid());
   return imgset?.get_fitsProperties().minVal ?? 0;
 });
 
 const fitsDataMax = computed((): number => {
+  if (props.crange) {
+    return props.crange.max;
+  }
   const imgset = store.imagesetForLayer(props.imageset.getGuid());
   return imgset?.get_fitsProperties().maxVal ?? 1;
 });
