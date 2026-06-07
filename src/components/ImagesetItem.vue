@@ -64,7 +64,7 @@
           ></v-slider>
         </div>
 
-        <div class="detail-row">
+        <div v-if="!props.onlyOpacity" class="detail-row">
           <span class="prompt">Colormap:</span><select v-model="twoWayColorMapperName">
             <option
               v-for="x in uiColorMaps"
@@ -76,7 +76,7 @@
           </select>
         </div>
 
-        <div class="detail-row">
+        <div v-if="!props.onlyOpacity" class="detail-row">
           <span class="prompt">Stretch:</span><select v-model="twoWayScaleType">
             <option
               v-for="x in uiScaleTypes"
@@ -88,7 +88,7 @@
           </select>
         </div>
       
-        <div class="detail-row">
+        <div v-if="!props.onlyOpacity" class="detail-row">
           <span class="prompt cutoff">Low:</span>
           <input
             v-model.lazy="twoWayVMinText"
@@ -105,7 +105,7 @@
             hide-details
           ></component>
         </div>
-        <div class="detail-row">
+        <div v-if="!props.onlyOpacity" class="detail-row">
           <span class="prompt cutoff">High:</span>
           <input
             v-model.lazy="twoWayVMaxText"
@@ -184,6 +184,7 @@ const props = defineProps({
   instant: {type: Boolean, required: false, default: false },
   crange: { type: Object as () => { min: number; max: number }, required: false, default: undefined },
   logStretchSlider: { type: Boolean, required: false, default: false },
+  onlyOpacity: { type: Boolean, required: false, default: false },
 });
 
 const store = engineStore();

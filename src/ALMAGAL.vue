@@ -56,6 +56,7 @@
                 :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                 instant
                 log-stretch-slider
+                only-opacity
               />
             </div>
             <!-- this is an example for if you preloaded individual files -->
@@ -88,10 +89,8 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
-          <div v-if="hoveredSource">
-            <AlmaGalSourceInfoDisplay
-              :source="hoveredSource"
-            />
+          <div class="hovered-source-info">
+            Currently hovering: {{ hoveredSource ? hoveredSource.aid : "none" }}
           </div>
           <div
             id="body-logos"
@@ -148,7 +147,7 @@ import { ref, reactive, computed, onMounted, watch, nextTick, UnwrapNestedRefs }
 import { useDisplay } from "vuetify";
 
 /* WWT imports */
-import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
+import { GotoRADecZoomParams, engineStore, ImageSetLayerState } from "@wwtelescope/engine-pinia";
 import { 
   BackgroundImageset, 
   skyBackgroundImagesets, 
@@ -274,10 +273,10 @@ herschelPacs.ready.then(() => {
   herschelPacs.hide();
 });
 
-function setFitsLayerSettings(layer: ImageSetLayer, options: {cmap?: Colormaps, opacity?: number, stretch?: {stretch: ScaleTypes, vmin: number, vmax:number}} = {}) {
+function setFitsLayerSettings(guid: string, options: {cmap?: Colormaps, opacity?: number, stretch?: {stretch: ScaleTypes, vmin: number, vmax:number}} = {}) {
   if (options.cmap) {
     store.applyFitsLayerSettings({
-      id: layer.id.toString(),
+      id: guid,
       settings: [
         ['colorMapperName', options.cmap as Colormaps],
       ]
@@ -285,7 +284,7 @@ function setFitsLayerSettings(layer: ImageSetLayer, options: {cmap?: Colormaps, 
   }
   if (options.opacity) {
     store.applyFitsLayerSettings({
-      id: layer.id.toString(),
+      id: guid,
       settings: [
         ['opacity', options.opacity],
       ]
@@ -293,7 +292,7 @@ function setFitsLayerSettings(layer: ImageSetLayer, options: {cmap?: Colormaps, 
   }
   if (options.stretch) {
     store.stretchFitsLayer({
-      id: layer.id.toString(),
+      id: guid,
       stretch: options.stretch.stretch,
       vmin: options.stretch.vmin,
       vmax: options.stretch.vmax,
@@ -316,6 +315,7 @@ const DEFAULT_FITS_LAYER_SETTINGS = {
 const useTiledVersion = true; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
 const url = 'https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/main/almagal/almagal_toast/almagal.wtml';
 
+const almagalWtmlState = ref<ImageSetLayerState | null>(null);
 // Load the WTML. This goes down to level 12
 const almagalWtml = reactive(useWtmlLoader(url, { 
   autoload: true, 
@@ -323,7 +323,8 @@ const almagalWtml = reactive(useWtmlLoader(url, {
     // out contains: folder, place, imageset, layer. 
     console.log(`Loaded place ${out.place.get_name()} at index ${index}`);
     if (out.layer) {
-      setFitsLayerSettings(out.layer, DEFAULT_FITS_LAYER_SETTINGS);
+      setFitsLayerSettings(out.layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
+      almagalWtmlState.value = store.imagesetStateForLayer(out.layer.id.toString());
     }
 
   },
@@ -374,11 +375,12 @@ const { onPointerMove, onPointerClick } = useHoverableSpreadsheetLayer(
     color: "#32CD32",
     markerSize: 5,
     markerType: "point",
-    onHover: (row) => { hoveredSource.value = row as ALMAGalSource | null; },
+    onHover: (row, index) => { 
+      hoveredSource.value = row as ALMAGalSource | null; 
+      console.log("hovered source:", hoveredSource.value, row, index);
+    },
     onClick: (row) => { 
-      if (row) {
-        selectedAlmagalSource.value = row as ALMAGalSource;
-      }
+      selectedAlmagalSource.value = row as ALMAGalSource;
     },
   }
 );
@@ -386,6 +388,11 @@ const { onPointerMove, onPointerClick } = useHoverableSpreadsheetLayer(
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
 const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
 const loadingAlmagalSource = ref(false);
+
+/**
+ * Create a fitsimage layer from an ALMAGal source id
+ * The create layer get's added to almagalSourceLayers
+ */
 function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer> {
   if (almagalSourceLayers.value.has(iid)) {
     return Promise.resolve(almagalSourceLayers.value.get(iid)!);
@@ -399,7 +406,7 @@ function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer
   console.warn("The CORS is ok. It takes a moment to fetch via WWT Proxy");
   return store.addImageSetLayer({
     url: url,
-    mode: "fits",
+    mode: "fits", 
     name: source.iid,
     goto: false,
   }).then(layer => {
@@ -413,13 +420,13 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
     store.gotoRADecZoom({
       raRad: newSource.ra * D2R,
       decRad: newSource.dec * D2R,
-      zoomDeg: 0.1,
+      zoomDeg: store.zoomDeg, // just go without zooming
       rollRad: 0,
       instant: false,
     });
     loadingAlmagalSource.value = true;
     loadAlmaGalFitsSource(newSource.iid).then(layer => {
-      setFitsLayerSettings(layer, DEFAULT_FITS_LAYER_SETTINGS);
+      setFitsLayerSettings(layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
       loadingAlmagalSource.value = false;
     });
   }
@@ -441,6 +448,47 @@ const cssVars = computed(() => {
   };
 });
 
+
+/* Sync up the colormap, stretch, and vmin/vmax for all of the loaded fits images with the WTML as the source of truth */
+const imagesetLayerStates = computed(() => {
+  const states: ImageSetLayerState[] = [];
+  almagalSourceLayers.value.forEach(layer => {
+    const state = store.imagesetStateForLayer(layer.id.toString());
+    if (state) {
+      states.push(state);
+    }
+  });
+  return states;
+});
+function updateImagesetLayerDisplaySettings() {
+  for (let state of imagesetLayerStates.value) {
+    setFitsLayerSettings(state.getGuid(), DEFAULT_FITS_LAYER_SETTINGS);
+  }
+}
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmax : null, (newVmax, oldVmax) => {  
+  if (newVmax && newVmax !== oldVmax) {
+    DEFAULT_FITS_LAYER_SETTINGS.stretch.vmax = newVmax;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmin : null, (newVmin, oldVmin) => {  
+  if (newVmin && newVmin !== oldVmin) {
+    DEFAULT_FITS_LAYER_SETTINGS.stretch.vmin = newVmin;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.scaleType : null, (newScale, oldScale) => {  
+  if (newScale && newScale !== oldScale) {
+    DEFAULT_FITS_LAYER_SETTINGS.stretch.stretch = newScale;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.colorMapperName : null, (newCmap, oldCmap) => {  
+  if (newCmap && newCmap !== oldCmap) {
+    DEFAULT_FITS_LAYER_SETTINGS.cmap = newCmap as Colormaps;
+    updateImagesetLayerDisplaySettings();
+  }
+});
 
 </script>
 
@@ -711,12 +759,12 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 // From Sara Soueidan (https://www.sarasoueidan.com/blog/focus-indicators/) & Erik Kroes (https://www.erikkroes.nl/blog/the-universal-focus-state/)
-:focus-visible {
-  /* Keep this override outside Vuetify's layers so it wins without !important. */
-  outline: 4px double white;
-  box-shadow: 0 0 0 2px black;
-  border-radius: .025rem;
-}
+// :focus-visible {
+//   /* Keep this override outside Vuetify's layers so it wins without !important. */
+//   outline: 4px double white;
+//   box-shadow: 0 0 0 2px black;
+//   border-radius: .025rem;
+// }
 
 .layout-debug {
   #main-content {
@@ -780,5 +828,13 @@ and remember, position:absolute is still a positioned parent, so children can be
   backdrop-filter: blur(10px);
   outline: 1px solid white;
   border-radius: 4px;
+}
+
+.hovered-source-info {
+  background-color: rgba(0, 0, 0, 0.364);
+  backdrop-filter: blur(10px);
+  width: fit-content;
+  padding: 0.5em 1em;
+  border-radius: 8px;
 }
 </style>
