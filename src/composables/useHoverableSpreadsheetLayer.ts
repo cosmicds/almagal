@@ -56,13 +56,14 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     return pixelDist < pixelThreshold ? { row: closest, index: closestIndex } : null;
   }
 
-  
+  let lastResult: ReturnType<typeof findClosestRow> = null;
   function onPointerMove(event: PointerEvent) {
     if (!onHover) return;
     const result = findClosestRow(event);
-    if (result) {
-      onHover(result.row ?? null, result.index ?? -1);
-    }
+    if (lastResult === null && result === null) return; // both null, no change
+    if (result && lastResult?.index === result.index) return; // same row, no change
+    onHover(result?.row ?? null, result?.index ?? -1);
+    lastResult = result;
   }
 
   function onPointerDown(_event: PointerEvent) { /* i don't think we need this */ }
