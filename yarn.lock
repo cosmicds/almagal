@@ -1199,7 +1199,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^6.0.5"
     "@vue/tsconfig": "npm:^0.9.1"
     "@wwtelescope/engine": "npm:^7.37.1"
-    "@wwtelescope/engine-pinia": "npm:^0.11.0"
+    "@wwtelescope/engine-pinia": "npm:^0.14.0"
     eslint: "npm:^10.1.0"
     eslint-plugin-vue: "npm:^10.8.0"
     eslint-plugin-vuetify: "npm:^2.7.2"
@@ -1902,11 +1902,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^25.5.0":
-  version: 25.9.1
-  resolution: "@types/node@npm:25.9.1"
+  version: 25.9.2
+  resolution: "@types/node@npm:25.9.2"
   dependencies:
     undici-types: "npm:>=7.24.0 <7.24.7"
-  checksum: 10c0/9a04682842bebbcf21a1779dfeab9aa733d7bd7bbc0a0edb641ab3a9a3d43eac543225acf669c334f458f1956443ebc072bc3c72840c543b8b356cab5c82d456
+  checksum: 10c0/f14c0d56361febb985eccc45cf0834ee6e2f07c4389a636f3e1a55ebde320077a80bface18c9afd3092f5fa295925502c1a9d55f805efa813f634aa9c941cbac
   languageName: node
   linkType: hard
 
@@ -2182,7 +2182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/devtools-api@npm:^6.6.3":
+"@vue/devtools-api@npm:^6.5.0, @vue/devtools-api@npm:^6.6.3":
   version: 6.6.4
   resolution: "@vue/devtools-api@npm:6.6.4"
   checksum: 10c0/0a993ae23618166e1bee5a7c14cebd8312752b93c143cbdd48fb2d0f7ade070d0e6baf757cd920d4681fef8f9acf29515162160f38cc7410f9a684d2df21b6de
@@ -2356,9 +2356,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wwtelescope/engine-pinia@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@wwtelescope/engine-pinia@npm:0.11.0"
+"@wwtelescope/engine-pinia@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@wwtelescope/engine-pinia@npm:0.14.0"
+  dependencies:
+    "@wwtelescope/astro": "npm:>=0.2.2"
+    "@wwtelescope/engine": "npm:^7.32.0"
+    "@wwtelescope/engine-helpers": "npm:>=0.15.0"
+    "@wwtelescope/engine-types": "npm:>=0.6.3"
+    pinia: "npm:^2.0.22"
+    vue: "npm:^3"
+  checksum: 10c0/cfd4617d9e9109e37f0d13c6d697ac4fc4ec0ab5e633c19652db5aef11f93902d257343e5cd7d872e7047ac353e05b0464ba6502c113d693ff1a3e9f5bb0e70f
+  languageName: node
+  linkType: hard
+
+"@wwtelescope/engine-pinia@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@wwtelescope/engine-pinia@npm:0.9.0"
   dependencies:
     "@wwtelescope/astro": "npm:>=0.2.2"
     "@wwtelescope/engine": "npm:^7.29.1"
@@ -2366,7 +2380,7 @@ __metadata:
     "@wwtelescope/engine-types": "npm:>=0.6.3"
     pinia: "npm:^2.0.22"
     vue: "npm:^3"
-  checksum: 10c0/59afd32c33f4705ea7b7199607f54528459be4e12f285feb4f703f18f8bc3bf117b316d4074bf3145a57caf90b6e8ab60142a47a5a1afd61c1de74d944bc1ecb
+  checksum: 10c0/32d1e166eeea2d5471e0b562739526134910c481643f1abd0e7a5ddda40a4e0a4b1b46c670709a4fc95d34b87f3bed4c3d76afb085b2924f3fa9c084327e141e
   languageName: node
   linkType: hard
 
@@ -2377,7 +2391,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wwtelescope/engine@npm:^7.29.1, @wwtelescope/engine@npm:^7.30.1, @wwtelescope/engine@npm:^7.37.1":
+"@wwtelescope/engine@npm:^7.29.1, @wwtelescope/engine@npm:^7.30.1, @wwtelescope/engine@npm:^7.32.0, @wwtelescope/engine@npm:^7.37.1":
   version: 7.37.1
   resolution: "@wwtelescope/engine@npm:7.37.1"
   dependencies:
@@ -2516,11 +2530,11 @@ __metadata:
   linkType: hard
 
 "baseline-browser-mapping@npm:^2.10.12":
-  version: 2.10.33
-  resolution: "baseline-browser-mapping@npm:2.10.33"
+  version: 2.10.34
+  resolution: "baseline-browser-mapping@npm:2.10.34"
   bin:
     baseline-browser-mapping: dist/cli.cjs
-  checksum: 10c0/d7a7b6b4cb67fb132fb7d32deeb8b6507d60a8f9a86436bcfa66785409268e0dab9588f3323dff768df0cd36dcdfb1038200d20e43078b7d2c41ab6eff07cb2d
+  checksum: 10c0/5c29d5c053ced64a016f2977f70b87bcc85c014b425971cf8a96c14675efe4fedf13871bc7d25030c926e7cbf22959249ffe6b35d5c1e7299578fcdf4e7dc371
   languageName: node
   linkType: hard
 
@@ -2583,9 +2597,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001782":
-  version: 1.0.30001793
-  resolution: "caniuse-lite@npm:1.0.30001793"
-  checksum: 10c0/bee8f8b55d1ccdb2076b7355c06fd01916952eadd76b828e4d5fb9ac62d17ec7db0e2b7c326b923478b93526ad1ff74f189cf40c06de0e4a5edbc677009b97fe
+  version: 1.0.30001797
+  resolution: "caniuse-lite@npm:1.0.30001797"
+  checksum: 10c0/8357f6a70432ad1f1dd39ceeabe6fa7597c76ff45cda2994e4aca3e625bdeb3154b4dfd90b984d343883b2fe4e6abf901739f9f11aa2dfd0254c1de3282ccb76
   languageName: node
   linkType: hard
 
@@ -2705,9 +2719,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.5.328":
-  version: 1.5.367
-  resolution: "electron-to-chromium@npm:1.5.367"
-  checksum: 10c0/794afbb912b03774ab5cf8dea10c39728ddffc260d1c75cd8e9e005824c7916261ed36a137106aa2ee4634ab7fc335dc024b83860b5a1761451ee60fc1bfe88d
+  version: 1.5.368
+  resolution: "electron-to-chromium@npm:1.5.368"
+  checksum: 10c0/229fb871d2b59d3a54129ee9801cd5853258eec1503d9b3b52633a0902589693efa2d17f71c26cf28ec369bc9ed78e609206e8740745c9325d0fc464ac4559d6
   languageName: node
   linkType: hard
 
@@ -3584,8 +3598,8 @@ __metadata:
   linkType: hard
 
 "node-gyp@npm:latest":
-  version: 12.3.0
-  resolution: "node-gyp@npm:12.3.0"
+  version: 12.4.0
+  resolution: "node-gyp@npm:12.4.0"
   dependencies:
     env-paths: "npm:^2.2.0"
     exponential-backoff: "npm:^3.1.1"
@@ -3599,7 +3613,7 @@ __metadata:
     which: "npm:^6.0.0"
   bin:
     node-gyp: bin/node-gyp.js
-  checksum: 10c0/9d9032b405cbe42f72a105259d9eb679376470c102df4a2dbaa51e07d59bf741dcffb85897087ea9d8318b9cabb824a8978af51508ae142f0239ae1e6a3c2329
+  checksum: 10c0/9acb7c798e124275a6f9c1f7eb64b5abd6196bb885a3945fb44ee0dccf435514e88cdfb0f228ee7ff76ef25107c1f39ff37a067bf92fd00b9aff9234db29ff9e
   languageName: node
   linkType: hard
 
@@ -3793,7 +3807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pinia@npm:^2.3.1":
+"pinia@npm:^2.0.22":
   version: 2.3.1
   resolution: "pinia@npm:2.3.1"
   dependencies:
@@ -3806,6 +3820,25 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/e005883c26fe782e26803859db8703ead2e7053271d22828175c82d56e925ddab65ca2543a3f3a36686a11e6835f60c031f1eb2ef9159f9da05121495499c5f6
+  languageName: node
+  linkType: hard
+
+"pinia@npm:~2.1.7":
+  version: 2.1.7
+  resolution: "pinia@npm:2.1.7"
+  dependencies:
+    "@vue/devtools-api": "npm:^6.5.0"
+    vue-demi: "npm:>=0.14.5"
+  peerDependencies:
+    "@vue/composition-api": ^1.4.0
+    typescript: ">=4.4.4"
+    vue: ^2.6.14 || ^3.3.0
+  peerDependenciesMeta:
+    "@vue/composition-api":
+      optional: true
+    typescript:
+      optional: true
+  checksum: 10c0/f4380a4db04b5b8565ed8a6843821d91f8f650d79dd9f0094005248bd963521b8a73419032fda76541e59b895b0e7852e67ca9d0408162cc391ce5a1bcbda445
   languageName: node
   linkType: hard
 
@@ -4512,7 +4545,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-demi@npm:^0.14.10":
+"vue-demi@npm:>=0.14.5, vue-demi@npm:^0.14.10":
   version: 0.14.10
   resolution: "vue-demi@npm:0.14.10"
   peerDependencies:
