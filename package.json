@@ -52,5 +52,9 @@
     "serve": "vite --host"
   },
   "name": "@cosmicds/bubbling-galaxies",
-  "packageManager": "yarn@4.12.0"
+  "packageManager": "yarn@4.12.0",
+  "resolutions": {
+    "@wwtelescope/engine-pinia": "^0.14.0",
+    "pinia": "^2.3.1"
+  }
 }
