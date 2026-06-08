@@ -23,11 +23,11 @@
         @keyup.enter="isSelected = !isSelected"
       >{{ imageset.settings.name }}
       </label>
-      <span
+      <!-- <span
         class="in-view-dot"
         :class="{ 'in-view-dot--visible': isInView }"
         title="In view"
-      ></span>
+      ></span> -->
       <font-awesome-icon
         v-hide="!hasFocus"
         class="icon-button"
@@ -41,9 +41,10 @@
         @click="handleVisibility"
       />
       <font-awesome-icon
+        v-if="false"
         v-hide="!hasFocus"
         class="icon-button"
-        icon="times"
+        icon="trash-can"
         @click="handleDelete"
       />
     </div>
@@ -64,7 +65,10 @@
           ></v-slider>
         </div>
 
-        <div v-if="!props.onlyOpacity" class="detail-row">
+        <div
+          v-if="!props.onlyOpacity"
+          class="detail-row"
+        >
           <span class="prompt">Colormap:</span><select v-model="twoWayColorMapperName">
             <option
               v-for="x in uiColorMaps"
@@ -76,7 +80,10 @@
           </select>
         </div>
 
-        <div v-if="!props.onlyOpacity" class="detail-row">
+        <div
+          v-if="!props.onlyOpacity"
+          class="detail-row"
+        >
           <span class="prompt">Stretch:</span><select v-model="twoWayScaleType">
             <option
               v-for="x in uiScaleTypes"
@@ -88,7 +95,10 @@
           </select>
         </div>
       
-        <div v-if="!props.onlyOpacity" class="detail-row">
+        <div
+          v-if="!props.onlyOpacity"
+          class="detail-row"
+        >
           <span class="prompt cutoff">Low:</span>
           <input
             v-model.lazy="twoWayVMinText"
@@ -105,7 +115,10 @@
             hide-details
           ></component>
         </div>
-        <div v-if="!props.onlyOpacity" class="detail-row">
+        <div
+          v-if="!props.onlyOpacity"
+          class="detail-row"
+        >
           <span class="prompt cutoff">High:</span>
           <input
             v-model.lazy="twoWayVMaxText"
@@ -192,6 +205,7 @@ const store = engineStore();
 const hasFocus = ref(false);
 const isSelected = ref(false);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const isInView = computed((): boolean => {
   // check if imageset center is within the view
   // assume it is a square
@@ -484,11 +498,12 @@ function handleCutoffInteract(isMax: boolean) {
 }
 
 #main-container {
-  width: calc(100% - 10px);
+  // width: calc(100% - 10px);
   padding: 5px;
   display: flex;
   align-items: center;
   gap: 2px;
+  pointer-events: auto;
 }
 
 #name-label {

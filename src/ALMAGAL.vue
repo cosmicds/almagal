@@ -33,6 +33,23 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
+            <div class="d-flex flex-row ga-4 pa-2">
+              <wwt-3d-switch>
+                <template #default="{ in3d, onClick}">
+                  <v-btn
+                    @click="onClick"
+                  >
+                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
+                  </v-btn>
+                </template>
+              </wwt-3d-switch>
+              <v-btn
+                style="pointer-events: auto;"
+                @click="showInfoSheet = true"
+              >
+                Show Info
+              </v-btn>
+            </div>
             <v-autocomplete
               v-if="almagalSourceList"
               v-model="selectedAlmagalSource"
@@ -74,34 +91,9 @@
                 log-stretch-slider
               />
             </div>
-            <div class="wwthud">
-              <ul class="pl-2">
-                <li>{{ store.raRad }}</li>
-                <li>{{ store.decRad }}</li>
-                <li>{{ store.zoomDeg }}</li>
-              </ul>
-            </div>
           </div>
           <div id="right-buttons">
-            <wwt-3d-switch>
-              <template #default="{ in3d, onClick}">
-                <v-btn
-                  variant="outlined"
-                  @click="onClick"
-                >
-                  {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
-                </v-btn>
-              </template>
-            </wwt-3d-switch>
-            <v-btn
-              style="pointer-events: auto;"
-              @click="showInfoSheet = true"
-            >
-              Show Info
-            </v-btn>
-
             <fieldset class="almagal-filterset">
-              <legend>ALMAGAL Source Filters</legend>
               <!-- mass, lum, lm, tdust, dist_ag, tbol -->
               <div
                 v-for="field in filterFields"
@@ -502,7 +494,7 @@ function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer
   return store.addImageSetLayer({
     url: url,
     mode: "fits", 
-    name: source.iid,
+    name: source.aid,
     goto: false,
   }).then(layer => {
     almagalSourceLayers.value.set(iid, layer);

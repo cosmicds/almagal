@@ -21,6 +21,7 @@ import {
   faEye,
   faEyeSlash,
   faCrosshairs,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faBookOpen);
@@ -30,6 +31,7 @@ library.add(faMapMarkerAlt);
 library.add(faEye);
 library.add(faEyeSlash);
 library.add(faCrosshairs);
+library.add(faTrashCan);
 
 /** v-hide directive taken from https://www.ryansouthgate.com/2020/01/30/vue-js-v-hide-element-whilst-keeping-occupied-space/ */
 // Extract the function out, up here, so I'm not writing it twice
