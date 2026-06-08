@@ -82,6 +82,27 @@
             >
               Show Info
             </v-btn>
+
+            <fieldset class="almagal-filterset">
+              <legend>ALMAGAL Source Filters</legend>
+              <!-- mass, lum, lm, tdust, dist_ag, tbol -->
+              <div
+                v-for="field in filterFields"
+                :key="field"
+                class="filter-slider"
+              >
+                <label>{{ field }}
+                  <RangeNumberInputs
+                    :model-value="filterSpec.get(field)!"
+                    :min="almagalColumnRanges[field].min"
+                    :max="almagalColumnRanges[field].max"
+                    :steps="1000"
+                    log
+                    @update:model-value="(val) => filterSpec.set(field, val)"
+                  />
+                </label>
+              </div>
+            </fieldset>
           </div>
         </div>
 
@@ -177,6 +198,7 @@ const webglDisabled = ref(false);
 import SplashScreen from "./components/SplashScreen.vue";
 import InformationSheet from "./components/InformationSheet.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
+import RangeNumberInputs from "./components/RangeNumberInputs.vue";
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
 import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsheetLayer";
@@ -368,7 +390,7 @@ const almagalSourceList = ref(getAlmagalSources());
 
 const hoveredSource = ref<ALMAGalSource | null>(null);
 
-const { onPointerMove, onPointerClick, ready: spreadsheetReady } = useHoverableSpreadsheetLayer(
+const { onPointerMove, onPointerClick, ready: spreadsheetReady, setFilter, applyFilter } = useHoverableSpreadsheetLayer(
   almagalSourceList.value,
   {
     name: "ALMAGAL Sources",
@@ -384,9 +406,56 @@ const { onPointerMove, onPointerClick, ready: spreadsheetReady } = useHoverableS
     },
   }
 );
-spreadsheetReady.then((layer) => {
-  console.log("Spreadsheet layer ready", layer);
+
+interface AlmaGalSourceFilterRange { max: number | null; min: number | null }
+type AlmaGalSourceFilterSpec = Map<keyof ALMAGalSource, AlmaGalSourceFilterRange>;
+
+// Numeric source fields exposed as range-filter sliders. Edit this list to
+// add or remove sliders.
+const filterFields = ["mass", "lum", "lm", "tdust", "dist_ag", "tbol"] as const;
+type FilterField = typeof filterFields[number];
+
+// Full [min, max] of each filterable column, measured from the loaded sources.
+const almagalColumnRanges = filterFields.reduce((ranges, field) => {
+  let min = Infinity;
+  let max = -Infinity;
+  for (const source of almagalSourceList.value) {
+    const value = source[field];
+    if (typeof value !== "number" || Number.isNaN(value)) continue;
+    if (value === -999) continue; // -999 is missing value
+    if (value < min) min = value;
+    if (value > max) max = value;
+  }
+  ranges[field] = { min, max };
+  return ranges;
+}, {} as Record<FilterField, { min: number; max: number }>);
+
+// Seed each filter at its column's full range, so nothing is filtered out until
+// a slider is moved.
+const filterSpec = reactive<AlmaGalSourceFilterSpec>(
+  new Map<keyof ALMAGalSource, AlmaGalSourceFilterRange>(
+    filterFields.map(field => [field, { ...almagalColumnRanges[field] }])
+  )
+);
+
+// One predicate that reads the spec live. Filters get a name-keyed row, so we
+// look columns up by field name — no header/index bookkeeping. Because it closes
+// over the reactive spec, moving a slider changes its behaviour with no re-push.
+setFilter((row) => {
+  for (const [column, range] of filterSpec) {
+    const value = +row[column];
+    if (Number.isNaN(value)) return false; // empty value or something else -> false
+    if (range.min != null && value < range.min) return false;
+    if (range.max != null && value > range.max) return false;
+  }
+  return true;
 });
+
+// applyFilter only does anything once the layer exists, so run it after ready
+// and again whenever the spec changes (e.g. a slider moves).
+spreadsheetReady.then(() => applyFilter());
+watch(filterSpec, () => applyFilter(), { deep: true });
+
 
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
 const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
@@ -820,7 +889,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   border: 1px solid rgba(255, 255, 255, 0.541);
   border-radius: 5px;
   backdrop-filter: blur(10px);
-  widtH: 100%;
+  column-rule-width: 100%;
 }
 
 .almagal-v-select {
@@ -839,5 +908,23 @@ and remember, position:absolute is still a positioned parent, so children can be
   width: fit-content;
   padding: 0.5em 1em;
   border-radius: 8px;
+}
+
+
+.almagal-filterset {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  width: fit-content;
+  pointer-events: auto;
+  padding-inline: 5px;
+  background-color: rgba(0, 0, 0, 0.364);
+  border-radius: 8px;;
+}
+
+// style the legend to be centerd
+.almagal-filterset > legend {
+  margin-inline: auto;
+  padding: 0 5px;
 }
 </style>

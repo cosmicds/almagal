@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { engineStore } from "@wwtelescope/engine-pinia";
-import { Color } from "@wwtelescope/engine";
+import { Color, SpreadSheetLayer } from "@wwtelescope/engine";
 import { MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
 
 export type MarkerType = "gaussian" | "point" | "circle";
@@ -44,6 +44,13 @@ function buildCsv(points: [number, number][]): string {
   return `ra,dec\r\n${rows}`;
 }
 
+/** A row keyed by column name, e.g. `{ ra: "1.23", dec: "4.56", mass: "750" }`. */
+type NamedRow = Record<string, string>;
+
+let originalRows: string[][] | null = null;
+let originalNamedRows: NamedRow[] | null = null;
+let originalLayer: SpreadSheetLayer | null = null;
+
 interface CoordinateJson extends Record<string, any> {
   ra: number;
   dec: number;
@@ -60,6 +67,8 @@ export function useSpreadsheetLayer(
     markerSize = 10,
     markerType = "circle",
   } = options;
+  
+  
 
   const ready = store.waitForReady().then(async () => {
     console.log(points);
@@ -96,8 +105,37 @@ export function useSpreadsheetLayer(
     l.set_plotType(MARKER_TYPE_MAP[markerType]);
     l.set_opacity(1);
     console.log("Created spreadsheet layer", l);
+    originalLayer = l;
+    const table = l.get__table();
+    originalRows = table.rows.slice(); // make a copy
+    const header = table.header;
+    originalNamedRows = originalRows.map(row => {
+      const named: NamedRow = {};
+      header.forEach((h, i) => { named[h] = row[i]; });
+      return named;
+    });
     return l;
   });
+  
+  type Filter = (row: NamedRow) => boolean;
 
-  return { ready };
+  // A single, user-customizable filter. Defaults to keeping every row; the
+  // consumer overrides it via setFilter().
+  let filter: Filter = () => true;
+  function setFilter(f: Filter) {
+    filter = f;
+  }
+
+  // Apply the current filter to the table.
+  function applyFilter() {
+    if (!originalLayer) return;
+    if (!originalRows || !originalNamedRows) return;
+    const t = originalLayer.get__table();
+    // Test against the named view, but keep the positional row the table needs.
+    t.rows = originalRows.filter((_, i) => filter(originalNamedRows![i]));
+    originalLayer.set__table(t);
+    originalLayer.dirty = true; // mark layer as dirty to trigger re-render
+  }
+
+  return { ready, applyFilter, setFilter };
 }
