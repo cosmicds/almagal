@@ -206,5 +206,13 @@ export function useSpreadsheetLayer(
     originalLayer.dirty = true; // mark layer as dirty to trigger re-render
   }
 
-  return { createLayer, applyFilter, setFilter };
+  function setVisible(visible: boolean) {
+    if (!originalLayer) return;
+    originalLayer.set_enabled(visible);
+  }
+
+  function show() { setVisible(true); }
+  function hide() { setVisible(false); }
+
+  return { createLayer, applyFilter, setFilter, show, hide, setVisible };
 }

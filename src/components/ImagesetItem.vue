@@ -16,9 +16,8 @@
       id="main-container"
     >
       <label
-        id="name-label"
         focusable="false"
-        class="ellipsize"
+        class="name-label ellipsize"
         @click="isSelected = !isSelected"
         @keyup.enter="isSelected = !isSelected"
       >{{ imageset.settings.name }}
@@ -175,6 +174,7 @@ const uiColorMaps: UiColorMaps[] = [
   { wwt: "greens", desc: "White-to-Green" },
   { wwt: "oranges", desc: "White-to-Orange" },
   { wwt: "reds", desc: "White-to-Red" },
+  { wwt: "rdbu", desc: "Red-to-Blue" },
 ];
 
 interface UiScaleTypes {
@@ -506,10 +506,11 @@ function handleCutoffInteract(isMax: boolean) {
   pointer-events: auto;
 }
 
-#name-label {
+.name-label {
   display: inline-block;
   flex: 1;
   padding-right: 10px;
+  user-select: none;
 
   &:hover {
     cursor: pointer;

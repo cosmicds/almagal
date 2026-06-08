@@ -33,7 +33,7 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
-            <div class="d-flex flex-row ga-4 pa-2">
+            <div class="d-flex flex-row flex-wrap ga-4 pa-2">
               <wwt-3d-switch>
                 <template #default="{ in3d, onClick}">
                   <v-btn
@@ -56,34 +56,15 @@
               >
                 Show all in view ({{ sourcesInViewCount }})
               </v-btn>
+              <v-btn
+                style="pointer-events: auto;"
+                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                @click="spreadsheetVisible = !spreadsheetVisible; setSpreadsheetVisible(spreadsheetVisible)"
+              >
+                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
+              </v-btn>
             </div>
-            <v-autocomplete
-              v-if="almagalSourceList"
-              v-model="selectedAlmagalSource"
-              class="almagal-v-select"
-              :items="almagalSourceList"
-              item-title="aid"
-              item-value="iid"
-              return-object
-              hide-details
-              label="ALMAGAL Source"
-              :loading="loadingAlmagalSource"
-            />
-            <div
-              v-for="layer in [...almagalSourceLayers.values()]"
-              :key="layer.id.toString()"
-              class="layer-list__item"
-            >
-              <ImagesetItem
-                v-if="store.imagesetStateForLayer(layer.id.toString())"
-                style="color: black"
-                :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                instant
-                log-stretch-slider
-                only-opacity
-              />
-            </div>
-            <!-- this is an example for if you preloaded individual files -->
+            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
             <div
               v-for="layer in almagalWtml.imagesetLayers"
               
@@ -94,9 +75,56 @@
                 style="color: black"
                 :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                 instant
-                :crange="{min: -0.001, max: 0.02}"
+                :crange="{min: -0.001, max: 1}"
                 log-stretch-slider
               />
+              <div
+                style="pointer-events: auto;"
+              >
+                <v-btn
+                  size="small"
+                  variant="outlined"
+                  class="blur-button"
+                  prepend-icon="mdi-refresh"
+                  @click="setFitsLayerSettings(layer.id.toString(), FITS_LAYER_SETTINGS_RESET)"
+                >
+                  Reset
+                </v-btn>
+              </div>
+            </div>
+            
+            <div 
+              v-if="almagalSourceLayers.size > 0 || pendingSourceIids.length > 0"
+              class="layer-list"
+            >
+              <div
+                v-for="layer in [...almagalSourceLayers.values()]"
+                :key="layer.id.toString()"
+                class="layer-list__item"
+              >
+                <ImagesetItem
+                  v-if="store.imagesetStateForLayer(layer.id.toString())"
+                  style="color: black"
+                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                  instant
+                  log-stretch-slider
+                  only-opacity
+                />
+              </div>
+              <div
+                v-for="iid in pendingSourceIids"
+                :key="iid"
+                class="layer-list__item"
+              >
+                <div class="pending-source-label">
+                  {{ getAlmagalSourceById(iid)?.aid ?? iid }}
+                </div>
+                <v-progress-linear
+                  indeterminate
+                  color="orange"
+                  height="3"
+                />
+              </div>
             </div>
           </div>
           <div id="right-buttons">
@@ -119,6 +147,49 @@
                 </label>
               </div>
             </fieldset>
+            <div class="d-flex align-center mt-1 ga-2">
+              <v-tooltip
+                v-if="!showSearch"
+                text="Search for source"
+                location="bottom"
+              >
+                <template #activator="{ props: tooltipProps }">
+                  <v-btn
+                    v-bind="tooltipProps"
+                    prepend-icon="mdi-magnify"
+                    style="pointer-events: auto;"
+                    class="blur-button"
+                    variant="outlined"
+                    @click="showSearch = true"
+                  >
+                    Search for source
+                  </v-btn>
+                </template>
+              </v-tooltip>
+              <template v-else>
+                <v-autocomplete
+                  v-if="almagalSourceList"
+                  v-model="selectedAlmagalSource"
+                  class="almagal-v-select"
+                  :items="almagalSourceList"
+                  item-title="aid"
+                  item-value="iid"
+                  return-object
+                  hide-details
+                  label="ALMAGAL Source"
+                  :loading="loadingAlmagalSource"
+                  autofocus
+                />
+                <v-btn
+                  icon="mdi-close"
+                  size="small"
+                  style="pointer-events: auto;"
+                  variant="outlined"
+                  class="blur-button"
+                  @click="showSearch = false"
+                />
+              </template>
+            </div>
           </div>
         </div>
 
@@ -153,10 +224,10 @@
       @webgl2-disabled="webglDisabled = true"
     />
     <component
-      :is="isLandscape || !smallSize ? 'v-navigation-drawer' : 'v-bottom-sheet'"
+      :is="false ? 'v-navigation-drawer' : 'v-bottom-sheet'"
       id="side-drawer"
       v-model="showInfoSheet"
-      :class="[isLandscape || !smallSize ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
+      :class="[false ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
     >
       <InformationSheet
         v-model="showInfoSheet"
@@ -273,6 +344,8 @@ const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
 
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const showInfoSheet = ref(false);
+const spreadsheetVisible = ref(true);
+const showSearch = ref(false);
 const showSplashScreen = ref(false);
 const layersLoaded = ref(false);
 const positionSet = ref(false);
@@ -296,7 +369,7 @@ function showAllSourcesInView() {
   });
 }
 
-const { onPointerMove, onPointerClick, createLayer: setupSpreadsheet, setFilter, applyFilter } = useHoverableSpreadsheetLayer(
+const { onPointerMove, onPointerClick, createLayer: setupSpreadsheet, setFilter, applyFilter, show: showSpreadsheet, hide: hideSpreadsheet, setVisible: setSpreadsheetVisible } = useHoverableSpreadsheetLayer(
   almagalSourceList.value,
   {
     name: "ALMAGAL Sources",
@@ -378,6 +451,16 @@ const DEFAULT_FITS_LAYER_SETTINGS = {
   }
 };
 
+const FITS_LAYER_SETTINGS_RESET = {
+  cmap: 'rdbu' as Colormaps,
+  opacity: 1.0,
+  stretch: {
+    stretch: ScaleTypes.linear,
+    vmin: -0.0005,
+    vmax: 0.0015,
+  }
+} as const;
+
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
 const useTiledVersion = true; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
@@ -417,7 +500,7 @@ onMounted(() => {
   
   
   store.waitForReady().then(async () => {
-    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
+    // store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 5);  // min zoom for showing the solar system.
@@ -498,6 +581,7 @@ watch(filterSpec, () => applyFilter(), { deep: true });
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
 const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
 const loadingAlmagalSource = ref(false);
+const pendingSourceIids = ref<ALMAGalSource["iid"][]>([]);
 
 /**
  * Create a fitsimage layer from an ALMAGal source id
@@ -511,6 +595,9 @@ function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer
   if (!source) {
     throw new Error(`Source with id ${iid} not found`);
   }
+  if (!pendingSourceIids.value.includes(iid)) {
+    pendingSourceIids.value.push(iid);
+  }
   const url = getAlmagalSourceUrl(source);
   console.log("Loading ALMAGAL source from url:", getAlmagalSourceById(iid), url);
   console.warn("The CORS is ok. It takes a moment to fetch via WWT Proxy");
@@ -521,6 +608,8 @@ function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer
     goto: false,
   }).then(layer => {
     almagalSourceLayers.value.set(iid, layer);
+    const idx = pendingSourceIids.value.indexOf(iid);
+    if (idx !== -1) pendingSourceIids.value.splice(idx, 1);
     return layer;
   });
 }
@@ -921,7 +1010,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   backdrop-filter: blur(6px);
 }
 
-#layer-list {
+.layer-list {
   outline: 1px solid black;
   border: 1px solid white;
   padding: 4px;
@@ -976,6 +1065,13 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 .almagal-filterset label > span {
+  font-weight: bold;
+}
+
+.pending-source-label {
+  color: white;
+  font-size: 0.85em;
+  padding: 4px 8px;
   font-weight: bold;
 }
 </style>
