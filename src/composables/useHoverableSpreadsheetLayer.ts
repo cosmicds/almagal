@@ -1,7 +1,7 @@
 import { engineStore } from "@wwtelescope/engine-pinia";
 import { distance } from "@wwtelescope/astro";
 import { useSpreadsheetLayer, type SpreadsheetLayerOptions } from "./useSpreadsheetLayer";
-
+import { ImageSetType } from "@wwtelescope/engine-types";
 const D2R = Math.PI / 180;
 
 export interface RaDecPair {
@@ -60,6 +60,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
 
   let lastResult: ReturnType<typeof findClosestRow> = null;
   function onPointerMove(event: PointerEvent) {
+    if (store.backgroundImageset?.get_dataSetType() !== ImageSetType.sky) return; // only enable for sky layers
     if (!onHover) return;
     const result = findClosestRow(event);
     if (lastResult === null && result === null) return; // both null, no change
@@ -73,6 +74,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   function onPointerUp(_event: PointerEvent) { /* i don't think we need this */ }
   
   function onPointerClick(event: PointerEvent) {
+    if (store.backgroundImageset?.get_dataSetType() !== ImageSetType.sky) return; // only enable for sky layers
     if (!options.onClick) return;
     const result = findClosestRow(event);
     if (result) {

@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { engineStore } from "@wwtelescope/engine-pinia";
 import { Color, SpreadSheetLayer } from "@wwtelescope/engine";
-import { MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
+import { AltTypes, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { RAUnits, AltUnits } from "@wwtelescope/engine-types";
 
 export type MarkerType = "gaussian" | "point" | "circle";
 
-export interface SpreadsheetLayerOptions {
-  name?: string;
-  color?: string; 
-  markerSize?: number;
-  markerType?: MarkerType;
-}
 
 const MARKER_TYPE_MAP: Record<MarkerType, PlotTypes> = {
   gaussian: PlotTypes.gaussian,
@@ -39,9 +35,32 @@ export function jsonToCsv(jsonData: any[]): string {
   return csvRows.join('\n').replace(/\n/g, "\r\n");
 }
 
-function buildCsv(points: [number, number][]): string {
-  const rows = points.map(([ra, dec]) => `${ra},${dec}`).join("\r\n");
-  return `ra,dec\r\n${rows}`;
+/**
+ * Type guard for 3-element array.
+ * To keep it short we just check the first element of the array
+ */
+function isArray3(data: any): data is [number, number, number][] {
+  return Array.isArray(data) && Array.isArray(data[0]) && data[0].length === 3 && data[0].every((x: any) => typeof x === "number");
+}
+
+function isArray2(data: any): data is [number, number][] {
+  return Array.isArray(data) && Array.isArray(data[0]) && data[0].length === 2 && data[0].every((x: any) => typeof x === "number");
+}
+
+/**
+ * Buiild a CSV string from a list of [ra, dec] or [ra, dec, distance] points. The CSV will have headers "ra,dec" or "ra,dec,dist" accordingly.
+ */
+function buildCsv(points: [number, number][] | [number, number, number][]): string {
+  if (isArray3(points)) {
+    const rows = points.map(([ra, dec, dist]) => `${ra},${dec},${dist}`).join("\r\n");
+    return `ra,dec,distance\r\n${rows}`;
+  }
+  if (isArray2(points)) {
+    const rows = points.map(([ra, dec]) => `${ra},${dec}`).join("\r\n");
+    return `ra,dec\r\n${rows}`;
+  }
+  
+  throw new Error("Invalid points format for buildCsv");
 }
 
 /** A row keyed by column name, e.g. `{ ra: "1.23", dec: "4.56", mass: "750" }`. */
@@ -55,6 +74,34 @@ interface CoordinateJson extends Record<string, any> {
   ra: number;
   dec: number;
 }
+
+function isCoordinateJsonArray(data: any): data is CoordinateJson[] {
+  return Array.isArray(data) && data.length > 0 && "ra" in data[0] && "dec" in data[0];
+}
+
+export interface SpreadsheetLayerOptions {
+  name?: string;
+  color?: string; 
+  markerSize?: number;
+  markerType?: MarkerType;
+  distanceColumn?: string | null; // column name for distance
+  distanceUnit?: AltUnits ;
+  raUnit?: RAUnits;
+}
+/**
+ * RA in hours by default
+ * 
+ * [Optional] Distance in parsecs by default. The default distance column is "dist"
+ * 
+ * The options are
+ *   - `name`: the name of layer. Default: "spreadsheet-layer"
+ *   - `color`: the color of the markers. Default: "#ffffff"
+ *   - `markerSize`: the size of the markers. Default: 10
+ *   - `markerType`: "gaussian" | "point" | "circle". Default: "circle"
+ *   - `distanceColumn`: Optional name of the distance column. Default: "dist". 
+ *   - `distanceUnit`: Default: AltUnits.parsecs. 
+ *   - `raUnit`: Default: RAUnits.hours
+ */
 export function useSpreadsheetLayer(
   points: [number, number][] | CoordinateJson[],
   options: SpreadsheetLayerOptions = {}
@@ -66,6 +113,9 @@ export function useSpreadsheetLayer(
     color = "#ffffff",
     markerSize = 10,
     markerType = "circle",
+    distanceColumn = 'dist',
+    distanceUnit = AltUnits.parsecs,
+    raUnit = RAUnits.hours,
   } = options;
   
   
@@ -77,18 +127,30 @@ export function useSpreadsheetLayer(
       return;
     }
     let dataCsv: string | undefined;
-    let latCol = 1;
-    let lonCol = 0;
-    if (Array.isArray(points) && Array.isArray(points[0]) && points[0].length === 2) {
-      dataCsv = buildCsv(points as [number, number][]);
-    } else if (Array.isArray(points) && "ra" in points[0] && "dec" in points[0]) {
-      dataCsv = jsonToCsv(points as CoordinateJson[]);
+    let lonCol = 0; // RA
+    let latCol = 1; // Dec
+    let distCol = 2; // Distance, if present
+    
+    if (isArray2(points) || isArray3(points)) {
+      dataCsv = buildCsv(points);
+    }  
+    
+    if (isCoordinateJsonArray(points)) {
+      dataCsv = jsonToCsv(points);
       // get the first row to determine which columns are ra/dec
-      const firstRow = dataCsv.split("\r\n")[0].split(",");
-      latCol = firstRow.findIndex(h => h.toLowerCase() === "dec");
-      lonCol = firstRow.findIndex(h => h.toLowerCase() === "ra");
-    } else {
-      throw new Error("Invalid points format for useSpreadsheetLayer");
+      const headerRow = dataCsv.split("\r\n")[0].split(",");
+      latCol = headerRow.findIndex(h => h.toLowerCase() === "dec");
+      lonCol = headerRow.findIndex(h => h.toLowerCase() === "ra");
+      if (distanceColumn !== null) {
+        distCol = headerRow.findIndex(h => h.toLowerCase() === distanceColumn.toLowerCase());
+        if (distCol === -1) {
+          console.warn(`Distance column "${distanceColumn}" not found in data; ignoring distance`);
+        }
+      }
+    }
+    
+    if (!dataCsv) {
+      throw new Error("Point data is not in a recognized format. Must be either [ra: number, dec: number][] or [ra: number, dec: number, distance: number][] or { ra: number, dec: number, dist?: number, ... }[]");
     }
     
     const l = await store.createTableLayer(
@@ -98,7 +160,15 @@ export function useSpreadsheetLayer(
         dataCsv 
       });
     l.set_lngColumn(lonCol);
+    l.set_raUnits(raUnit);
     l.set_latColumn(latCol);
+    // setup distance column if included
+    if (distanceColumn && distCol !== -1) {
+      l.set_altColumn(distCol);
+      l.set_altType(AltTypes.distance);
+      l.set_altUnit(distanceUnit);
+      l.set_showFarSide(true);
+    }
     l.set_markerScale(MarkerScales.screen);
     l.set_color(Color.fromHex(color));
     l.set_scaleFactor(markerSize);

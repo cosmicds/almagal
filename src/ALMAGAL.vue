@@ -29,7 +29,7 @@
       <div
         v-show="!(showSplashScreen)"
         id="wwt-overlay"
-      >
+      > 
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
@@ -74,8 +74,25 @@
                 log-stretch-slider
               />
             </div>
+            <div class="wwthud">
+              <ul class="pl-2">
+                <li>{{ store.raRad }}</li>
+                <li>{{ store.decRad }}</li>
+                <li>{{ store.zoomDeg }}</li>
+              </ul>
+            </div>
           </div>
           <div id="right-buttons">
+            <wwt-3d-switch>
+              <template #default="{ in3d, onClick}">
+                <v-btn
+                  variant="outlined"
+                  @click="onClick"
+                >
+                  {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
+                </v-btn>
+              </template>
+            </wwt-3d-switch>
             <v-btn
               style="pointer-events: auto;"
               @click="showInfoSheet = true"
@@ -199,6 +216,8 @@ import SplashScreen from "./components/SplashScreen.vue";
 import InformationSheet from "./components/InformationSheet.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
 import RangeNumberInputs from "./components/RangeNumberInputs.vue";
+import Wwt3dSwitch from "./components/Wwt3dSwitch.vue";
+
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
 import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsheetLayer";
@@ -371,10 +390,13 @@ onMounted(() => {
     return;
   }
   
+  console.log(WWTControl.singleton);
+  
   store.waitForReady().then(async () => {
     store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
+    WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 5);  // min zoom for showing the solar system.
     
     almagalWtml!.ready.then(() => {
       layersLoaded.value = true;
@@ -397,6 +419,7 @@ const { onPointerMove, onPointerClick, ready: spreadsheetReady, setFilter, apply
     color: "#32CD32",
     markerSize: 5,
     markerType: "point",
+    distanceColumn: "dist_ag",
     onHover: (row, index) => { 
       hoveredSource.value = row as ALMAGalSource | null; 
       console.log("hovered source:", hoveredSource.value, row, index);
