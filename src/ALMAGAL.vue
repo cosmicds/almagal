@@ -180,7 +180,7 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ref, reactive, computed, onMounted, watch, nextTick, UnwrapNestedRefs } from "vue";
+import { ref, reactive, computed, onMounted, watch, shallowRef } from "vue";
 import { useDisplay } from "vuetify";
 
 /* WWT imports */
@@ -223,6 +223,7 @@ import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsh
 import { useSourcesInView } from "./composables/useSourcesInView";
 
 import { 
+  almagalSources,
   getAlmagalSources, 
   getAlmagalSourceById, 
   getAlmagalSourceUrl,
@@ -278,6 +279,39 @@ const positionSet = ref(false);
 const accentColor = ref("#306C9F");
 const accentColor2 = ref("#FC9954");
 
+/* Get the source list first */
+const almagalSourceList = shallowRef(almagalSources);
+const hoveredSource = ref<ALMAGalSource | null>(null);
+const MAX_ITEMS_TO_SHOW = 4;
+const { sourcesInView, count: sourcesInViewCount, setup: setupSourcesInView } = useSourcesInView(almagalSourceList.value);
+const showAllInView = computed(() => sourcesInViewCount.value > 0 && sourcesInViewCount.value <= MAX_ITEMS_TO_SHOW);
+
+function showAllSourcesInView() {
+  sourcesInView.value.forEach(source => {
+    loadingAlmagalSource.value = true;
+    loadAlmaGalFitsSource(source.iid).then(layer => {
+      setFitsLayerSettings(layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
+      loadingAlmagalSource.value = false;
+    });
+  });
+}
+
+const { onPointerMove, onPointerClick, createLayer: setupSpreadsheet, setFilter, applyFilter } = useHoverableSpreadsheetLayer(
+  almagalSourceList.value,
+  {
+    name: "ALMAGAL Sources",
+    color: "#32CD32",
+    markerSize: 5,
+    markerType: "point",
+    distanceColumn: "dist_ag",
+    onHover: (row, index) => { 
+      hoveredSource.value = row as ALMAGalSource | null; 
+    },
+    onClick: (row) => { 
+      selectedAlmagalSource.value = row as ALMAGalSource;
+    },
+  }
+);
 
 
 
@@ -302,17 +336,10 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
 // const glimpse = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
 
 // newer GLIMPSE 360 - lower resolution
-const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
-glimpse.ready.then(() => {
-  // glimpse.hide();
-  return; // no empty functions
-});
+const glimpse = useWtmlLoader('./GLIMPSE_360.wtml', {autoload: false});
 
 // a few other layers, but keep hidden
-const herschelPacs = useWtmlLoader('./Herschel_Color.wtml');
-herschelPacs.ready.then(() => {
-  herschelPacs.hide();
-});
+const herschelPacs = useWtmlLoader('./Herschel_Color.wtml', {autoload: false});
 
 function setFitsLayerSettings(guid: string, options: {cmap?: Colormaps, opacity?: number, stretch?: {stretch: ScaleTypes, vmin: number, vmax:number}} = {}) {
   if (options.cmap) {
@@ -359,7 +386,7 @@ const url = 'https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/ma
 const almagalWtmlState = ref<ImageSetLayerState | null>(null);
 // Load the WTML. This goes down to level 12
 const almagalWtml = reactive(useWtmlLoader(url, { 
-  autoload: true, 
+  autoload: false, 
   onLoad: (out, index) => {
     // out contains: folder, place, imageset, layer. 
     console.log(`Loaded place ${out.place.get_name()} at index ${index}`);
@@ -374,8 +401,6 @@ const almagalWtml = reactive(useWtmlLoader(url, {
   useFits: !useTiledVersion ,
 })
 );
-/* we could destructure this and have access to the individual properties */
-// const { ready, places, imagesetLayer, show, hide} = almagalToastedImages;
 
 onMounted(() => {
   // boiler plate to disable WWT and let warning be 
@@ -390,7 +415,6 @@ onMounted(() => {
     return;
   }
   
-  console.log(WWTControl.singleton);
   
   store.waitForReady().then(async () => {
     store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
@@ -398,53 +422,33 @@ onMounted(() => {
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 5);  // min zoom for showing the solar system.
     
-    almagalWtml!.ready.then(() => {
-      layersLoaded.value = true;
-      positionSet.value = true;
+    // wait for spreadhseet to load
+    await setupSpreadsheet();
+    applyFilter();
+    
+    // wait for glimpse backgrund to load
+    glimpse.load();
+    await glimpse.ready;
+    
+    // 
+    herschelPacs.load();
+    herschelPacs.ready.then(() => {
+      herschelPacs.hide();
     });
-    // layersLoaded.value = true;
-    // positionSet.value = true;
+      
+    // wait for almagal toasted wtml to load
+    almagalWtml.load();
+    await almagalWtml.ready;
+
+    setupSourcesInView();
+    
+    // after that, we are ready to load
+    layersLoaded.value = true;
+    positionSet.value = true;
   });
 });
 
 
-const almagalSourceList = ref(getAlmagalSources());
-
-const hoveredSource = ref<ALMAGalSource | null>(null);
-
-// If this many sources (or fewer) are in view, offer a button to show them all
-// instead of making the user click each point.
-const MAX_ITEMS_TO_SHOW = 10;
-const { sourcesInView, count: sourcesInViewCount } = useSourcesInView(almagalSourceList.value);
-const showAllInView = computed(() => sourcesInViewCount.value > 0 && sourcesInViewCount.value <= MAX_ITEMS_TO_SHOW);
-
-function showAllSourcesInView() {
-  sourcesInView.value.forEach(source => {
-    loadingAlmagalSource.value = true;
-    loadAlmaGalFitsSource(source.iid).then(layer => {
-      setFitsLayerSettings(layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
-      loadingAlmagalSource.value = false;
-    });
-  });
-}
-
-const { onPointerMove, onPointerClick, ready: spreadsheetReady, setFilter, applyFilter } = useHoverableSpreadsheetLayer(
-  almagalSourceList.value,
-  {
-    name: "ALMAGAL Sources",
-    color: "#32CD32",
-    markerSize: 5,
-    markerType: "point",
-    distanceColumn: "dist_ag",
-    onHover: (row, index) => { 
-      hoveredSource.value = row as ALMAGalSource | null; 
-      console.log("hovered source:", hoveredSource.value, row, index);
-    },
-    onClick: (row) => { 
-      selectedAlmagalSource.value = row as ALMAGalSource;
-    },
-  }
-);
 
 interface AlmaGalSourceFilterRange { max: number | null; min: number | null }
 type AlmaGalSourceFilterSpec = Map<keyof ALMAGalSource, AlmaGalSourceFilterRange>;
@@ -469,17 +473,14 @@ const almagalColumnRanges = filterFields.reduce((ranges, field) => {
   return ranges;
 }, {} as Record<FilterField, { min: number; max: number }>);
 
-// Seed each filter at its column's full range, so nothing is filtered out until
-// a slider is moved.
+// Seed each filter at its column's full range, so nothing is filtered out until a slider is moved.
 const filterSpec = reactive<AlmaGalSourceFilterSpec>(
   new Map<keyof ALMAGalSource, AlmaGalSourceFilterRange>(
     filterFields.map(field => [field, { ...almagalColumnRanges[field] }])
   )
 );
 
-// One predicate that reads the spec live. Filters get a name-keyed row, so we
-// look columns up by field name — no header/index bookkeeping. Because it closes
-// over the reactive spec, moving a slider changes its behaviour with no re-push.
+// the filter function closes over a reactive, so this function changes as the filter spec changes. 
 setFilter((row) => {
   for (const [column, range] of filterSpec) {
     const value = +row[column];
@@ -490,9 +491,7 @@ setFilter((row) => {
   return true;
 });
 
-// applyFilter only does anything once the layer exists, so run it after ready
-// and again whenever the spec changes (e.g. a slider moves).
-spreadsheetReady.then(() => applyFilter());
+//Re-apply filter whenever the spec changes. does nothing if layer doesn't exist
 watch(filterSpec, () => applyFilter(), { deep: true });
 
 

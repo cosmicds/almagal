@@ -178,7 +178,7 @@ export function useWtmlLoader(wtmlUrl: string, _options?: WtmlLoaderOptions): Pr
 
       const layerPromises = places.value.map(async (child: Place, _index: number) => {
         const imageset = child.get_backgroundImageset() ?? child.get_studyImageset();
-        console.log(imageset);
+
         if (imageset == null) {
           console.warn(`No imageset found for place with name ${child.get_name()} at index ${_index}`);
           return;
@@ -231,7 +231,7 @@ export function useWtmlLoader(wtmlUrl: string, _options?: WtmlLoaderOptions): Pr
               //   rollRad: 0,
               // });
               const ctl = WWTControl.singleton;
-              const rc = ctl.renderContext;
+              // const rc = ctl.renderContext;
               const ra = child.get_RA() * 15;
               const dec = child.get_dec();
               // @ts-expect-error _guessZoomSetting exists
@@ -247,26 +247,26 @@ export function useWtmlLoader(wtmlUrl: string, _options?: WtmlLoaderOptions): Pr
               await new Promise(requestAnimationFrame);
               ctl.renderOneFrame();
 
-              const pt = store.findScreenPointForRADec({ ra, dec });
-              const center = store.findRADecForScreenPoint({
-                x: rc.width / 2,
-                y: rc.height / 2,
-              });
+              // const pt = store.findScreenPointForRADec({ ra, dec });
+              // const center = store.findRADecForScreenPoint({
+              //   x: rc.width / 2,
+              //   y: rc.height / 2,
+              // });
 
-              console.log({
-                target: { ra, dec },
-                screenPoint: pt,
-                canvasCenter: { x: rc.width / 2, y: rc.height / 2 },
-                centerRaDec: center,
-                camera: {
-                  ra: rc.viewCamera.get_RA() * 15,
-                  dec: rc.viewCamera.get_dec(),
-                  alt: rc.alt,
-                  az: rc.az,
-                  targetAlt: rc.targetAlt,
-                  targetAz: rc.targetAz,
-                },
-              });
+              // console.log({
+              //   target: { ra, dec },
+              //   screenPoint: pt,
+              //   canvasCenter: { x: rc.width / 2, y: rc.height / 2 },
+              //   centerRaDec: center,
+              //   camera: {
+              //     ra: rc.viewCamera.get_RA() * 15,
+              //     dec: rc.viewCamera.get_dec(),
+              //     alt: rc.alt,
+              //     az: rc.az,
+              //     targetAlt: rc.targetAlt,
+              //     targetAz: rc.targetAz,
+              //   },
+              // });
             }
           }
           

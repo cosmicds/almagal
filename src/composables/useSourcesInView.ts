@@ -42,7 +42,6 @@ export function useSourcesInView<T extends RaDecPair>(
     }
     const w = ctl.renderContext.width;
     const h = ctl.renderContext.height;
-    console.debug("Recomputing sources in view for viewport", { w, h });
 
     const corners = [
       store.findRADecForScreenPoint({ x: 0, y: 0 }), // TL
@@ -65,13 +64,18 @@ export function useSourcesInView<T extends RaDecPair>(
     );
   }
 
-  watchThrottled(
-    () => [store.raRad, store.decRad, store.zoomDeg, store.rollRad],
-    recompute,
-    { throttle, trailing: true, immediate: true }
-  );
+  let setupOnlyOnce = false;
+  function setup() {
+    if (setupOnlyOnce) return;
+    setupOnlyOnce = true;
+    watchThrottled(
+      () => [store.raRad, store.decRad, store.zoomDeg, store.rollRad],
+      recompute,
+      { throttle, trailing: true, immediate: true }
+    );
+  }
 
   const count = computed(() => sourcesInView.value.length);
 
-  return { sourcesInView, count, recompute };
+  return { sourcesInView, count, recompute, setup };
 }

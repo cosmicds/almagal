@@ -78,7 +78,6 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     if (!options.onClick) return;
     const result = findClosestRow(event);
     if (result) {
-      console.log("Clicked row:", result.row, "at index:", result.index);
       options.onClick(result.row ?? null, result.index ?? -1);
     }
   }

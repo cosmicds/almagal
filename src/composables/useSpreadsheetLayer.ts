@@ -120,8 +120,7 @@ export function useSpreadsheetLayer(
   
   
 
-  const ready = store.waitForReady().then(async () => {
-    console.log(points);
+  async function createLayer() {
     if (points.length === 0) {
       console.warn("No points provided to useSpreadsheetLayer");
       return;
@@ -185,8 +184,8 @@ export function useSpreadsheetLayer(
       return named;
     });
     return l;
-  });
-  
+  }
+
   type Filter = (row: NamedRow) => boolean;
 
   // A single, user-customizable filter. Defaults to keeping every row; the
@@ -207,5 +206,5 @@ export function useSpreadsheetLayer(
     originalLayer.dirty = true; // mark layer as dirty to trigger re-render
   }
 
-  return { ready, applyFilter, setFilter };
+  return { createLayer, applyFilter, setFilter };
 }
