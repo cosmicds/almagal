@@ -117,6 +117,14 @@ onMounted(() => {
 
 .rni-numbers > input {
   width: min-content;
+  outline: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.rni-numbers > input::hover {
+  
 }
 .rni-numbers > input:last-child {
   text-align: right;
@@ -127,11 +135,16 @@ onMounted(() => {
 }
 
 .rni-drs {
-  padding: 1em 0;
+  padding-top: 0.75em;
+  padding-bottom: 0.5em;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 double-range-slider {
   --dri-track-color: #ccc;
-  --dri-track-filled-color: #fafafa;
+  --dri-track-filled-color: #f72d9c;
+  --dri-thumb-width: 14px;
+  --dri-thumb-height: 14px;
 }
 </style>

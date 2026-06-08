@@ -108,7 +108,7 @@
                 :key="field"
                 class="filter-slider"
               >
-                <label>{{ field }}
+                <label><span>{{ field }}</span>
                   <RangeNumberInputs
                     :model-value="filterSpec.get(field)!"
                     :min="almagalColumnRanges[field].min"
@@ -937,17 +937,24 @@ and remember, position:absolute is still a positioned parent, so children can be
 .almagal-filterset {
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: 0.5em;
   width: fit-content;
   pointer-events: auto;
   padding-inline: 5px;
   background-color: rgba(0, 0, 0, 0.364);
-  border-radius: 8px;;
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  font-size: 0.9em;
+  padding-bottom: 1em;
 }
 
 // style the legend to be centerd
 .almagal-filterset > legend {
   margin-inline: auto;
   padding: 0 5px;
+}
+
+.almagal-filterset label > span {
+  font-weight: bold;
 }
 </style>
