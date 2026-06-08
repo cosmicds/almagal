@@ -49,6 +49,13 @@
               >
                 Show Info
               </v-btn>
+              <v-btn
+                v-if="showAllInView"
+                style="pointer-events: auto;"
+                @click="showAllSourcesInView"
+              >
+                Show all in view ({{ sourcesInViewCount }})
+              </v-btn>
             </div>
             <v-autocomplete
               v-if="almagalSourceList"
@@ -213,6 +220,7 @@ import Wwt3dSwitch from "./components/Wwt3dSwitch.vue";
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
 import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsheetLayer";
+import { useSourcesInView } from "./composables/useSourcesInView";
 
 import { 
   getAlmagalSources, 
@@ -404,6 +412,22 @@ const almagalSourceList = ref(getAlmagalSources());
 
 const hoveredSource = ref<ALMAGalSource | null>(null);
 
+// If this many sources (or fewer) are in view, offer a button to show them all
+// instead of making the user click each point.
+const MAX_ITEMS_TO_SHOW = 10;
+const { sourcesInView, count: sourcesInViewCount } = useSourcesInView(almagalSourceList.value);
+const showAllInView = computed(() => sourcesInViewCount.value > 0 && sourcesInViewCount.value <= MAX_ITEMS_TO_SHOW);
+
+function showAllSourcesInView() {
+  sourcesInView.value.forEach(source => {
+    loadingAlmagalSource.value = true;
+    loadAlmaGalFitsSource(source.iid).then(layer => {
+      setFitsLayerSettings(layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
+      loadingAlmagalSource.value = false;
+    });
+  });
+}
+
 const { onPointerMove, onPointerClick, ready: spreadsheetReady, setFilter, applyFilter } = useHoverableSpreadsheetLayer(
   almagalSourceList.value,
   {
@@ -573,6 +597,12 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.scaleType : null, (n
 watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.colorMapperName : null, (newCmap, oldCmap) => {  
   if (newCmap && newCmap !== oldCmap) {
     DEFAULT_FITS_LAYER_SETTINGS.cmap = newCmap as Colormaps;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : null, (newOp, oldOp) => {  
+  if (newOp && newOp !== oldOp) {
+    DEFAULT_FITS_LAYER_SETTINGS.opacity = newOp;
     updateImagesetLayerDisplaySettings();
   }
 });
