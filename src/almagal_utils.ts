@@ -92,6 +92,8 @@ export function getAlmagalSources(): ALMAGalSource[] {
   return _almagalSources as unknown as ALMAGalSource[];
 }
 
+export const almagalSources = getAlmagalSources();
+
 export function getAlmagalSourceById(iid: string): ALMAGalSource | undefined {
   return getAlmagalSources().find(source => source.iid === iid);
 }

@@ -1,17 +1,3 @@
-
-export const COLORMAPS = [
-  'viridis',
-  'plasma',
-  'inferno',
-  'magma',
-  'cividis',
-  'greys',
-  'gray',
-  'purples',
-  'blues',
-  'greens',
-  'oranges',
-  'reds',
-  'rdylbu'
-] as const;
-export type Colormaps =  typeof COLORMAPS[number];
+export type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};

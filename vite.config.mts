@@ -17,7 +17,7 @@ export default defineConfig({
       template: {
         transformAssetUrls,
         compilerOptions: {
-          isCustomElement: (tag) => ["model-viewer"].includes(tag)
+          isCustomElement: (tag) => ["model-viewer", "double-range-slider"].includes(tag)
         }
       },
     }),

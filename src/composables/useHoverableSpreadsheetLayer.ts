@@ -1,7 +1,8 @@
 import { engineStore } from "@wwtelescope/engine-pinia";
 import { distance } from "@wwtelescope/astro";
 import { useSpreadsheetLayer, type SpreadsheetLayerOptions } from "./useSpreadsheetLayer";
-
+import { ImageSetType } from "@wwtelescope/engine-types";
+import { Prettify } from "@/types";
 const D2R = Math.PI / 180;
 
 export interface RaDecPair {
@@ -17,13 +18,15 @@ export interface HoverableSpreadsheetLayerOptions<T extends RaDecPair> extends S
 
 export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   rows: T[],
-  options: HoverableSpreadsheetLayerOptions<T> = {}
+  options: Prettify<HoverableSpreadsheetLayerOptions<T>> = {}
 ) {
   const store = engineStore();
   const { pixelThreshold = 20, onHover, ...spreadsheetOptions } = options;
 
   // ra in hours for the WWT layer column
-  const points = rows.map(r => [r.ra / 15, r.dec] as [number, number]);
+  // const points = rows.map(r => [r.ra / 15, r.dec] as [number, number]);
+  // convert row to have ra in hours
+  const points = rows.map(r => ({ ...r, ra: r.ra / 15 }));
   const spreadsheet = useSpreadsheetLayer(points, spreadsheetOptions); // create the underlying spreadsheet layer
 
   // add mouse/pointer trackings (like green-comet, brute force)
@@ -56,13 +59,15 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     return pixelDist < pixelThreshold ? { row: closest, index: closestIndex } : null;
   }
 
-  
+  let lastResult: ReturnType<typeof findClosestRow> = null;
   function onPointerMove(event: PointerEvent) {
+    if (store.backgroundImageset?.get_dataSetType() !== ImageSetType.sky) return; // only enable for sky layers
     if (!onHover) return;
     const result = findClosestRow(event);
-    if (result) {
-      onHover(result.row ?? null, result.index ?? -1);
-    }
+    if (lastResult === null && result === null) return; // both null, no change
+    if (result && lastResult?.index === result.index) return; // same row, no change
+    onHover(result?.row ?? null, result?.index ?? -1);
+    lastResult = result;
   }
 
   function onPointerDown(_event: PointerEvent) { /* i don't think we need this */ }
@@ -70,10 +75,10 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   function onPointerUp(_event: PointerEvent) { /* i don't think we need this */ }
   
   function onPointerClick(event: PointerEvent) {
+    if (store.backgroundImageset?.get_dataSetType() !== ImageSetType.sky) return; // only enable for sky layers
     if (!options.onClick) return;
     const result = findClosestRow(event);
     if (result) {
-      console.log("Clicked row:", result.row, "at index:", result.index);
       options.onClick(result.row ?? null, result.index ?? -1);
     }
   }

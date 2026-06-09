@@ -3,6 +3,8 @@ import { createApp, type DirectiveBinding, type Plugin } from "vue";
 import { FundingAcknowledgement, IconButton, CreditLogos } from "@cosmicds/vue-toolkit";
 import ALMAGAL from "./ALMAGAL.vue";
 import Loader from "./components/Loader.vue";
+import VLogSlider from "./components/VLogSlider.vue";
+import { VSlider } from "vuetify/components/VSlider";
 
 import vuetify from "./plugins/vuetify";
 
@@ -19,6 +21,7 @@ import {
   faEye,
   faEyeSlash,
   faCrosshairs,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(faBookOpen);
@@ -28,6 +31,7 @@ library.add(faMapMarkerAlt);
 library.add(faEye);
 library.add(faEyeSlash);
 library.add(faCrosshairs);
+library.add(faTrashCan);
 
 /** v-hide directive taken from https://www.ryansouthgate.com/2020/01/30/vue-js-v-hide-element-whilst-keeping-occupied-space/ */
 // Extract the function out, up here, so I'm not writing it twice
@@ -64,6 +68,8 @@ createApp(ALMAGAL, {
   .component('funding-acknowledgement', FundingAcknowledgement)
   .component('credit-logos', CreditLogos)
   .component('wwt-loader', Loader)
+  .component('v-log-slider', VLogSlider)
+  .component('v-slider', VSlider) 
 
   // Mount
   .mount("#app-mount");

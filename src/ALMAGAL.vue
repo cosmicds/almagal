@@ -10,8 +10,8 @@
       <WorldWideTelescope
         ref="wwt-container"
         :wwt-namespace="wwtNamespace"
-        @pointermove="onPointerMove"
-        @click="onPointerClick"
+        @pointermove="almagalSpreadsheetLayer.onPointerMove"
+        @click="almagalSpreadsheetLayer.onPointerClick"
       ></WorldWideTelescope>
       <wwt-loader v-model="isLoading" />
 
@@ -29,61 +29,178 @@
       <div
         v-show="!(showSplashScreen)"
         id="wwt-overlay"
-      >
+      > 
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
-            <v-autocomplete
-              v-if="almagalSourceList"
-              v-model="selectedAlmagalSource"
-              class="almagal-v-select"
-              :items="almagalSourceList"
-              item-title="aid"
-              item-value="iid"
-              return-object
+            <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
+              <wwt-3d-switch>
+                <template #default="{ in3d, onClick}">
+                  <v-btn
+                    @click="onClick"
+                  >
+                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
+                  </v-btn>
+                </template>
+              </wwt-3d-switch>
+              <v-btn
+                style="pointer-events: auto;"
+                @click="showInfoSheet = true"
+              >
+                Show Info
+              </v-btn>
+              <v-btn
+                v-if="showAllInView"
+                style="pointer-events: auto;"
+                @click="showAllSourcesInView"
+              >
+                Show all in view ({{ sourcesInView.count }})
+              </v-btn>
+              <v-btn
+                style="pointer-events: auto;"
+                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                @click="spreadsheetVisible = !spreadsheetVisible"
+              >
+                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
+              </v-btn>
+            </div>
+            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
+            <v-select
+              v-model="foregroundImage"
+              :items="foregroundImageOptions"
+              item-title="label"
+              item-value="value"
               hide-details
-              label="ALMAGAL Source"
-              :loading="loadingAlmagalSource"
+              density="compact"
+              style="pointer-events: auto; max-width: 220px;"
+              class="blur-button"
+              label="Background survey"
             />
             <div
-              v-for="layer in [...almagalSourceLayers.values()]"
+              v-for="layer in almagalWtml.imagesetLayers"
+              
               :key="layer.id.toString()"
-              class="layer-list__item"
+              class="layer-list__item elevation-2 my-2"
             >
               <ImagesetItem
-                v-if="store.imagesetStateForLayer(layer.id.toString())"
                 style="color: black"
                 :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                 instant
+                :crange="{min: -0.001, max: 1}"
+                log-stretch-slider
               />
-            </div>
-            <!-- this is an example for if you preloaded individual files -->
-            <!-- <div
-              v-if="ready && almagalSources && almagalSources.imagesetLayers?.length > 0"
-              id="layer-list"
-            > 
-              <h3> Preloaded FITS layers</h3>
               <div
-                v-for="layer in almagalSources.imagesetLayers"
-                
+                style="pointer-events: auto;"
+              >
+                <v-btn
+                  size="small"
+                  variant="outlined"
+                  class="blur-button"
+                  prepend-icon="mdi-refresh"
+                  @click="setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
+                >
+                  Reset
+                </v-btn>
+              </div>
+            </div>
+            
+            <div 
+              v-if="almagalSourceLayers.size > 0 || pendingSourceIids.length > 0"
+              class="layer-list"
+            >
+              <div
+                v-for="layer in [...almagalSourceLayers.values()]"
                 :key="layer.id.toString()"
-                class="layer-list__item elevation-2 my-2"
+                class="layer-list__item"
               >
                 <ImagesetItem
+                  v-if="store.imagesetStateForLayer(layer.id.toString())"
                   style="color: black"
                   :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                   instant
+                  log-stretch-slider
+                  only-opacity
                 />
               </div>
-            </div> -->
+              <div
+                v-for="iid in pendingSourceIids"
+                :key="iid"
+                class="layer-list__item"
+              >
+                <div class="pending-source-label">
+                  {{ getAlmagalSourceById(iid)?.aid ?? iid }}
+                </div>
+                <v-progress-linear
+                  indeterminate
+                  color="orange"
+                  height="3"
+                />
+              </div>
+            </div>
           </div>
           <div id="right-buttons">
-            <v-btn
-              style="pointer-events: auto;"
-              @click="showInfoSheet = true"
-            >
-              Show Info
-            </v-btn>
+            <fieldset class="almagal-filterset">
+              <!-- mass, lum, lm, tdust, dist_ag, tbol -->
+              <div
+                v-for="field in filterFields"
+                :key="field"
+                class="filter-slider"
+              >
+                <label><span>{{ field }}</span>
+                  <RangeNumberInputs
+                    :model-value="filterSpec.get(field)!"
+                    :min="almagalColumnRanges[field].min"
+                    :max="almagalColumnRanges[field].max"
+                    :steps="1000"
+                    log
+                    @update:model-value="(val) => filterSpec.set(field, val)"
+                  />
+                </label>
+              </div>
+            </fieldset>
+            <div class="d-flex align-center mt-1 ga-2">
+              <v-tooltip
+                v-if="!showSearch"
+                text="Search for source"
+                location="bottom"
+              >
+                <template #activator="{ props: tooltipProps }">
+                  <v-btn
+                    v-bind="tooltipProps"
+                    prepend-icon="mdi-magnify"
+                    style="pointer-events: auto;"
+                    class="blur-button"
+                    variant="outlined"
+                    @click="showSearch = true"
+                  >
+                    Search for source
+                  </v-btn>
+                </template>
+              </v-tooltip>
+              <template v-else>
+                <v-autocomplete
+                  v-if="almagalSourceList"
+                  v-model="selectedAlmagalSource"
+                  class="almagal-v-select"
+                  :items="almagalSourceList"
+                  item-title="aid"
+                  item-value="iid"
+                  return-object
+                  hide-details
+                  label="ALMAGAL Source"
+                  :loading="pendingSourceIids.length > 0"
+                  autofocus
+                />
+                <v-btn
+                  icon="mdi-close"
+                  size="small"
+                  style="pointer-events: auto;"
+                  variant="outlined"
+                  class="blur-button"
+                  @click="showSearch = false"
+                />
+              </template>
+            </div>
           </div>
         </div>
 
@@ -91,10 +208,8 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
-          <div v-if="hoveredSource">
-            <AlmaGalSourceInfoDisplay
-              :source="hoveredSource"
-            />
+          <div class="hovered-source-info">
+            Currently hovering: {{ hoveredSource ? hoveredSource.aid : "none" }}
           </div>
           <div
             id="body-logos"
@@ -120,10 +235,10 @@
       @webgl2-disabled="webglDisabled = true"
     />
     <component
-      :is="isLandscape || !smallSize ? 'v-navigation-drawer' : 'v-bottom-sheet'"
+      :is="false ? 'v-navigation-drawer' : 'v-bottom-sheet'"
       id="side-drawer"
       v-model="showInfoSheet"
-      :class="[isLandscape || !smallSize ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
+      :class="[false ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
     >
       <InformationSheet
         v-model="showInfoSheet"
@@ -147,11 +262,11 @@
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ref, reactive, computed, onMounted, watch, nextTick, UnwrapNestedRefs } from "vue";
+import { ref, reactive, computed, onMounted, watch, shallowRef } from "vue";
 import { useDisplay } from "vuetify";
 
 /* WWT imports */
-import { GotoRADecZoomParams, engineStore } from "@wwtelescope/engine-pinia";
+import { GotoRADecZoomParams, engineStore, ImageSetLayerState } from "@wwtelescope/engine-pinia";
 import { 
   BackgroundImageset, 
   skyBackgroundImagesets, 
@@ -170,8 +285,8 @@ import {
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
 import { ScaleTypes } from "@wwtelescope/engine-types";
-import { COLORMAPS, type Colormaps } from "./types";
-
+import { addCustomColormaps, COLORMAPS, type Colormaps  } from "./wwt-colormaps/colormaps";
+addCustomColormaps();
 
 /* local components and composables */
 import WebGlTest from "./components/WebGlTest.vue";
@@ -181,12 +296,17 @@ const webglDisabled = ref(false);
 import SplashScreen from "./components/SplashScreen.vue";
 import InformationSheet from "./components/InformationSheet.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
+import RangeNumberInputs from "./components/RangeNumberInputs.vue";
+import Wwt3dSwitch from "./components/Wwt3dSwitch.vue";
+
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
 import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsheetLayer";
+import { useSourcesInView } from "./composables/useSourcesInView";
+import { setFitsLayerSettings } from "./wwt-helpers";
 
 import { 
-  getAlmagalSources, 
+  almagalSources,
   getAlmagalSourceById, 
   getAlmagalSourceUrl,
   type ALMAGalSource
@@ -235,6 +355,7 @@ const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
 
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const showInfoSheet = ref(false);
+const showSearch = ref(false);
 const showSplashScreen = ref(false);
 const layersLoaded = ref(false);
 const positionSet = ref(false);
@@ -242,6 +363,42 @@ const accentColor = ref("#306C9F");
 const accentColor2 = ref("#FC9954");
 
 
+/* Get the source list first */
+const almagalSourceList = shallowRef(almagalSources);
+const hoveredSource = ref<ALMAGalSource | null>(null);
+const MAX_ITEMS_TO_SHOW = 4;
+const sourcesInView= useSourcesInView(almagalSourceList.value);
+const showAllInView = computed(() => sourcesInView.count.value > 0 && sourcesInView.count.value <= MAX_ITEMS_TO_SHOW);
+
+function showAllSourcesInView() {
+  sourcesInView.sourcesInView.value.forEach(source => {
+    loadAlmaGalFitsSource(source.iid).then(layer => {
+      setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
+    });
+  });
+}
+
+// { onPointerMove, onPointerClick, createLayer: setupSpreadsheet, setFilter, applyFilter, show: showSpreadsheet, hide: hideSpreadsheet, setVisible: setSpreadsheetVisible }
+const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
+  almagalSourceList.value,
+  {
+    name: "ALMAGAL Sources",
+    color: "#32CD32",
+    markerSize: 5,
+    markerType: "point",
+    distanceColumn: "dist_ag",
+    onHover: (row, index) => { 
+      hoveredSource.value = row as ALMAGalSource | null; 
+    },
+    onClick: (row) => { 
+      selectedAlmagalSource.value = row as ALMAGalSource;
+    },
+  }
+);
+const spreadsheetVisible = ref(true);
+watch(spreadsheetVisible, (visible) => {
+  almagalSpreadsheetLayer.setVisible(visible);
+});
 
 
 function moveToImageset(layer: ImageSetLayer, instant = true) {
@@ -260,72 +417,80 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
   });
 }
 
+/* Load WTMLS for different background layers. 
+   Don't forget to add them to `foregroundImageOptions` and the `foregroundImage` watcher!
+*/
+// In principle we could use autoload: true. But it is useful to try to load things in order
+// newer GLIMPSE 360
+const glimpse = useWtmlLoader('./GLIMPSE_360.wtml', {autoload: false});
 
-// Load an older version of GLIMPSE - less coverage, higher resolution.
-// const glimpse = useWtmlLoader('https://projects.cosmicds.cfa.harvard.edu/cds-website/wwt-content/glimpse_original.wtml');
+// Start this disabled. Use herschelPacs.show() to show it. It has a black layer which
+const herschel = useWtmlLoader('./herschel_spire_rgb.wtml', {autoload: false, onLoad: (out) => {
+  out.layer?.set_enabled(false);
+}});
 
-// newer GLIMPSE 360 - lower resolution
-const glimpse = useWtmlLoader('./GLIMPSE_360.wtml');
+const decaps = useWtmlLoader('./decaps_dr1.wtml', {autoload: false, onLoad: (out) => {
+  out.layer?.set_enabled(false);
+}});
 
-// a few other layers, but keep hidden
-const herschelPacs = useWtmlLoader('./Herschel_Color.wtml');
-herschelPacs.ready.then(() => {
-  herschelPacs.hide();
+const foregroundImage = ref<'glimpse' | 'herschel' | 'decaps'>('glimpse');
+const foregroundImageOptions = [
+  { label: 'GLIMPSE 360', value: 'glimpse' },
+  { label: 'Herschel SPIRE (color)', value: 'herschel' },
+  { label: 'DECAPS DR1', value: 'decaps' },
+];
+watch(foregroundImage, (val) => {
+  if (val === 'glimpse') { glimpse.show(); herschel.hide(); decaps.hide(); }
+  else if (val === 'herschel') { herschel.show(); glimpse.hide(); decaps.hide(); }
+  else if (val === 'decaps') { decaps.show(); glimpse.hide(); herschel.hide(); }
+  else { glimpse.show(); herschel.hide(); decaps.hide();  }
 });
-const unwise = useWtmlLoader('./allwise.wtml');
-unwise.ready.then(() => {
-  unwise.hide();
-});
-const allwise = useWtmlLoader('./allwise.wtml');
-allwise.ready.then(() => {
-  allwise.hide();
-});
 
+/** settings that will be applied to each fits layer */
+const FITS_LAYER_SETTINGS = {
+  cmap: 'rdbu' as Colormaps,
+  opacity: 1.0,
+  stretch: {
+    stretch: ScaleTypes.linear,
+    vmin: -0.0005,
+    vmax: 0.0015,
+  }
+};
+
+const FITS_LAYER_SETTINGS_RESET = {
+  cmap: 'rdbu' as Colormaps,
+  opacity: 1.0,
+  stretch: {
+    stretch: ScaleTypes.linear,
+    vmin: -0.0005,
+    vmax: 0.0015,
+  }
+} as const;
 
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
-const useTiledVersion = true; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
-const url = useTiledVersion ? './gal_plane_toast/index_rel.wtml' : './index.wtml';
+const url = 'https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/main/almagal/almagal_toast/almagal.wtml';
 
-// since we are dynamically loading the sources right now, we don't need any that are preloaded
-/* 
-const almagalSources = reactive(useWtmlLoader(url, { 
-  autoload: true, 
+const almagalWtmlState = ref<ImageSetLayerState | null>(null); // This will go into the ImagesetItem to control our fits properties
+// Load the WTML. This goes down to level 12
+const almagalWtml = reactive(useWtmlLoader(url, { 
+  autoload: false, 
   onLoad: (out, index) => {
     // out contains: folder, place, imageset, layer. 
     console.log(`Loaded place ${out.place.get_name()} at index ${index}`);
     if (out.layer) {
-      // there are simpler ways to set this
-      // but doing it this way makes sure the Vue state is in sync
-      store.applyFitsLayerSettings({
-        id: out.layer.id.toString(),
-        settings: [
-          ['colorMapperName', 'plasma'],
-          ['opacity', 0.8],
-        ]
-      });
-      const state = store.imagesetStateForLayer(out.layer.id.toString());
-      store.stretchFitsLayer({
-        id: out.layer.id.toString(),
-        stretch: ScaleTypes.linear,
-        vmin: -0.0005,
-        vmax: 0.0015 * (index + 1), // this scaling just happens to work the order of the images, can be set to anything
-        // if the FITS header has PXCUTMIN and PXCUTMAX, vmin and vmax will default to those values
-      });
+      setFitsLayerSettings(out.layer.id.toString(), store, FITS_LAYER_SETTINGS);
+      almagalWtmlState.value = store.imagesetStateForLayer(out.layer.id.toString());
     }
-    console.log(out.fitsImage?.fitsProperties);
+
   },
   goTo: false, // to go to the first imageset in the WTML  replace false with (_, index) => index === 0
   instant: true,
-  useFits: !useTiledVersion ,
+  useFits: false , // this should be false when using a tiled layer, even if it is fits tiles. set true if loading a non-tiled fits layer.
 })
 );
-*/
-/* we could destructure this and have access to the individual properties */
-// const { ready, places, imagesetLayer, show, hide} = almagalSources;
 
 onMounted(() => {
-
   // boiler plate to disable WWT and let warning be 
   // shown to user if WebGL2 is not supported.
   if (webglDisabled.value) {
@@ -338,62 +503,129 @@ onMounted(() => {
     return;
   }
   
+  
   store.waitForReady().then(async () => {
-    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
+    // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
+    // store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
+    WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 5);  // min zoom for showing the solar system.
     
-    // almagalSources!.ready.then(() => {
-    //   layersLoaded.value = true;
-    //   positionSet.value = true;
-    // });
+    // wait for spreadhseet to load
+    await almagalSpreadsheetLayer.createLayer();
+    almagalSpreadsheetLayer.applyFilter();
+    sourcesInView.setup();
+    /*
+     * The order in which image layers are loaded is important as they will stack.
+     * awaiting makes sure the imageset layers are registered before moving on. 
+     */
+    // wait for glimpse backgrund to load
+    glimpse.load();
+    await glimpse.ready;
+    
+    // // 
+    herschel.load();
+    await herschel.ready.then(() => {
+      herschel.hide();
+    });
+    
+    decaps.load();
+    await decaps.ready.then(() => {
+      decaps.hide();
+    });
+      
+    // wait for almagal toasted wtml to load, so that it is on top
+    almagalWtml.load();
+    await almagalWtml.ready;
+
+    // after that, we are ready to load
     layersLoaded.value = true;
     positionSet.value = true;
   });
 });
 
 
-const almagalSourceList = ref(getAlmagalSources());
 
-const hoveredSource = ref<ALMAGalSource | null>(null);
+interface AlmaGalSourceFilterRange { max: number | null; min: number | null }
+type AlmaGalSourceFilterSpec = Map<keyof ALMAGalSource, AlmaGalSourceFilterRange>;
 
-const { onPointerMove, onPointerClick } = useHoverableSpreadsheetLayer(
-  almagalSourceList.value,
-  {
-    name: "ALMAGAL Sources",
-    color: "#32CD32",
-    markerSize: 5,
-    markerType: "point",
-    onHover: (row) => { hoveredSource.value = row as ALMAGalSource | null; },
-    onClick: (row) => { 
-      if (row) {
-        selectedAlmagalSource.value = row as ALMAGalSource;
-      }
-    },
+// Numeric source fields exposed as range-filter sliders. Edit this list to add or remove sliders.
+const filterFields = ["mass", "lum", "lm", "tdust", "dist_ag", "tbol"] as const;
+
+// Full [min, max] of each filterable column, measured from the loaded sources.
+const almagalColumnRanges = filterFields.reduce((ranges, field) => {
+  let min = Infinity;
+  let max = -Infinity;
+  for (const source of almagalSourceList.value) {
+    const value = source[field];
+    if (typeof value !== "number" || Number.isNaN(value)) continue;
+    if (value === -999) continue; // -999 is missing value
+    if (value < min) min = value;
+    if (value > max) max = value;
   }
+  ranges[field] = { min, max };
+  return ranges;
+}, {} as Record<typeof filterFields[number], { min: number; max: number }>);
+
+// Seed each filter at its column's full range, so nothing is filtered out until a slider is moved.
+const initialFilterSpec = new Map(
+  filterFields.map(field => [field, { max: almagalColumnRanges[field].max, min: almagalColumnRanges[field].min }])
 );
+const filterSpec = ref<AlmaGalSourceFilterSpec>(initialFilterSpec);
+// the use of a ref here means the function will always reflect the latest filter spec.
+function filterFunction(row: Record<string, string>) {
+  for (const [column, range] of filterSpec.value) {
+    const value = +row[column];
+    if (Number.isNaN(value)) return false; // empty value or something else -> false
+    if (range.min != null && value < range.min) return false;
+    if (range.max != null && value > range.max) return false;
+  }
+  return true;
+}  
+
+// the filter function closes over a reactive, so this function changes as the filter spec changes. 
+almagalSpreadsheetLayer.setFilter(filterFunction);
+
+//Re-apply filter whenever the spec changes. does nothing if layer doesn't exist
+watch(filterSpec, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
+
 
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
 const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
-const loadingAlmagalSource = ref(false);
+const pendingSourceIids = ref<ALMAGalSource["iid"][]>([]);
+
+/**
+ * Create a fitsimage layer from an ALMAGal source id
+ * The create layer get's added to almagalSourceLayers
+ */
 function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer> {
+  // make sure it has not already been loaded. 
   if (almagalSourceLayers.value.has(iid)) {
     return Promise.resolve(almagalSourceLayers.value.get(iid)!);
   }
+  
+  // otherwise get it's url and load it as a new "fits" ImageSetLayer
   const source = getAlmagalSourceById(iid);
   if (!source) {
     throw new Error(`Source with id ${iid} not found`);
   }
+  
+  // keep track of what is being loaded
+  if (!pendingSourceIids.value.includes(iid)) {
+    pendingSourceIids.value.push(iid);
+  }
   const url = getAlmagalSourceUrl(source);
-  console.log("Loading ALMAGAL source from url:", getAlmagalSourceById(iid), url);
+  console.log("Loading ALMAGAL source from url:", source, url);
   console.warn("The CORS is ok. It takes a moment to fetch via WWT Proxy");
   return store.addImageSetLayer({
     url: url,
-    mode: "fits",
-    name: source.iid,
+    mode: "fits", 
+    name: source.aid,
     goto: false,
   }).then(layer => {
     almagalSourceLayers.value.set(iid, layer);
+    const idx = pendingSourceIids.value.indexOf(iid);
+    if (idx !== -1) pendingSourceIids.value.splice(idx, 1);
     return layer;
   });
 }
@@ -403,13 +635,12 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
     store.gotoRADecZoom({
       raRad: newSource.ra * D2R,
       decRad: newSource.dec * D2R,
-      zoomDeg: 0.1,
+      zoomDeg: store.zoomDeg, // just go without zooming
       rollRad: 0,
       instant: false,
     });
-    loadingAlmagalSource.value = true;
     loadAlmaGalFitsSource(newSource.iid).then(layer => {
-      loadingAlmagalSource.value = false;
+      setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
     });
   }
 });
@@ -430,6 +661,53 @@ const cssVars = computed(() => {
   };
 });
 
+
+/* Sync up the colormap, stretch, and vmin/vmax for all of the loaded fits images with the WTML as the source of truth */
+const imagesetLayerStates = computed(() => {
+  const states: ImageSetLayerState[] = [];
+  almagalSourceLayers.value.forEach(layer => {
+    const state = store.imagesetStateForLayer(layer.id.toString());
+    if (state) {
+      states.push(state);
+    }
+  });
+  return states;
+});
+function updateImagesetLayerDisplaySettings() {
+  for (let state of imagesetLayerStates.value) {
+    setFitsLayerSettings(state.getGuid(), store, FITS_LAYER_SETTINGS);
+  }
+}
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmax : null, (newVmax, oldVmax) => {  
+  if (newVmax && newVmax !== oldVmax) {
+    FITS_LAYER_SETTINGS.stretch.vmax = newVmax;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmin : null, (newVmin, oldVmin) => {  
+  if (newVmin && newVmin !== oldVmin) {
+    FITS_LAYER_SETTINGS.stretch.vmin = newVmin;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.scaleType : null, (newScale, oldScale) => {  
+  if (newScale && newScale !== oldScale) {
+    FITS_LAYER_SETTINGS.stretch.stretch = newScale;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.colorMapperName : null, (newCmap, oldCmap) => {  
+  if (newCmap && newCmap !== oldCmap) {
+    FITS_LAYER_SETTINGS.cmap = newCmap as Colormaps;
+    updateImagesetLayerDisplaySettings();
+  }
+});
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : null, (newOp, oldOp) => {  
+  if (newOp && newOp !== oldOp) {
+    FITS_LAYER_SETTINGS.opacity = newOp;
+    updateImagesetLayerDisplaySettings();
+  }
+});
 
 </script>
 
@@ -700,8 +978,8 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 // From Sara Soueidan (https://www.sarasoueidan.com/blog/focus-indicators/) & Erik Kroes (https://www.erikkroes.nl/blog/the-universal-focus-state/)
-:focus-visible {
-  /* Keep this override outside Vuetify's layers so it wins without !important. */
+// :not won't work on some browseers, but avoids a complicated set of css
+:focus-visible:not(.v-btn):not(.v-field):not(.v-input) {
   outline: 4px double white;
   box-shadow: 0 0 0 2px black;
   border-radius: .025rem;
@@ -746,7 +1024,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   backdrop-filter: blur(6px);
 }
 
-#layer-list {
+.layer-list {
   outline: 1px solid black;
   border: 1px solid white;
   padding: 4px;
@@ -758,7 +1036,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   border: 1px solid rgba(255, 255, 255, 0.541);
   border-radius: 5px;
   backdrop-filter: blur(10px);
-  widtH: 100%;
+  width: 100%;
 }
 
 .almagal-v-select {
@@ -769,5 +1047,49 @@ and remember, position:absolute is still a positioned parent, so children can be
   backdrop-filter: blur(10px);
   outline: 1px solid white;
   border-radius: 4px;
+}
+
+.hovered-source-info {
+  background-color: rgba(0, 0, 0, 0.364);
+  backdrop-filter: blur(10px);
+  width: fit-content;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+}
+
+
+.almagal-filterset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  width: fit-content;
+  pointer-events: auto;
+  padding-inline: 5px;
+  background-color: rgba(0, 0, 0, 0.364);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  font-size: 0.9em;
+  padding-bottom: 1em;
+}
+
+// style the legend to be centerd
+.almagal-filterset > legend {
+  margin-inline: auto;
+  padding: 0 5px;
+}
+
+.almagal-filterset label > span {
+  font-weight: bold;
+}
+
+.pending-source-label {
+  color: white;
+  font-size: 0.85em;
+  padding: 4px 8px;
+  font-weight: bold;
+}
+
+.bunch-o-buttons {
+  max-width: 300px;
 }
 </style>

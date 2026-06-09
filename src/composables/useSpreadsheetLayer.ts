@@ -1,15 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { engineStore } from "@wwtelescope/engine-pinia";
-import { Color } from "@wwtelescope/engine";
-import { MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
-
+import { Color, SpreadSheetLayer } from "@wwtelescope/engine";
+import { AltTypes, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
+import { RAUnits, AltUnits } from "@wwtelescope/engine-types";
 export type MarkerType = "gaussian" | "point" | "circle";
 
-export interface SpreadsheetLayerOptions {
-  name?: string;
-  color?: string; 
-  markerSize?: number;
-  markerType?: MarkerType;
-}
 
 const MARKER_TYPE_MAP: Record<MarkerType, PlotTypes> = {
   gaussian: PlotTypes.gaussian,
@@ -17,13 +12,92 @@ const MARKER_TYPE_MAP: Record<MarkerType, PlotTypes> = {
   circle: PlotTypes.circle,
 };
 
-function buildCsv(points: [number, number][]): string {
-  const rows = points.map(([ra, dec]) => `${ra},${dec}`).join("\r\n");
-  return `ra,dec\r\n${rows}`;
+
+export function jsonToCsv(jsonData: any[]): string {
+  if (jsonData.length === 0) {
+    return '';
+  }
+
+  const headers = Object.keys(jsonData[0]);
+  const csvRows = [headers.join(',')];
+
+  for (const row of jsonData) {
+    const values = headers.map(header => {
+      // const escaped = ('' + row[header]).replace(/"/g, '\\"');
+      // return `"${escaped}"`;
+      return row[header];
+    });
+    csvRows.push(values.join(','));
+  }
+
+  return csvRows.join('\n').replace(/\n/g, "\r\n");
 }
 
+/**
+ * Type guard for 3-element array.
+ * To keep it short we just check the first element of the array
+ */
+function isArray3(data: any): data is [number, number, number][] {
+  return Array.isArray(data) && Array.isArray(data[0]) && data[0].length === 3 && data[0].every((x: any) => typeof x === "number");
+}
+
+function isArray2(data: any): data is [number, number][] {
+  return Array.isArray(data) && Array.isArray(data[0]) && data[0].length === 2 && data[0].every((x: any) => typeof x === "number");
+}
+
+/**
+ * Buiild a CSV string from a list of [ra, dec] or [ra, dec, distance] points. The CSV will have headers "ra,dec" or "ra,dec,dist" accordingly.
+ */
+function buildCsv(points: [number, number][] | [number, number, number][]): string {
+  if (isArray3(points)) {
+    const rows = points.map(([ra, dec, dist]) => `${ra},${dec},${dist}`).join("\r\n");
+    return `ra,dec,distance\r\n${rows}`;
+  }
+  if (isArray2(points)) {
+    const rows = points.map(([ra, dec]) => `${ra},${dec}`).join("\r\n");
+    return `ra,dec\r\n${rows}`;
+  }
+  
+  throw new Error("Invalid points format for buildCsv");
+}
+
+/** A row keyed by column name, e.g. `{ ra: "1.23", dec: "4.56", mass: "750" }`. */
+type NamedRow = Record<string, string>;
+
+interface CoordinateJson extends Record<string, any> {
+  ra: number;
+  dec: number;
+}
+
+function isCoordinateJsonArray(data: any): data is CoordinateJson[] {
+  return Array.isArray(data) && data.length > 0 && "ra" in data[0] && "dec" in data[0];
+}
+
+export interface SpreadsheetLayerOptions {
+  name?: string;
+  color?: string; 
+  markerSize?: number;
+  markerType?: MarkerType;
+  distanceColumn?: string | null; // column name for distance
+  distanceUnit?: AltUnits ;
+  raUnit?: RAUnits;
+}
+/**
+ * RA in hours by default
+ * 
+ * [Optional] Distance in parsecs by default. The default distance column is "dist"
+ * 
+ * The options are
+ *   - `name`: the name of layer. Default: "spreadsheet-layer"
+ *   - `color`: the color of the markers. Default: "#ffffff"
+ *   - `markerSize`: the size of the markers. Default: 10
+ *   - `markerType`: "gaussian" | "point" | "circle". Default: "circle"
+ *   - `distanceColumn`: Optional name of the distance column. Default: "dist". 
+ *   - `distanceUnit`: Default: AltUnits.parsecs. 
+ *   - `raUnit`: Default: RAUnits.hours
+ */
 export function useSpreadsheetLayer(
-  points: [number, number][],
+  points: [number, number][] | CoordinateJson[],
   options: SpreadsheetLayerOptions = {}
 ) {
   const store = engineStore();
@@ -33,26 +107,108 @@ export function useSpreadsheetLayer(
     color = "#ffffff",
     markerSize = 10,
     markerType = "circle",
+    distanceColumn = 'dist',
+    distanceUnit = AltUnits.parsecs,
+    raUnit = RAUnits.hours,
   } = options;
 
-  const ready = store.waitForReady().then(async () => {
-    console.log(points);
-    const dataCsv = buildCsv(points);
+  let originalRows: string[][] | null = null;
+  let originalNamedRows: NamedRow[] | null = null;
+  let originalLayer: SpreadSheetLayer | null = null;
+
+  async function createLayer() {
+    if (points.length === 0) {
+      console.warn("No points provided to useSpreadsheetLayer");
+      return;
+    }
+    let dataCsv: string | undefined;
+    let lonCol = 0; // RA
+    let latCol = 1; // Dec
+    let distCol = 2; // Distance, if present
+    
+    if (isArray2(points) || isArray3(points)) {
+      dataCsv = buildCsv(points);
+    }  
+    
+    if (isCoordinateJsonArray(points)) {
+      dataCsv = jsonToCsv(points);
+      // get the first row to determine which columns are ra/dec
+      const headerRow = dataCsv.split("\r\n")[0].split(",");
+      latCol = headerRow.findIndex(h => h.toLowerCase() === "dec");
+      lonCol = headerRow.findIndex(h => h.toLowerCase() === "ra");
+      if (distanceColumn !== null) {
+        distCol = headerRow.findIndex(h => h.toLowerCase() === distanceColumn.toLowerCase());
+        if (distCol === -1) {
+          console.warn(`Distance column "${distanceColumn}" not found in data; ignoring distance`);
+        }
+      }
+    }
+    
+    if (!dataCsv) {
+      throw new Error("Point data is not in a recognized format. Must be either [ra: number, dec: number][] or [ra: number, dec: number, distance: number][] or { ra: number, dec: number, dist?: number, ... }[]");
+    }
+    
     const l = await store.createTableLayer(
       { 
         name, 
         referenceFrame: "Sky", 
         dataCsv 
       });
-    l.set_lngColumn(0);
-    l.set_latColumn(1);
+    l.set_lngColumn(lonCol);
+    l.set_raUnits(raUnit);
+    l.set_latColumn(latCol);
+    // setup distance column if included
+    if (distanceColumn && distCol !== -1) {
+      l.set_altColumn(distCol);
+      l.set_altType(AltTypes.distance);
+      l.set_altUnit(distanceUnit);
+      l.set_showFarSide(true);
+    }
     l.set_markerScale(MarkerScales.screen);
     l.set_color(Color.fromHex(color));
     l.set_scaleFactor(markerSize);
     l.set_plotType(MARKER_TYPE_MAP[markerType]);
     l.set_opacity(1);
-    console.log(l);
-  });
+    console.log("Created spreadsheet layer", l);
+    originalLayer = l;
+    const table = l.get__table();
+    originalRows = table.rows.slice(); // make a copy
+    const header = table.header;
+    originalNamedRows = originalRows.map(row => {
+      const named: NamedRow = {};
+      header.forEach((h, i) => { named[h] = row[i]; });
+      return named;
+    });
+    return l;
+  }
 
-  return { ready };
+  type FilterFunction = (row: Record<string, string>) => boolean;
+
+  // A single, user-customizable filter. Defaults to keeping every row; the
+  // consumer overrides it via setFilter().
+  let filter: FilterFunction = () => true;
+  function setFilter(f: (row: Record<string, string>) => boolean) {
+    filter = f;
+  }
+
+  // Apply the current filter to the table.
+  function applyFilter() {
+    if (!originalLayer) return;
+    if (!originalRows || !originalNamedRows) return;
+    const t = originalLayer.get__table();
+    // Test against the named view, but keep the positional row the table needs.
+    t.rows = originalRows.filter((_, i) => filter(originalNamedRows![i]));
+    originalLayer.set__table(t);
+    originalLayer.dirty = true; // mark layer as dirty to trigger re-render
+  }
+
+  function setVisible(visible: boolean) {
+    if (!originalLayer) return;
+    originalLayer.set_enabled(visible);
+  }
+
+  function show() { setVisible(true); }
+  function hide() { setVisible(false); }
+
+  return { createLayer, applyFilter, setFilter, show, hide, setVisible };
 }
