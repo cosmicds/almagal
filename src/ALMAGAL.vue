@@ -964,12 +964,12 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 // From Sara Soueidan (https://www.sarasoueidan.com/blog/focus-indicators/) & Erik Kroes (https://www.erikkroes.nl/blog/the-universal-focus-state/)
-// :focus-visible {
-//   /* Keep this override outside Vuetify's layers so it wins without !important. */
-//   outline: 4px double white;
-//   box-shadow: 0 0 0 2px black;
-//   border-radius: .025rem;
-// }
+// :not won't work on some browseers, but avoids a complicated set of css
+:focus-visible:not(.v-btn):not(.v-field):not(.v-input) {
+  outline: 4px double white;
+  box-shadow: 0 0 0 2px black;
+  border-radius: .025rem;
+}
 
 .layout-debug {
   #main-content {
@@ -1022,7 +1022,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   border: 1px solid rgba(255, 255, 255, 0.541);
   border-radius: 5px;
   backdrop-filter: blur(10px);
-  column-rule-width: 100%;
+  width: 100%;
 }
 
 .almagal-v-select {
