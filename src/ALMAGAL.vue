@@ -33,7 +33,7 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
-            <div class="d-flex flex-row flex-wrap ga-4 pa-2">
+            <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
               <wwt-3d-switch>
                 <template #default="{ in3d, onClick}">
                   <v-btn
@@ -1095,5 +1095,9 @@ and remember, position:absolute is still a positioned parent, so children can be
   font-size: 0.85em;
   padding: 4px 8px;
   font-weight: bold;
+}
+
+.bunch-o-buttons {
+  max-width: 300px;
 }
 </style>
