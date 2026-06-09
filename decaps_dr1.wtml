@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True"
+  Group="Explorer"
+  Name="DECaPS DR1"
+  Searchable="True">
+  <Place Angle="0"
+    AngularSize="0"
+    Constellation="PSC"
+    DataSetType="Sky"
+    Dec="0"
+    Magnitude="0"
+    Name="DECaPS DR1"
+    Opacity="100"
+    RA="0"
+    Rotation="0"
+    Thumbnail="https://alasky.cds.unistra.fr/DECaPS/DR1/color/preview.jpg"
+    ZoomLevel="0">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible"
+        BaseDegreesPerTile="180"
+        BaseTileLevel="0"
+        BottomsUp="False"
+        CenterX="0"
+        CenterY="0"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="png jpeg"
+        Generic="False"
+        MeanRadius="1"
+        Name="DECaPS DR1 color"
+        Projection="Healpix"
+        QuadTreeMap="0123"
+        ReferenceFrame="Sky"
+        Rotation="0"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="11"
+        Url="https://alasky.cds.unistra.fr/DECaPS/DR1/color/Norder{0}/Dir{1}/Npix{2}"
+        WidthFactor="1">
+        <Credits>DECaM Plane Survey / NOAO</Credits>
+        <CreditsUrl>http://decaps.skymaps.info/</CreditsUrl>
+        <Description>HiPS List ID: CDS/P/DECaPS/DR1/color</Description>
+        <ThumbnailUrl>https://alasky.cds.unistra.fr/DECaPS/DR1/color/preview.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ImageSet>
+    <!-- Check hips_tile_format for the FileType -->
+  </ForegroundImageSet>
+</Place>
+</Folder>

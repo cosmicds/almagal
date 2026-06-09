@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True"
+  Group="Explorer"
+  Name="[[[[NAME]]]]"
+  Searchable="True">
+  <Place Angle="0"
+    AngularSize="0"
+    Constellation="PSC"
+    DataSetType="Sky"
+    Dec="0"
+    Magnitude="0"
+    Name="[[NAME]]"
+    Opacity="100"
+    RA="0"
+    Rotation="0"
+    Thumbnail="[[URL]]/preview.jpg"
+    ZoomLevel="0">
+    <ForegroundImageSet>
+      <ImageSet BandPass="IR"
+        BaseDegreesPerTile="180"
+        BaseTileLevel="0"
+        BottomsUp="False"
+        CenterX="0"
+        CenterY="0"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="jpeg"
+        Generic="False"
+        MeanRadius="1"
+        Name="[[NAME]]"
+        Projection="Healpix"
+        QuadTreeMap="0123"
+        ReferenceFrame="Sky"
+        Rotation="0"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="9"
+        Url="[[URL]]/Norder{0}/Dir{1}/Npix{2}"
+        WidthFactor="1">
+        <Credits>Pull from HiPS properties file</Credits>
+        <CreditsUrl>hips_service_url</CreditsUrl>
+        <Description>obs_description</Description>
+        <ThumbnailUrl>[[URL]]/preview.jpg</ThumbnailUrl> <!-- If available -->
+      </ImageSet>
+      <!-- Check hips_tile_format for the FileType -->
+    </ForegroundImageSet>
+  </Place>
+</Folder>

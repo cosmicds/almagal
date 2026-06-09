@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True" Group="Explorer" Name="DECaPS DR2 color" Searchable="True">
+  <Place Angle="0" AngularSize="0" Constellation="CRU" DataSetType="Sky" Dec="-63.3032221" Magnitude="0" Name="DECaPS DR2 color" Opacity="100" RA="12.595271946666665" Rotation="0" Thumbnail="https://alasky.cds.unistra.fr/DECaPS/DR2/CDS_P_DECaPS_DR2_color/preview.jpg" ZoomLevel="360">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType="png" Generic="False" MeanRadius="1" Name="DECaPS DR2 color" Projection="Healpix" QuadTreeMap="0123" ReferenceFrame="Sky" Rotation="0" Sparse="True" StockSet="False" TileLevels="11" Url="https://alasky.cds.unistra.fr/DECaPS/DR2/CDS_P_DECaPS_DR2_color/Norder{0}/Dir{1}/Npix{2}" WidthFactor="1">
+        <Credits>DECaM Plane Survey / NOIRLab</Credits>
+        <CreditsUrl>http://decaps.skymaps.info/</CreditsUrl>
+        <Description>DECaPS2 is a five-band optical and near-infrared survey of the southern Galactic plane with the Dark Energy Camera (DECam) on the 4.0m Blanco telescope at the Cerro Tololo Inter-American Observatory in Chile. The survey is designed to reach past the main-sequence turn-off at the distance of the Galactic center through a reddening E(B-V) of 1.5 mag, with a typical single-exposure depth of 23.7, 22.7, 22.2, 21.7, and 20.9 mag in the grizY bands, and with average seeing around 1&amp;#x27;&amp;#x27;. The footprint covers | b | &amp;lt; 10 deg , 6 deg &amp;gt; l &amp;gt; - 124 deg (essentially the low latitude Galactic plane south of delta &amp;lt; - 24 deg , a total of about 2700 square degrees (6.5% of the sky). DECaPS2 simultaneously solves for the positions and fluxes of all the sources in each image, delivering positions and fluxes of 3.32 billion stars with up to 5 mmag repeatability. Most of these objects are highly reddened and deep in the Galactic disk, probing the structure and properties of the Milky Way and its interstellar medium.</Description>
+        <ThumbnailUrl>https://alasky.cds.unistra.fr/DECaPS/DR2/CDS_P_DECaPS_DR2_color/preview.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>
