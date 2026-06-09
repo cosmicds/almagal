@@ -2,9 +2,7 @@
 import { engineStore } from "@wwtelescope/engine-pinia";
 import { Color, SpreadSheetLayer } from "@wwtelescope/engine";
 import { AltTypes, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { RAUnits, AltUnits } from "@wwtelescope/engine-types";
-
 export type MarkerType = "gaussian" | "point" | "circle";
 
 
@@ -14,7 +12,7 @@ const MARKER_TYPE_MAP: Record<MarkerType, PlotTypes> = {
   circle: PlotTypes.circle,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export function jsonToCsv(jsonData: any[]): string {
   if (jsonData.length === 0) {
     return '';
@@ -184,12 +182,12 @@ export function useSpreadsheetLayer(
     return l;
   }
 
-  type Filter = (row: NamedRow) => boolean;
+  type FilterFunction = (row: Record<string, string>) => boolean;
 
   // A single, user-customizable filter. Defaults to keeping every row; the
   // consumer overrides it via setFilter().
-  let filter: Filter = () => true;
-  function setFilter(f: Filter) {
+  let filter: FilterFunction = () => true;
+  function setFilter(f: (row: Record<string, string>) => boolean) {
     filter = f;
   }
 

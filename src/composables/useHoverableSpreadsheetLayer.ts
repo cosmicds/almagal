@@ -2,6 +2,7 @@ import { engineStore } from "@wwtelescope/engine-pinia";
 import { distance } from "@wwtelescope/astro";
 import { useSpreadsheetLayer, type SpreadsheetLayerOptions } from "./useSpreadsheetLayer";
 import { ImageSetType } from "@wwtelescope/engine-types";
+import { Prettify } from "@/types";
 const D2R = Math.PI / 180;
 
 export interface RaDecPair {
@@ -17,7 +18,7 @@ export interface HoverableSpreadsheetLayerOptions<T extends RaDecPair> extends S
 
 export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   rows: T[],
-  options: HoverableSpreadsheetLayerOptions<T> = {}
+  options: Prettify<HoverableSpreadsheetLayerOptions<T>> = {}
 ) {
   const store = engineStore();
   const { pixelThreshold = 20, onHover, ...spreadsheetOptions } = options;
