@@ -177,7 +177,7 @@
                   return-object
                   hide-details
                   label="ALMAGAL Source"
-                  :loading="loadingAlmagalSource"
+                  :loading="isLoadingAnySource"
                   autofocus
                 />
                 <v-btn
@@ -361,10 +361,10 @@ const showAllInView = computed(() => sourcesInViewCount.value > 0 && sourcesInVi
 
 function showAllSourcesInView() {
   sourcesInView.value.forEach(source => {
-    loadingAlmagalSource.value = true;
+    loadingAlmagalSource.value.set(source.iid, true);
     loadAlmaGalFitsSource(source.iid).then(layer => {
-      setFitsLayerSettings(layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
-      loadingAlmagalSource.value = false;
+      setFitsLayerSettings(layer.id.toString(), FITS_LAYER_SETTINGS);
+      loadingAlmagalSource.value.delete(source.iid);
     });
   });
 }
@@ -580,7 +580,8 @@ watch(filterSpec, () => applyFilter(), { deep: true });
 
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
 const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
-const loadingAlmagalSource = ref(false);
+const loadingAlmagalSource = ref(new Map<ALMAGalSource["iid"], boolean>());
+const isLoadingAnySource = computed(() => loadingAlmagalSource.value.size > 0);
 const pendingSourceIids = ref<ALMAGalSource["iid"][]>([]);
 
 /**
@@ -623,10 +624,10 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
       rollRad: 0,
       instant: false,
     });
-    loadingAlmagalSource.value = true;
+    loadingAlmagalSource.value.set(newSource.iid, true);
     loadAlmaGalFitsSource(newSource.iid).then(layer => {
       setFitsLayerSettings(layer.id.toString(), FITS_LAYER_SETTINGS);
-      loadingAlmagalSource.value = false;
+      loadingAlmagalSource.value.delete(newSource.iid);
     });
   }
 });
