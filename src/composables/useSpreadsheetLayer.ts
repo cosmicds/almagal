@@ -66,10 +66,6 @@ function buildCsv(points: [number, number][] | [number, number, number][]): stri
 /** A row keyed by column name, e.g. `{ ra: "1.23", dec: "4.56", mass: "750" }`. */
 type NamedRow = Record<string, string>;
 
-let originalRows: string[][] | null = null;
-let originalNamedRows: NamedRow[] | null = null;
-let originalLayer: SpreadSheetLayer | null = null;
-
 interface CoordinateJson extends Record<string, any> {
   ra: number;
   dec: number;
@@ -117,8 +113,10 @@ export function useSpreadsheetLayer(
     distanceUnit = AltUnits.parsecs,
     raUnit = RAUnits.hours,
   } = options;
-  
-  
+
+  let originalRows: string[][] | null = null;
+  let originalNamedRows: NamedRow[] | null = null;
+  let originalLayer: SpreadSheetLayer | null = null;
 
   async function createLayer() {
     if (points.length === 0) {
