@@ -59,6 +59,7 @@ export function useSourcesInView<T extends RaDecPair>(
     const maxDec = Math.max(...decs);
 
     sourcesInView.value = rows.filter(row =>
+      // TODO: fix wrap-around when view straddles 0°/360° RA boundary
       row.ra >= minRa && row.ra <= maxRa &&
       row.dec >= minDec && row.dec <= maxDec
     );
