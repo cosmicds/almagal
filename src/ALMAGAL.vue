@@ -417,27 +417,36 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
   });
 }
 
-
+/* Load WTMLS for different background layers. 
+   Don't forget to add them to `foregroundImageOptions` and the `foregroundImage` watcher!
+*/
 // In principle we could use autoload: true. But it is useful to try to load things in order
-// newer GLIMPSE 360 - lower resolution
+// newer GLIMPSE 360
 const glimpse = useWtmlLoader('./GLIMPSE_360.wtml', {autoload: false});
 
 // Start this disabled. Use herschelPacs.show() to show it. It has a black layer which
-const herschelPacs = useWtmlLoader('./Herschel_Color.wtml', {autoload: false, onLoad: (out) => {
+const herschel = useWtmlLoader('./herschel_spire_rgb.wtml', {autoload: false, onLoad: (out) => {
   out.layer?.set_enabled(false);
 }});
 
-const foregroundImage = ref<'glimpse' | 'herschel'>('glimpse');
+const decaps = useWtmlLoader('./decaps_dr1.wtml', {autoload: false, onLoad: (out) => {
+  out.layer?.set_enabled(false);
+}});
+
+const foregroundImage = ref<'glimpse' | 'herschel' | 'decaps'>('glimpse');
 const foregroundImageOptions = [
   { label: 'GLIMPSE 360', value: 'glimpse' },
-  { label: 'Herschel PACS (color)', value: 'herschel' },
+  { label: 'Herschel SPIRE (color)', value: 'herschel' },
+  { label: 'DECAPS DR1', value: 'decaps' },
 ];
 watch(foregroundImage, (val) => {
-  if (val === 'glimpse') { glimpse.show(); herschelPacs.hide(); }
-  else { herschelPacs.show(); glimpse.hide(); }
+  if (val === 'glimpse') { glimpse.show(); herschel.hide(); decaps.hide(); }
+  else if (val === 'herschel') { herschel.show(); glimpse.hide(); decaps.hide(); }
+  else if (val === 'decaps') { decaps.show(); glimpse.hide(); herschel.hide(); }
+  else { glimpse.show(); herschel.hide(); decaps.hide();  }
 });
 
-
+/** settings that will be applied to each fits layer */
 const FITS_LAYER_SETTINGS = {
   cmap: 'rdbu' as Colormaps,
   opacity: 1.0,
@@ -460,10 +469,9 @@ const FITS_LAYER_SETTINGS_RESET = {
 
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
-const useTiledVersion = true; // don't use a ref, because we will not change this during runtime. useWTML does not react to changes in the url.
 const url = 'https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/main/almagal/almagal_toast/almagal.wtml';
 
-const almagalWtmlState = ref<ImageSetLayerState | null>(null);
+const almagalWtmlState = ref<ImageSetLayerState | null>(null); // This will go into the ImagesetItem to control our fits properties
 // Load the WTML. This goes down to level 12
 const almagalWtml = reactive(useWtmlLoader(url, { 
   autoload: false, 
@@ -478,7 +486,7 @@ const almagalWtml = reactive(useWtmlLoader(url, {
   },
   goTo: false, // to go to the first imageset in the WTML  replace false with (_, index) => index === 0
   instant: true,
-  useFits: !useTiledVersion ,
+  useFits: false , // this should be false when using a tiled layer, even if it is fits tiles. set true if loading a non-tiled fits layer.
 })
 );
 
@@ -497,6 +505,7 @@ onMounted(() => {
   
   
   store.waitForReady().then(async () => {
+    // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
     // store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
@@ -505,23 +514,30 @@ onMounted(() => {
     // wait for spreadhseet to load
     await almagalSpreadsheetLayer.createLayer();
     almagalSpreadsheetLayer.applyFilter();
-    
+    sourcesInView.setup();
+    /*
+     * The order in which image layers are loaded is important as they will stack.
+     * awaiting makes sure the imageset layers are registered before moving on. 
+     */
     // wait for glimpse backgrund to load
     glimpse.load();
     await glimpse.ready;
     
-    // 
-    herschelPacs.load();
-    herschelPacs.ready.then(() => {
-      herschelPacs.hide();
+    // // 
+    herschel.load();
+    await herschel.ready.then(() => {
+      herschel.hide();
+    });
+    
+    decaps.load();
+    await decaps.ready.then(() => {
+      decaps.hide();
     });
       
-    // wait for almagal toasted wtml to load
+    // wait for almagal toasted wtml to load, so that it is on top
     almagalWtml.load();
     await almagalWtml.ready;
 
-    sourcesInView.setup();
-    
     // after that, we are ready to load
     layersLoaded.value = true;
     positionSet.value = true;
