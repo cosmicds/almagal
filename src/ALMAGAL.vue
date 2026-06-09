@@ -441,7 +441,7 @@ function setFitsLayerSettings(guid: string, options: {cmap?: Colormaps, opacity?
   }
 }
 
-const DEFAULT_FITS_LAYER_SETTINGS = {
+const FITS_LAYER_SETTINGS = {
   cmap: 'rdbu' as Colormaps,
   opacity: 1.0,
   stretch: {
@@ -474,7 +474,7 @@ const almagalWtml = reactive(useWtmlLoader(url, {
     // out contains: folder, place, imageset, layer. 
     console.log(`Loaded place ${out.place.get_name()} at index ${index}`);
     if (out.layer) {
-      setFitsLayerSettings(out.layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
+      setFitsLayerSettings(out.layer.id.toString(), FITS_LAYER_SETTINGS);
       almagalWtmlState.value = store.imagesetStateForLayer(out.layer.id.toString());
     }
 
@@ -625,7 +625,7 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
     });
     loadingAlmagalSource.value = true;
     loadAlmaGalFitsSource(newSource.iid).then(layer => {
-      setFitsLayerSettings(layer.id.toString(), DEFAULT_FITS_LAYER_SETTINGS);
+      setFitsLayerSettings(layer.id.toString(), FITS_LAYER_SETTINGS);
       loadingAlmagalSource.value = false;
     });
   }
@@ -661,36 +661,36 @@ const imagesetLayerStates = computed(() => {
 });
 function updateImagesetLayerDisplaySettings() {
   for (let state of imagesetLayerStates.value) {
-    setFitsLayerSettings(state.getGuid(), DEFAULT_FITS_LAYER_SETTINGS);
+    setFitsLayerSettings(state.getGuid(), FITS_LAYER_SETTINGS);
   }
 }
 watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmax : null, (newVmax, oldVmax) => {  
   if (newVmax && newVmax !== oldVmax) {
-    DEFAULT_FITS_LAYER_SETTINGS.stretch.vmax = newVmax;
+    FITS_LAYER_SETTINGS.stretch.vmax = newVmax;
     updateImagesetLayerDisplaySettings();
   }
 });
 watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmin : null, (newVmin, oldVmin) => {  
   if (newVmin && newVmin !== oldVmin) {
-    DEFAULT_FITS_LAYER_SETTINGS.stretch.vmin = newVmin;
+    FITS_LAYER_SETTINGS.stretch.vmin = newVmin;
     updateImagesetLayerDisplaySettings();
   }
 });
 watch(() => almagalWtmlState.value ? almagalWtmlState.value.scaleType : null, (newScale, oldScale) => {  
   if (newScale && newScale !== oldScale) {
-    DEFAULT_FITS_LAYER_SETTINGS.stretch.stretch = newScale;
+    FITS_LAYER_SETTINGS.stretch.stretch = newScale;
     updateImagesetLayerDisplaySettings();
   }
 });
 watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.colorMapperName : null, (newCmap, oldCmap) => {  
   if (newCmap && newCmap !== oldCmap) {
-    DEFAULT_FITS_LAYER_SETTINGS.cmap = newCmap as Colormaps;
+    FITS_LAYER_SETTINGS.cmap = newCmap as Colormaps;
     updateImagesetLayerDisplaySettings();
   }
 });
 watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : null, (newOp, oldOp) => {  
   if (newOp && newOp !== oldOp) {
-    DEFAULT_FITS_LAYER_SETTINGS.opacity = newOp;
+    FITS_LAYER_SETTINGS.opacity = newOp;
     updateImagesetLayerDisplaySettings();
   }
 });
