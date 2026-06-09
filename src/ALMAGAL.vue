@@ -65,6 +65,17 @@
               </v-btn>
             </div>
             <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
+            <v-select
+              v-model="foregroundImage"
+              :items="foregroundImageOptions"
+              item-title="label"
+              item-value="value"
+              hide-details
+              density="compact"
+              style="pointer-events: auto; max-width: 220px;"
+              class="blur-button"
+              label="Background survey"
+            />
             <div
               v-for="layer in almagalWtml.imagesetLayers"
               
@@ -413,6 +424,16 @@ const glimpse = useWtmlLoader('./GLIMPSE_360.wtml', {autoload: false});
 
 // a few other layers, but keep hidden
 const herschelPacs = useWtmlLoader('./Herschel_Color.wtml', {autoload: false});
+
+const foregroundImage = ref<'glimpse' | 'herschel'>('glimpse');
+const foregroundImageOptions = [
+  { label: 'GLIMPSE 360', value: 'glimpse' },
+  { label: 'Herschel PACS (color)', value: 'herschel' },
+];
+watch(foregroundImage, (val) => {
+  if (val === 'glimpse') { glimpse.show(); herschelPacs.hide(); }
+  else { herschelPacs.show(); glimpse.hide(); }
+});
 
 function setFitsLayerSettings(guid: string, options: {cmap?: Colormaps, opacity?: number, stretch?: {stretch: ScaleTypes, vmin: number, vmax:number}} = {}) {
   if (options.cmap) {
