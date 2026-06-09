@@ -2,7 +2,7 @@
   <div class="wwt-3d-swtich-container">
     <slot 
       :in-3d="in3D"
-      @click="toggle3d"
+      :on-click="toggle3d"
     >
       <v-btn
         variant="flat"
