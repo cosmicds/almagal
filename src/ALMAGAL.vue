@@ -297,9 +297,11 @@ import {
   Imageset, 
   TileCache,
   Coordinates,
+  Color,
+  SpreadSheetLayer,
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
-import { ScaleTypes } from "@wwtelescope/engine-types";
+import { ScaleTypes, RAUnits, AltTypes, AltUnits, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
 import { addCustomColormaps, COLORMAPS, type Colormaps  } from "./wwt-colormaps/colormaps";
 addCustomColormaps();
 
@@ -327,6 +329,7 @@ import {
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
+import { useSpreadsheetLayer } from "./composables/useSpreadsheetLayer";
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
 export interface WwtPlaygroundProps {
@@ -505,6 +508,62 @@ const almagalWtml = reactive(useWtmlLoader(url, {
 })
 );
 
+const sunCSV = `
+ra,dec,d
+106.069042627535,-11.4743592401899,1E-8
+`;
+function createSunLayer() {
+  /* idk what i did wrong with this */ 
+  // return store.createTableLayer({
+  //   referenceFrame: "Sky",
+  //   name: "The Sun",
+  //   dataCsv: sunCSV.replace(/\n/g, "\r\n")
+  // }).then(layer => {
+  //   layer.set_lngColumn(0);
+  //   layer.set_latColumn(1);
+  //   layer.set_altColumn(2);
+  //   layer.set_raUnits(RAUnits.degrees);
+  //   layer.set_altUnit(AltUnits.parsecs);
+  //   layer.set_altType(AltTypes.distance);
+  //   layer.set_showFarSide(true);
+  //   layer.set_markerScale(MarkerScales.screen);
+  //   layer.set_plotType(PlotTypes.gaussian);
+  //   layer.set_opacity(1);
+  //   layer.set_scaleFactor(100);
+  //   store.applyTableLayerSettings({
+  //     id: layer.id.toString(),
+  //     settings: [
+  //       ["color", Color.load('#ffff0a')],
+  //       ["scaleFactor", 100]
+  //     ]
+  //   });
+  //   return layer;
+  // });
+    
+  return useSpreadsheetLayer([[106.069042627535, -11.4743592401899, 1E-8]], {
+    name: "The Sun",
+    color: "#ffff0a",
+    markerSize: 10,
+    markerType: "point",
+    raUnit: RAUnits.degrees,
+    distanceUnit: AltUnits.parsecs,
+  }).createLayer().then(layer => {
+    if (!layer) {
+      throw new Error("Failed to create sun layer");
+    }
+    layer.set_plotType(PlotTypes.gaussian);
+    store.applyTableLayerSettings({
+      id: layer.id.toString(),
+      settings: [
+        ["color", Color.load('#ffff0a')],
+        ["scaleFactor", 100]
+      ]
+    });
+    return layer;
+  });
+}
+
+const sunLayer = ref<SpreadSheetLayer | null>(null);
 onMounted(() => {
   // boiler plate to disable WWT and let warning be 
   // shown to user if WebGL2 is not supported.
@@ -556,6 +615,12 @@ onMounted(() => {
     // wait for almagal toasted wtml to load, so that it is on top
     almagalWtml.load();
     await almagalWtml.ready;
+    
+    createSunLayer().then((layer) => {
+      layer.set_enabled(false); // start with sun layer disabled, as it is just a reference point for the galactic center and can be distracting
+      sunLayer.value = layer;
+      console.log("Sun layer created");
+    });
 
     // after that, we are ready to load
     layersLoaded.value = true;
@@ -580,6 +645,10 @@ function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number)
 
 /* Tracks whether the WWT view is currently in 3D mode, kept in sync via wwt-3d-switch's v-model */
 const in3dView = ref(false);
+
+watch(in3dView, (in3d) => {
+  sunLayer.value?.set_enabled(in3d); 
+});
 
 let first3dswap = true;
 function setup3DView() {
