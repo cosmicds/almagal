@@ -97,7 +97,7 @@ export interface SpreadsheetLayerOptions {
  *   - `raUnit`: Default: RAUnits.hours
  */
 export function useSpreadsheetLayer(
-  points: [number, number][] | CoordinateJson[],
+  points: [number, number][] | [number, number, number][] | CoordinateJson[],
   options: SpreadsheetLayerOptions = {}
 ) {
   const store = engineStore();

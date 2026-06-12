@@ -33,112 +33,6 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
-            <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
-              <wwt-3d-switch>
-                <template #default="{ in3d, onClick}">
-                  <v-btn
-                    @click="onClick"
-                  >
-                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
-                  </v-btn>
-                </template>
-              </wwt-3d-switch>
-              <v-btn
-                style="pointer-events: auto;"
-                @click="showInfoSheet = true"
-              >
-                Show Info
-              </v-btn>
-              <v-btn
-                v-if="showAllInView"
-                style="pointer-events: auto;"
-                @click="showAllSourcesInView"
-              >
-                Show all in view ({{ sourcesInView.count }})
-              </v-btn>
-              <v-btn
-                style="pointer-events: auto;"
-                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                @click="spreadsheetVisible = !spreadsheetVisible"
-              >
-                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
-              </v-btn>
-            </div>
-            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
-            <v-select
-              v-model="foregroundImage"
-              :items="foregroundImageOptions"
-              item-title="label"
-              item-value="value"
-              hide-details
-              density="compact"
-              style="pointer-events: auto; max-width: 220px;"
-              class="blur-button"
-              label="Background survey"
-            />
-            <div
-              v-for="layer in almagalWtml.imagesetLayers"
-              
-              :key="layer.id.toString()"
-              class="layer-list__item elevation-2 my-2"
-            >
-              <ImagesetItem
-                style="color: black"
-                :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                instant
-                :crange="{min: -0.001, max: 1}"
-                log-stretch-slider
-              />
-              <div
-                style="pointer-events: auto;"
-              >
-                <v-btn
-                  size="small"
-                  variant="outlined"
-                  class="blur-button"
-                  prepend-icon="mdi-refresh"
-                  @click="setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
-                >
-                  Reset
-                </v-btn>
-              </div>
-            </div>
-            
-            <div 
-              v-if="almagalSourceLayers.size > 0 || pendingSourceIids.length > 0"
-              class="layer-list"
-            >
-              <div
-                v-for="layer in [...almagalSourceLayers.values()]"
-                :key="layer.id.toString()"
-                class="layer-list__item"
-              >
-                <ImagesetItem
-                  v-if="store.imagesetStateForLayer(layer.id.toString())"
-                  style="color: black"
-                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                  instant
-                  log-stretch-slider
-                  only-opacity
-                />
-              </div>
-              <div
-                v-for="iid in pendingSourceIids"
-                :key="iid"
-                class="layer-list__item"
-              >
-                <div class="pending-source-label">
-                  {{ getAlmagalSourceById(iid)?.aid ?? iid }}
-                </div>
-                <v-progress-linear
-                  indeterminate
-                  color="orange"
-                  height="3"
-                />
-              </div>
-            </div>
-          </div>
-          <div id="right-buttons">
             <fieldset class="almagal-filterset">
               <!-- mass, lum, lm, tdust, dist_ag, tbol -->
               <div
@@ -151,14 +45,17 @@
                     :model-value="filterSpec.get(field)!"
                     :min="almagalColumnRanges[field].min"
                     :max="almagalColumnRanges[field].max"
-                    :steps="1000"
+                    :steps="500"
                     log
                     @update:model-value="(val) => filterSpec.set(field, val)"
                   />
                 </label>
               </div>
             </fieldset>
-            <div class="d-flex align-center mt-1 ga-2">
+            <div 
+              v-if="!in3dView"
+              class="d-flex align-center mt-1 ga-2"
+            >
               <v-tooltip
                 v-if="!showSearch"
                 text="Search for source"
@@ -200,6 +97,123 @@
                   @click="showSearch = false"
                 />
               </template>
+            </div>
+          </div>
+          <div id="right-buttons">
+            <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
+              <wwt-3d-switch
+                v-model="in3dView"
+                @3d="setup3DView"
+              >
+                <template #default="{ in3d, onClick}">
+                  <v-btn
+                    @click="onClick"
+                  >
+                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
+                  </v-btn>
+                </template>
+              </wwt-3d-switch>
+              <v-btn
+                style="pointer-events: auto;"
+                @click="showInfoSheet = true"
+              >
+                Show Info
+              </v-btn>
+              <v-btn
+                v-if="showAllInView && !in3dView"
+                style="pointer-events: auto;"
+                @click="showAllSourcesInView"
+              >
+                Show all in view ({{ sourcesInView.count }})
+              </v-btn>
+              <v-btn
+                style="pointer-events: auto;"
+                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                @click="spreadsheetVisible = !spreadsheetVisible"
+              >
+                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
+              </v-btn>
+            </div>
+            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
+            <v-select
+              v-if="!in3dView"
+              v-model="foregroundImage"
+              :items="foregroundImageOptions"
+              item-title="label"
+              item-value="value"
+              hide-details
+              density="compact"
+              style="pointer-events: auto; max-width: 220px;"
+              class="blur-button"
+              label="Background survey"
+            />
+            <div
+              v-if="!in3dView"
+            >
+              <div
+                v-for="layer in almagalWtml.imagesetLayers"
+                
+                :key="layer.id.toString()"
+                class="layer-list__item elevation-2 my-2"
+              >
+                <ImagesetItem
+                  style="color: black"
+                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                  instant
+                  :crange="{min: -0.001, max: 1}"
+                  log-stretch-slider
+                />
+                <div
+                  style="pointer-events: auto;"
+                >
+                  <v-btn
+                    size="small"
+                    variant="outlined"
+                    class="blur-button"
+                    prepend-icon="mdi-refresh"
+                    @click="setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
+                  >
+                    Reset
+                  </v-btn>
+                </div>
+              </div>
+            </div>
+            <div 
+              v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0) && !in3dView"
+              class="layer-list"
+            >
+              <div
+                v-for="layer in [...almagalSourceLayers.values()]"
+                :key="layer.id.toString()"
+                class="layer-list__item"
+              >
+                <ImagesetItem
+                  v-if="store.imagesetStateForLayer(layer.id.toString())"
+                  style="color: black"
+                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                  instant
+                  log-stretch-slider
+                  hide-opacity
+                  hide-colormap
+                  hide-vrange
+                  hide-goto
+                  no-open
+                />
+              </div>
+              <div
+                v-for="iid in pendingSourceIids"
+                :key="iid"
+                class="layer-list__item"
+              >
+                <div class="pending-source-label">
+                  {{ getAlmagalSourceById(iid)?.aid ?? iid }}
+                </div>
+                <v-progress-linear
+                  indeterminate
+                  color="orange"
+                  height="3"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -251,7 +265,7 @@
             ALMAGAL: ALMA Evolutionary study of High Mass Protocluster Formation in the Galaxy
           </p>
           <AlmaGalSourceInfoDisplay
-            v-if="selectedAlmagalSource"
+            v-if="selectedAlmagalSource && !in3dView"
             :source="selectedAlmagalSource"
           />
         </div>
@@ -282,9 +296,12 @@ import {
   ImageSetLayer, 
   Imageset, 
   TileCache,
+  Coordinates,
+  Color,
+  SpreadSheetLayer,
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
-import { ScaleTypes } from "@wwtelescope/engine-types";
+import { ScaleTypes, RAUnits, AltTypes, AltUnits, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
 import { addCustomColormaps, COLORMAPS, type Colormaps  } from "./wwt-colormaps/colormaps";
 addCustomColormaps();
 
@@ -312,6 +329,7 @@ import {
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
+import { useSpreadsheetLayer } from "./composables/useSpreadsheetLayer";
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
 export interface WwtPlaygroundProps {
@@ -366,7 +384,7 @@ const accentColor2 = ref("#FC9954");
 /* Get the source list first */
 const almagalSourceList = shallowRef(almagalSources);
 const hoveredSource = ref<ALMAGalSource | null>(null);
-const MAX_ITEMS_TO_SHOW = 4;
+const MAX_ITEMS_TO_SHOW = 2;
 const sourcesInView= useSourcesInView(almagalSourceList.value);
 const showAllInView = computed(() => sourcesInView.count.value > 0 && sourcesInView.count.value <= MAX_ITEMS_TO_SHOW);
 
@@ -490,6 +508,62 @@ const almagalWtml = reactive(useWtmlLoader(url, {
 })
 );
 
+const sunCSV = `
+ra,dec,d
+106.069042627535,-11.4743592401899,1E-8
+`;
+function createSunLayer() {
+  /* idk what i did wrong with this */ 
+  // return store.createTableLayer({
+  //   referenceFrame: "Sky",
+  //   name: "The Sun",
+  //   dataCsv: sunCSV.replace(/\n/g, "\r\n")
+  // }).then(layer => {
+  //   layer.set_lngColumn(0);
+  //   layer.set_latColumn(1);
+  //   layer.set_altColumn(2);
+  //   layer.set_raUnits(RAUnits.degrees);
+  //   layer.set_altUnit(AltUnits.parsecs);
+  //   layer.set_altType(AltTypes.distance);
+  //   layer.set_showFarSide(true);
+  //   layer.set_markerScale(MarkerScales.screen);
+  //   layer.set_plotType(PlotTypes.gaussian);
+  //   layer.set_opacity(1);
+  //   layer.set_scaleFactor(100);
+  //   store.applyTableLayerSettings({
+  //     id: layer.id.toString(),
+  //     settings: [
+  //       ["color", Color.load('#ffff0a')],
+  //       ["scaleFactor", 100]
+  //     ]
+  //   });
+  //   return layer;
+  // });
+    
+  return useSpreadsheetLayer([[106.069042627535, -11.4743592401899, 1E-8]], {
+    name: "The Sun",
+    color: "#ffff0a",
+    markerSize: 10,
+    markerType: "point",
+    raUnit: RAUnits.degrees,
+    distanceUnit: AltUnits.parsecs,
+  }).createLayer().then(layer => {
+    if (!layer) {
+      throw new Error("Failed to create sun layer");
+    }
+    layer.set_plotType(PlotTypes.gaussian);
+    store.applyTableLayerSettings({
+      id: layer.id.toString(),
+      settings: [
+        ["color", Color.load('#ffff0a')],
+        ["scaleFactor", 100]
+      ]
+    });
+    return layer;
+  });
+}
+
+const sunLayer = ref<SpreadSheetLayer | null>(null);
 onMounted(() => {
   // boiler plate to disable WWT and let warning be 
   // shown to user if WebGL2 is not supported.
@@ -506,10 +580,14 @@ onMounted(() => {
   
   store.waitForReady().then(async () => {
     // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
-    // store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
+    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
+    store.applySetting(["solarSystemCosmos", false]);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
+    // get the hipparcos catalog to start loading
+    store.setBackgroundImageByName("Solar System");
+    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for that too load
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
-    WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 5);  // min zoom for showing the solar system.
+    WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
     
     // wait for spreadhseet to load
     await almagalSpreadsheetLayer.createLayer();
@@ -537,6 +615,12 @@ onMounted(() => {
     // wait for almagal toasted wtml to load, so that it is on top
     almagalWtml.load();
     await almagalWtml.ready;
+    
+    createSunLayer().then((layer) => {
+      layer.set_enabled(false); // start with sun layer disabled, as it is just a reference point for the galactic center and can be distracting
+      sunLayer.value = layer;
+      console.log("Sun layer created");
+    });
 
     // after that, we are ready to load
     layersLoaded.value = true;
@@ -544,6 +628,57 @@ onMounted(() => {
   });
 });
 
+function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number) {
+  const [ra, dec] = Coordinates.galactictoJ2000(glon, glat); 
+  // convert kpc to aU
+  const distAu = dist_kpc * 1000 * 206265;
+  
+  return store.gotoRADecZoom({
+    raRad: ra * D2R,
+    decRad: dec * D2R,
+    zoomDeg: distAu, // just go without zooming
+    rollRad: store.rollRad,
+    instant: false,
+    duration: 2.5,
+  });
+}
+
+/* Tracks whether the WWT view is currently in 3D mode, kept in sync via wwt-3d-switch's v-model */
+const in3dView = ref(false);
+
+watch(in3dView, (in3d) => {
+  sunLayer.value?.set_enabled(in3d); 
+});
+
+let first3dswap = true;
+function setup3DView() {
+  if (!first3dswap) {
+    return;
+  }
+  // the swtich has already set the initial view and mode, now we want to zoom out and above the galactic plane
+  store.gotoRADecZoom({
+    raRad: -(store.raRad + Math.PI / 2),
+    decRad: -(store.decRad + 23.5 * D2R), // tilt up by 23.5 degrees to get above the galactic plane
+    zoomDeg: 8 * 1000 * 206265,
+    rollRad: 62.9 * Math.PI / 180,
+    instant: false,
+    duration: 4,
+  }).then(() => {
+    const [glon, glat] = Coordinates.j2000toGalactic(store.raRad / D2R, store.decRad / D2R);
+    console.log("Current glon, glat:", glon, glat);
+    view3dFromGlonGlatDistkpc(glon - 20 ,  glat + 30, 8).then(() => {
+      store.gotoRADecZoom({
+        raRad: store.raRad,
+        decRad: store.decRad,
+        zoomDeg: 16 * 1000 * 206265,
+        rollRad: store.rollRad,
+        instant: false,
+        duration: 1,
+      });
+    });
+  });
+  first3dswap = false;
+}
 
 
 interface AlmaGalSourceFilterRange { max: number | null; min: number | null }

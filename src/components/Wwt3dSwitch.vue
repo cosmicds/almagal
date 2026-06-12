@@ -15,10 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { engineStore } from '@wwtelescope/engine-pinia';
 
 const store = engineStore();
+
+const model = defineModel<boolean>({ default: false });
+const emits = defineEmits(['3d', '2d']);
 
 const THREED_VIEW_NAME = "3D Solar System View";
 let oldBackgroundLayer: string | null = null;
@@ -48,9 +51,11 @@ function switchTo3D() {
       raRad: -(oldPosition.ra + Math.PI / 2),
       decRad: -(oldPosition.dec + 23.5 * Math.PI / 180), // rotate by earth' approximate obliquity
       rollRad: 62.9 * Math.PI / 180, // tilt by angle between celestial equator & galactic planes
-      zoomDeg: 15000 * 9 / 5,
+      zoomDeg: 2 * 15000 * 9 / 4,
       instant: true,
-    });    
+    }).then(() => {
+      emits('3d');
+    });
   });
 
 }
@@ -71,6 +76,8 @@ function switchTo2D() {
         zoomDeg: oldPosition.zoom,
         rollRad: oldPosition.roll,
         instant: true
+      }).then(() => {
+        emits('2d');
       });
     }
   });
@@ -86,6 +93,9 @@ const in3D = computed({
     }
   }
 });
+
+// keep any v-model bound by the parent in sync with the actual store-derived state
+watch(in3D, (value) => { model.value = value; }, { immediate: true });
 
 function toggle3d() {
   in3D.value = !in3D.value;
