@@ -20,6 +20,8 @@ import { engineStore } from '@wwtelescope/engine-pinia';
 
 const store = engineStore();
 
+const emits = defineEmits(['3d', '2d']);
+
 const THREED_VIEW_NAME = "3D Solar System View";
 let oldBackgroundLayer: string | null = null;
 let oldPosition: {ra: number, dec: number, zoom: number, roll: number} | null = null;
@@ -48,9 +50,11 @@ function switchTo3D() {
       raRad: -(oldPosition.ra + Math.PI / 2),
       decRad: -(oldPosition.dec + 23.5 * Math.PI / 180), // rotate by earth' approximate obliquity
       rollRad: 62.9 * Math.PI / 180, // tilt by angle between celestial equator & galactic planes
-      zoomDeg: 15000 * 9 / 5,
+      zoomDeg: 2 * 15000 * 9 / 4,
       instant: true,
-    });    
+    }).then(() => {
+      emits('3d');
+    });
   });
 
 }
@@ -71,6 +75,8 @@ function switchTo2D() {
         zoomDeg: oldPosition.zoom,
         rollRad: oldPosition.roll,
         instant: true
+      }).then(() => {
+        emits('2d');
       });
     }
   });

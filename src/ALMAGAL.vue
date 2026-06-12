@@ -34,7 +34,9 @@
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
             <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
-              <wwt-3d-switch>
+              <wwt-3d-switch
+                @3d="setup3DView"
+              >
                 <template #default="{ in3d, onClick}">
                   <v-btn
                     @click="onClick"
@@ -282,6 +284,7 @@ import {
   ImageSetLayer, 
   Imageset, 
   TileCache,
+  Coordinates,
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
 import { ScaleTypes } from "@wwtelescope/engine-types";
@@ -366,7 +369,7 @@ const accentColor2 = ref("#FC9954");
 /* Get the source list first */
 const almagalSourceList = shallowRef(almagalSources);
 const hoveredSource = ref<ALMAGalSource | null>(null);
-const MAX_ITEMS_TO_SHOW = 4;
+const MAX_ITEMS_TO_SHOW = 2;
 const sourcesInView= useSourcesInView(almagalSourceList.value);
 const showAllInView = computed(() => sourcesInView.count.value > 0 && sourcesInView.count.value <= MAX_ITEMS_TO_SHOW);
 
@@ -506,10 +509,14 @@ onMounted(() => {
   
   store.waitForReady().then(async () => {
     // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
-    // store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
+    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
+    store.applySetting(["solarSystemCosmos", false]);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
+    // get the hipparcos catalog to start loading
+    store.setBackgroundImageByName("Solar System");
+    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for that too load
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
-    WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 5);  // min zoom for showing the solar system.
+    WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
     
     // wait for spreadhseet to load
     await almagalSpreadsheetLayer.createLayer();
@@ -544,6 +551,50 @@ onMounted(() => {
   });
 });
 
+function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number) {
+  const [ra, dec] = Coordinates.galactictoJ2000(glon, glat); 
+  // convert kpc to aU
+  const distAu = dist_kpc * 1000 * 206265;
+  
+  return store.gotoRADecZoom({
+    raRad: ra * D2R,
+    decRad: dec * D2R,
+    zoomDeg: distAu, // just go without zooming
+    rollRad: store.rollRad,
+    instant: false,
+    duration: 2.5,
+  });
+}
+
+let first3dswap = true;
+function setup3DView() {
+  if (!first3dswap) {
+    return;
+  }
+  // the swtich has already set the initial view and mode, now we want to zoom out and above the galactic plane
+  store.gotoRADecZoom({
+    raRad: -(store.raRad + Math.PI / 2),
+    decRad: -(store.decRad + 23.5 * D2R), // tilt up by 23.5 degrees to get above the galactic plane
+    zoomDeg: 8 * 1000 * 206265,
+    rollRad: 62.9 * Math.PI / 180,
+    instant: false,
+    duration: 4,
+  }).then(() => {
+    const [glon, glat] = Coordinates.j2000toGalactic(store.raRad / D2R, store.decRad / D2R);
+    console.log("Current glon, glat:", glon, glat);
+    view3dFromGlonGlatDistkpc(glon - 20 ,  glat + 30, 8).then(() => {
+      store.gotoRADecZoom({
+        raRad: store.raRad,
+        decRad: store.decRad,
+        zoomDeg: 16 * 1000 * 206265,
+        rollRad: store.rollRad,
+        instant: false,
+        duration: 1,
+      });
+    });
+  });
+  first3dswap = false;
+}
 
 
 interface AlmaGalSourceFilterRange { max: number | null; min: number | null }
