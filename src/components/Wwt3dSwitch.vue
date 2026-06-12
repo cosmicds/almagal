@@ -15,11 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { engineStore } from '@wwtelescope/engine-pinia';
 
 const store = engineStore();
 
+const model = defineModel<boolean>({ default: false });
 const emits = defineEmits(['3d', '2d']);
 
 const THREED_VIEW_NAME = "3D Solar System View";
@@ -92,6 +93,9 @@ const in3D = computed({
     }
   }
 });
+
+// keep any v-model bound by the parent in sync with the actual store-derived state
+watch(in3D, (value) => { model.value = value; }, { immediate: true });
 
 function toggle3d() {
   in3D.value = !in3D.value;

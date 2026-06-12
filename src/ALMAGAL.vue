@@ -33,114 +33,6 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
-            <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
-              <wwt-3d-switch
-                @3d="setup3DView"
-              >
-                <template #default="{ in3d, onClick}">
-                  <v-btn
-                    @click="onClick"
-                  >
-                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
-                  </v-btn>
-                </template>
-              </wwt-3d-switch>
-              <v-btn
-                style="pointer-events: auto;"
-                @click="showInfoSheet = true"
-              >
-                Show Info
-              </v-btn>
-              <v-btn
-                v-if="showAllInView"
-                style="pointer-events: auto;"
-                @click="showAllSourcesInView"
-              >
-                Show all in view ({{ sourcesInView.count }})
-              </v-btn>
-              <v-btn
-                style="pointer-events: auto;"
-                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                @click="spreadsheetVisible = !spreadsheetVisible"
-              >
-                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
-              </v-btn>
-            </div>
-            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
-            <v-select
-              v-model="foregroundImage"
-              :items="foregroundImageOptions"
-              item-title="label"
-              item-value="value"
-              hide-details
-              density="compact"
-              style="pointer-events: auto; max-width: 220px;"
-              class="blur-button"
-              label="Background survey"
-            />
-            <div
-              v-for="layer in almagalWtml.imagesetLayers"
-              
-              :key="layer.id.toString()"
-              class="layer-list__item elevation-2 my-2"
-            >
-              <ImagesetItem
-                style="color: black"
-                :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                instant
-                :crange="{min: -0.001, max: 1}"
-                log-stretch-slider
-              />
-              <div
-                style="pointer-events: auto;"
-              >
-                <v-btn
-                  size="small"
-                  variant="outlined"
-                  class="blur-button"
-                  prepend-icon="mdi-refresh"
-                  @click="setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
-                >
-                  Reset
-                </v-btn>
-              </div>
-            </div>
-            
-            <div 
-              v-if="almagalSourceLayers.size > 0 || pendingSourceIids.length > 0"
-              class="layer-list"
-            >
-              <div
-                v-for="layer in [...almagalSourceLayers.values()]"
-                :key="layer.id.toString()"
-                class="layer-list__item"
-              >
-                <ImagesetItem
-                  v-if="store.imagesetStateForLayer(layer.id.toString())"
-                  style="color: black"
-                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                  instant
-                  log-stretch-slider
-                  only-opacity
-                />
-              </div>
-              <div
-                v-for="iid in pendingSourceIids"
-                :key="iid"
-                class="layer-list__item"
-              >
-                <div class="pending-source-label">
-                  {{ getAlmagalSourceById(iid)?.aid ?? iid }}
-                </div>
-                <v-progress-linear
-                  indeterminate
-                  color="orange"
-                  height="3"
-                />
-              </div>
-            </div>
-          </div>
-          <div id="right-buttons">
             <fieldset class="almagal-filterset">
               <!-- mass, lum, lm, tdust, dist_ag, tbol -->
               <div
@@ -160,7 +52,10 @@
                 </label>
               </div>
             </fieldset>
-            <div class="d-flex align-center mt-1 ga-2">
+            <div 
+              v-if="!in3dView"
+              class="d-flex align-center mt-1 ga-2"
+            >
               <v-tooltip
                 v-if="!showSearch"
                 text="Search for source"
@@ -202,6 +97,119 @@
                   @click="showSearch = false"
                 />
               </template>
+            </div>
+          </div>
+          <div id="right-buttons">
+            <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
+              <wwt-3d-switch
+                v-model="in3dView"
+                @3d="setup3DView"
+              >
+                <template #default="{ in3d, onClick}">
+                  <v-btn
+                    @click="onClick"
+                  >
+                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
+                  </v-btn>
+                </template>
+              </wwt-3d-switch>
+              <v-btn
+                style="pointer-events: auto;"
+                @click="showInfoSheet = true"
+              >
+                Show Info
+              </v-btn>
+              <v-btn
+                v-if="showAllInView && !in3dView"
+                style="pointer-events: auto;"
+                @click="showAllSourcesInView"
+              >
+                Show all in view ({{ sourcesInView.count }})
+              </v-btn>
+              <v-btn
+                style="pointer-events: auto;"
+                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                @click="spreadsheetVisible = !spreadsheetVisible"
+              >
+                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
+              </v-btn>
+            </div>
+            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
+            <v-select
+              v-if="!in3dView"
+              v-model="foregroundImage"
+              :items="foregroundImageOptions"
+              item-title="label"
+              item-value="value"
+              hide-details
+              density="compact"
+              style="pointer-events: auto; max-width: 220px;"
+              class="blur-button"
+              label="Background survey"
+            />
+            <div
+              v-if="!in3dView"
+            >
+              <div
+                v-for="layer in almagalWtml.imagesetLayers"
+                
+                :key="layer.id.toString()"
+                class="layer-list__item elevation-2 my-2"
+              >
+                <ImagesetItem
+                  style="color: black"
+                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                  instant
+                  :crange="{min: -0.001, max: 1}"
+                  log-stretch-slider
+                />
+                <div
+                  style="pointer-events: auto;"
+                >
+                  <v-btn
+                    size="small"
+                    variant="outlined"
+                    class="blur-button"
+                    prepend-icon="mdi-refresh"
+                    @click="setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
+                  >
+                    Reset
+                  </v-btn>
+                </div>
+              </div>
+            </div>
+            <div 
+              v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0) && !in3dView"
+              class="layer-list"
+            >
+              <div
+                v-for="layer in [...almagalSourceLayers.values()]"
+                :key="layer.id.toString()"
+                class="layer-list__item"
+              >
+                <ImagesetItem
+                  v-if="store.imagesetStateForLayer(layer.id.toString())"
+                  style="color: black"
+                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                  instant
+                  log-stretch-slider
+                  only-opacity
+                />
+              </div>
+              <div
+                v-for="iid in pendingSourceIids"
+                :key="iid"
+                class="layer-list__item"
+              >
+                <div class="pending-source-label">
+                  {{ getAlmagalSourceById(iid)?.aid ?? iid }}
+                </div>
+                <v-progress-linear
+                  indeterminate
+                  color="orange"
+                  height="3"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -253,7 +261,7 @@
             ALMAGAL: ALMA Evolutionary study of High Mass Protocluster Formation in the Galaxy
           </p>
           <AlmaGalSourceInfoDisplay
-            v-if="selectedAlmagalSource"
+            v-if="selectedAlmagalSource && !in3dView"
             :source="selectedAlmagalSource"
           />
         </div>
@@ -565,6 +573,9 @@ function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number)
     duration: 2.5,
   });
 }
+
+/* Tracks whether the WWT view is currently in 3D mode, kept in sync via wwt-3d-switch's v-model */
+const in3dView = ref(false);
 
 let first3dswap = true;
 function setup3DView() {
