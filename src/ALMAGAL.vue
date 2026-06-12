@@ -45,7 +45,7 @@
                     :model-value="filterSpec.get(field)!"
                     :min="almagalColumnRanges[field].min"
                     :max="almagalColumnRanges[field].max"
-                    :steps="1000"
+                    :steps="500"
                     log
                     @update:model-value="(val) => filterSpec.set(field, val)"
                   />

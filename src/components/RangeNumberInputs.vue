@@ -3,18 +3,22 @@
   <div class="range-number-inputs">
     <div class="rni-numbers">
       <input
+        v-if="false"
         v-model.number="minValue"
         type="number"
         :min="min"
         :max="max"
       >
+      <span class="rni-display">{{ formatSigFigs(minValue) }}</span>
       <span class="sep">&mdash;</span>
       <input
+        v-if="false"
         v-model.number="maxValue"
         type="number"
         :min="min"
         :max="max"
       >
+      <span class="rni-display">{{ formatSigFigs(maxValue) }}</span>
     </div>
     <div class="rni-drs">
       <double-range-slider
@@ -50,6 +54,9 @@ const props = defineProps<{
 
 const transform = (v: number) => props.log ? Math.log10(v) : v;
 const inverse = (v: number) => props.log ? 10 ** v : v;
+
+const formatSigFigs = (v: number, sigFigs = 3) =>
+  Number.isFinite(v) ? Number(v.toPrecision(sigFigs)).toString() : String(v);
 
 const minValue = computed({
   get: () => model.value.min ?? props.min,
@@ -124,9 +131,19 @@ onMounted(() => {
 }
 
 .rni-numbers > input::hover {
-  
+
 }
 .rni-numbers > input:last-child {
+  text-align: right;
+}
+
+.rni-display {
+  width: min-content;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.rni-display:last-of-type {
   text-align: right;
 }
 
