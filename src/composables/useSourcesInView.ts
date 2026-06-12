@@ -2,6 +2,7 @@ import { computed, shallowRef } from "vue";
 import { watchThrottled } from "@vueuse/core";
 import { engineStore } from "@wwtelescope/engine-pinia";
 import { WWTControl } from "@wwtelescope/engine";
+import { ImageSetType } from "@wwtelescope/engine-types";
 
 export interface RaDecPair {
   ra: number;  // degrees
@@ -36,7 +37,7 @@ export function useSourcesInView<T extends RaDecPair>(
   function recompute() {
     // since we are not using store.waitForReady, we need to manually check for a renderContext
     const ctl = WWTControl.singleton;
-    if (!ctl?.renderContext) {
+    if (!ctl?.renderContext || (store.backgroundImageset?.get_dataSetType() !== ImageSetType.sky)) {
       sourcesInView.value = [];
       return;
     }
