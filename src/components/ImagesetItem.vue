@@ -18,8 +18,8 @@
       <label
         focusable="false"
         class="name-label ellipsize"
-        @click="isSelected = !isSelected"
-        @keyup.enter="isSelected = !isSelected"
+        @click="noOpen ? ()=>null : (isSelected = !isSelected)"
+        @keyup.enter="noOpen ? ()=>null : (isSelected = !isSelected)"
       >{{ imageset.settings.name }}
       </label>
       <!-- <span
@@ -28,12 +28,14 @@
         title="In view"
       ></span> -->
       <font-awesome-icon
+        v-if="!hideGoto"
         v-hide="!hasFocus"
         class="icon-button"
         icon="map-marker-alt"
         @click="handleGoto"
       />
       <font-awesome-icon
+        v-if="!hideVisibility"
         v-hide="!hasFocus"
         class="icon-button"
         :icon="imageset.settings.enabled ? 'eye' : 'eye-slash'"
@@ -52,7 +54,10 @@
         v-if="isSelected"
         class="detail-container"
       >
-        <div class="detail-row">
+        <div
+          v-if="!hideOpacity"
+          class="detail-row"
+        >
           <span class="prompt">Opacity:</span>
           <v-slider
             v-model="twoWayOpacity"
@@ -65,7 +70,7 @@
         </div>
 
         <div
-          v-if="!props.onlyOpacity"
+          v-if="!hideColormap"
           class="detail-row"
         >
           <span class="prompt">Colormap:</span><select v-model="twoWayColorMapperName">
@@ -80,7 +85,7 @@
         </div>
 
         <div
-          v-if="!props.onlyOpacity"
+          v-if="!hideVrange"
           class="detail-row"
         >
           <span class="prompt">Stretch:</span><select v-model="twoWayScaleType">
@@ -95,7 +100,7 @@
         </div>
       
         <div
-          v-if="!props.onlyOpacity"
+          v-if="!hideVrange"
           class="detail-row"
         >
           <span class="prompt cutoff">Low:</span>
@@ -115,7 +120,7 @@
           ></component>
         </div>
         <div
-          v-if="!props.onlyOpacity"
+          v-if="!hideVrange"
           class="detail-row"
         >
           <span class="prompt cutoff">High:</span>
@@ -197,7 +202,12 @@ const props = defineProps({
   instant: {type: Boolean, required: false, default: false },
   crange: { type: Object as () => { min: number; max: number }, required: false, default: undefined },
   logStretchSlider: { type: Boolean, required: false, default: false },
-  onlyOpacity: { type: Boolean, required: false, default: false },
+  hideOpacity: { type: Boolean, required: false, default: false },
+  hideColormap: { type: Boolean, required: false, default: false },
+  hideVrange: { type: Boolean, required: false, default: false },
+  hideGoto: { type: Boolean, required: false, default: false },
+  hideVisibility: { type: Boolean, required: false, default: false },
+  noOpen: { type: Boolean, required: false, default: false },
 });
 
 const store = engineStore();

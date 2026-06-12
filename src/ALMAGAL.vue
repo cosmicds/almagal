@@ -193,7 +193,11 @@
                   :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                   instant
                   log-stretch-slider
-                  only-opacity
+                  hide-opacity
+                  hide-colormap
+                  hide-vrange
+                  hide-goto
+                  no-open
                 />
               </div>
               <div
