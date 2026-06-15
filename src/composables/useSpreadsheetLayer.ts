@@ -115,6 +115,13 @@ export function useSpreadsheetLayer(
   let originalRows: string[][] | null = null;
   let originalNamedRows: NamedRow[] | null = null;
   let originalLayer: SpreadSheetLayer | null = null;
+  let header: string[] = [];
+  const filterMask: boolean[] = [];
+  
+  function getColumnIndex(col: string): number | undefined {
+    const index = header.findIndex(h => h.toLowerCase() === col.toLowerCase());
+    return index === -1 ? undefined : index;
+  }
 
   async function createLayer() {
     if (points.length === 0) {
@@ -134,6 +141,9 @@ export function useSpreadsheetLayer(
       dataCsv = jsonToCsv(points);
       // get the first row to determine which columns are ra/dec
       const headerRow = dataCsv.split("\r\n")[0].split(",");
+      if (!headerRow.includes('ra') ||  !headerRow.includes('dec')) {
+        throw new Error(`No RA or DEC in  ${headerRow}`);
+      }
       latCol = headerRow.findIndex(h => h.toLowerCase() === "dec");
       lonCol = headerRow.findIndex(h => h.toLowerCase() === "ra");
       if (distanceColumn !== null) {
@@ -169,16 +179,18 @@ export function useSpreadsheetLayer(
     l.set_scaleFactor(markerSize);
     l.set_plotType(MARKER_TYPE_MAP[markerType]);
     l.set_opacity(1);
-    console.log("Created spreadsheet layer", l);
+    console.log("Created spreadsheet layer", l.get_name());
     originalLayer = l;
     const table = l.get__table();
     originalRows = table.rows.slice(); // make a copy
-    const header = table.header;
+    header = table.header;
     originalNamedRows = originalRows.map(row => {
       const named: NamedRow = {};
       header.forEach((h, i) => { named[h] = row[i]; });
       return named;
     });
+    filterMask.length = 0; // clear the array inplace https://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript
+    originalNamedRows.forEach(row => filterMask.push(filter(row)));
     return l;
   }
 
@@ -196,6 +208,8 @@ export function useSpreadsheetLayer(
     if (!originalLayer) return;
     if (!originalRows || !originalNamedRows) return;
     const t = originalLayer.get__table();
+    filterMask.length = 0;
+    originalNamedRows.forEach(row => filterMask.push(filter(row)));
     // Test against the named view, but keep the positional row the table needs.
     t.rows = originalRows.filter((_, i) => filter(originalNamedRows![i]));
     originalLayer.set__table(t);
@@ -210,5 +224,5 @@ export function useSpreadsheetLayer(
   function show() { setVisible(true); }
   function hide() { setVisible(false); }
 
-  return { createLayer, applyFilter, setFilter, show, hide, setVisible };
+  return { createLayer, applyFilter, setFilter, filterMask, show, hide, setVisible, getColumnIndex };
 }

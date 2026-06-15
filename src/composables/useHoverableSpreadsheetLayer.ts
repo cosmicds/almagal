@@ -55,8 +55,12 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     
     // check if we are within the pixel threshold
     const pixelDist = Math.sqrt((pt.x - screenPoint.x) ** 2 + (pt.y - screenPoint.y) ** 2);
+    if (pixelDist >= pixelThreshold) return null;
 
-    return pixelDist < pixelThreshold ? { row: closest, index: closestIndex } : null;
+    // respect the spreadsheet's current filter, if one has been set
+    if (spreadsheet.filterMask[closestIndex] === false) return null;
+
+    return { row: closest, index: closestIndex };
   }
 
   let lastResult: ReturnType<typeof findClosestRow> = null;
