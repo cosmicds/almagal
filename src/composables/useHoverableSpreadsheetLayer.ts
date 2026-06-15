@@ -6,6 +6,11 @@ import { Prettify } from "@/types";
 import { Vector3d } from "@wwtelescope/engine";
 const D2R = Math.PI / 180;
 
+interface ScreenPoint {
+  x : number;
+  y: number;
+};
+
 export interface RaDecPair {
   ra: number;  // degrees
   dec: number; // degrees
@@ -67,15 +72,14 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     const layer = spreadsheet.layer.value;
     if (!layer) return null;
 
-    type Point = { x : number; y: number; };
-    const pt: Point = { x: event.offsetX, y: event.offsetY };
+    const pt: ScreenPoint = { x: event.offsetX, y: event.offsetY };
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error `positions` does exit
     const positions: Vector3d[] = layer.positions;
 
     let minDistSq = pixelThreshold ** 2;
-    let candidates: [number, number, Point][] = [];
+    const candidates: [number, number, ScreenPoint][] = [];
     rows.forEach((_row, index) => {
       const position = positions[index];
       if (!position) return;
@@ -97,7 +101,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     }
 
     // If there are multiple values, we should sort by depth
-    const depths = finalCandidates.map(([index, distSq, screenPoint]) => {
+    const depths = finalCandidates.map(([index, _distSq, screenPoint]) => {
       const position = positions[index];
       const [near, ray] = store.findRayForScreenPoint(screenPoint);
       // Should be the same for any coordinate, so just pick one
