@@ -580,7 +580,7 @@ onMounted(() => {
   
   store.waitForReady().then(async () => {
     // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
-    store.applySetting(["galacticMode", false]); /* moves might be wierd, but convenient coord sys */
+    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     store.applySetting(["solarSystemCosmos", false]);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     // get the hipparcos catalog to start loading
