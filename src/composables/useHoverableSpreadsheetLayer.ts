@@ -3,6 +3,7 @@ import { distance } from "@wwtelescope/astro";
 import { useSpreadsheetLayer, type SpreadsheetLayerOptions } from "./useSpreadsheetLayer";
 import { ImageSetType } from "@wwtelescope/engine-types";
 import { Prettify } from "@/types";
+import { Vector3d } from "@wwtelescope/engine";
 const D2R = Math.PI / 180;
 
 export interface RaDecPair {
@@ -20,6 +21,9 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   rows: T[],
   options: Prettify<HoverableSpreadsheetLayerOptions<T>> = {}
 ) {
+
+  type ClosestRowFinder = (event: PointerEvent) => { row: T, index: number } | null;
+
   const store = engineStore();
   const { pixelThreshold = 20, onHover, ...spreadsheetOptions } = options;
 
@@ -30,7 +34,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   const spreadsheet = useSpreadsheetLayer(points, spreadsheetOptions); // create the underlying spreadsheet layer
 
   // add mouse/pointer trackings (like green-comet, brute force)
-  function findClosestRow(event: PointerEvent) {
+  function findClosestRow2D(event: PointerEvent) {
     const pt = { x: event.offsetX, y: event.offsetY };
     const raDecDeg = store.findRADecForScreenPoint(pt);
     const targetRaRad = raDecDeg.ra * D2R;
@@ -38,7 +42,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
 
     let minDist = Infinity;
     let closestIndex = -1;
-    
+
     // brute-force search through rows
     rows.forEach((row, i) => {
       const dist = distance(targetRaRad, targetDecRad, row.ra * D2R, row.dec * D2R);
@@ -52,18 +56,76 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
 
     const closest = rows[closestIndex];
     const screenPoint = store.findScreenPointForRADec({ ra: closest.ra, dec: closest.dec });
-    
+
     // check if we are within the pixel threshold
     const pixelDist = Math.sqrt((pt.x - screenPoint.x) ** 2 + (pt.y - screenPoint.y) ** 2);
 
     return pixelDist < pixelThreshold ? { row: closest, index: closestIndex } : null;
   }
 
+  function findClosestRow3D(event: PointerEvent) {
+    const layer = spreadsheet.layer.value;
+    if (!layer) return;
+
+    type Point = { x : number; y: number; };
+    const pt: Point = { x: event.offsetX, y: event.offsetY };
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error `positions` does exit
+    const positions: Vector3d[] = layer.positions;
+
+    let minDistSq = pixelThreshold ** 2;
+    let candidates: [number, number, Point] = [];
+    rows.forEach((_row, index) => {
+      const position = positions[index];
+      if (!position) return;
+
+      const screenPoint = store.findScreenPointForCoordinates({ x: position.x, y: position.z, z: position.y });
+      const distSq = (screenPoint.x - pt.x) ** 2 + (screenPoint.y - pt.y) ** 2;
+      if (distSq < minDistSq) {
+        minDistSq = distSq;
+        candidates.push([index, distSq, screenPoint]);
+      }
+    });
+
+    const finalCandidates = candidates.filter(c => c[1] <= minDistSq);
+    if (finalCandidates.length === 0) {
+      return null;
+    } else if (finalCandidates.length === 1) {
+      const index = finalCandidates[0][0];
+      return { row: rows[index], index };
+    }
+
+    // If there are multiple values, we should sort by depth
+    const depths = finalCandidates.map(([index, distSq, screenPoint]) => {
+      const position = positions[index];
+      const [near, ray] = store.findRayForScreenPoint(screenPoint);
+      // Should be the same for any coordinate, so just pick one
+      const z = (position.x - near.x) / ray.x;
+      return z;
+    });
+
+    let minDepthIndex = 0;
+    for (let i = 1; i < depths.length; i++) {
+      if (depths[i] < depths[minDepthIndex]) {
+        minDepthIndex = i;
+      }
+    }
+
+    return { row: rows[minDepthIndex], index: minDepthIndex };
+  }
+
+  function activeRowFinder(): ClosestRowFinder | null {
+    const type = store.backgroundImageset?.get_dataSetType();
+    return type === ImageSetType.sky ? findClosestRow2D : (type === ImageSetType.solarSystem ? findClosestRow3D : null);
+  }
+
   let lastResult: ReturnType<typeof findClosestRow> = null;
   function onPointerMove(event: PointerEvent) {
-    if (store.backgroundImageset?.get_dataSetType() !== ImageSetType.sky) return; // only enable for sky layers
     if (!onHover) return;
-    const result = findClosestRow(event);
+    const rowFinder = activeRowFinder();
+    if (!rowFinder) return;
+    const result = rowFinder(event);
     if (lastResult === null && result === null) return; // both null, no change
     if (result && lastResult?.index === result.index) return; // same row, no change
     onHover(result?.row ?? null, result?.index ?? -1);
@@ -73,11 +135,12 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   function onPointerDown(_event: PointerEvent) { /* i don't think we need this */ }
 
   function onPointerUp(_event: PointerEvent) { /* i don't think we need this */ }
-  
+
   function onPointerClick(event: PointerEvent) {
-    if (store.backgroundImageset?.get_dataSetType() !== ImageSetType.sky) return; // only enable for sky layers
     if (!options.onClick) return;
-    const result = findClosestRow(event);
+    const rowFinder = activeRowFinder();
+    if (!rowFinder) return;
+    const result = rowFinder(event);
     if (result) {
       options.onClick(result.row ?? null, result.index ?? -1);
     }
