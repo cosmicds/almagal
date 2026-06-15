@@ -562,7 +562,7 @@ function createSunLayer() {
     name: "The Sun",
     color: "#ffff0a",
     markerSize: 10,
-    markerType: "point",
+    markerType: "gaussian",
     raUnit: RAUnits.degrees,
     distanceUnit: AltUnits.parsecs,
   }).createLayer().then(layer => {
@@ -570,6 +570,7 @@ function createSunLayer() {
       throw new Error("Failed to create sun layer");
     }
     layer.set_plotType(PlotTypes.gaussian);
+    layer.set_markerScale(MarkerScales.screen);
     store.applyTableLayerSettings({
       id: layer.id.toString(),
       settings: [
