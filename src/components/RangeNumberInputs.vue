@@ -162,8 +162,9 @@ onMounted(() => {
 
 .rni-drs {
   position: relative;
-  padding-top: 0.75em;
-  padding-bottom: 0.75em;
+  margin-top: 0.25em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   padding-left: 0;
   padding-right: 0;
 }
