@@ -40,7 +40,7 @@
                 :key="field"
                 class="filter-slider"
               >
-                <label><span>{{ field }}</span>
+                <label><span>{{ filterFieldLabels[field] }}</span>
                   <RangeNumberInputs
                     :model-value="filterSpec.get(field)!"
                     :min="almagalColumnRanges[field].min"
@@ -487,7 +487,7 @@ const FITS_LAYER_SETTINGS_RESET = {
 
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
-const url = 'https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/main/almagal/almagal_toast/almagal.wtml';
+const url = './almagal.wtml';
 
 const almagalWtmlState = ref<ImageSetLayerState | null>(null); // This will go into the ImagesetItem to control our fits properties
 // Load the WTML. This goes down to level 12
@@ -580,12 +580,12 @@ onMounted(() => {
   
   store.waitForReady().then(async () => {
     // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
-    store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
+    store.applySetting(["galacticMode", false]); /* moves might be wierd, but convenient coord sys */
     store.applySetting(["solarSystemCosmos", false]);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     // get the hipparcos catalog to start loading
     store.setBackgroundImageByName("Solar System");
-    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for that too load
+    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for hipparchos to load so later swtich is quicker
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
     
@@ -686,6 +686,17 @@ type AlmaGalSourceFilterSpec = Map<keyof ALMAGalSource, AlmaGalSourceFilterRange
 
 // Numeric source fields exposed as range-filter sliders. Edit this list to add or remove sliders.
 const filterFields = ["mass", "lum", "lm", "tdust", "dist_ag", "tbol"] as const;
+
+// Human-readable labels for the filter sliders above.
+const filterFieldLabels: Record<typeof filterFields[number], string> = {
+  mass: "Mass",
+  lum: "Luminosity",
+  lm: "Lum/Mass",
+  tdust: "Dust Temp.",
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "dist_ag": "Distance (pc)",
+  tbol: "Bolometric Temp.",
+};
 
 // Full [min, max] of each filterable column, measured from the loaded sources.
 const almagalColumnRanges = filterFields.reduce((ranges, field) => {
