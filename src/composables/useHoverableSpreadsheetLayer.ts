@@ -65,7 +65,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
 
   function findClosestRow3D(event: PointerEvent) {
     const layer = spreadsheet.layer.value;
-    if (!layer) return;
+    if (!layer) return null;
 
     type Point = { x : number; y: number; };
     const pt: Point = { x: event.offsetX, y: event.offsetY };
@@ -75,7 +75,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     const positions: Vector3d[] = layer.positions;
 
     let minDistSq = pixelThreshold ** 2;
-    let candidates: [number, number, Point] = [];
+    let candidates: [number, number, Point][] = [];
     rows.forEach((_row, index) => {
       const position = positions[index];
       if (!position) return;
@@ -120,7 +120,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     return type === ImageSetType.sky ? findClosestRow2D : (type === ImageSetType.solarSystem ? findClosestRow3D : null);
   }
 
-  let lastResult: ReturnType<typeof findClosestRow> = null;
+  let lastResult: ReturnType<ClosestRowFinder> = null;
   function onPointerMove(event: PointerEvent) {
     if (!onHover) return;
     const rowFinder = activeRowFinder();
