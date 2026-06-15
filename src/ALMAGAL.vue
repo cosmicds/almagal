@@ -45,6 +45,7 @@
                     :model-value="filterSpec.get(field)!"
                     :min="almagalColumnRanges[field].min"
                     :max="almagalColumnRanges[field].max"
+                    :fiducial="hoveredSource ? hoveredSource[field] : undefined"
                     :steps="500"
                     log
                     @update:model-value="(val) => filterSpec.set(field, val)"
@@ -80,7 +81,7 @@
                   v-model="selectedAlmagalSource"
                   class="almagal-v-select"
                   :items="almagalSourceList"
-                  item-title="aid"
+                  item-title="iid"
                   item-value="iid"
                   return-object
                   hide-details
@@ -382,7 +383,23 @@ const accentColor2 = ref("#FC9954");
 
 
 /* Get the source list first */
-const almagalSourceList = shallowRef(almagalSources);
+import almagalClumps from "./assets/almagal_clump_props_WWT.json";
+// merge almagalClumps "type" and an "included field" based on iid/INTERNAL_ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource & { type: string; included: boolean })[] {
+  const clumpMap = new Map(clumps.map(clump => [clump.INTERNAL_ID, clump]));
+  return sources.map(source => {
+    const clump = clumpMap.get(source.iid);
+    return {
+      ...source,
+      type: clump ? clump.TYPE : "unknown",
+      included: !!clump,
+      color: clump ? "#ec42f5" : "#999999", // color sources with clumps green, others gray
+    };
+  });
+}
+
+const almagalSourceList = shallowRef(mergedCatalog(almagalSources, almagalClumps));
 const hoveredSource = ref<ALMAGalSource | null>(null);
 const MAX_ITEMS_TO_SHOW = 2;
 const sourcesInView= useSourcesInView(almagalSourceList.value);
@@ -402,9 +419,10 @@ const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
   {
     name: "ALMAGAL Sources",
     color: "#32CD32",
-    markerSize: 5,
+    markerSize: 7,
     markerType: "point",
     distanceColumn: "dist_ag",
+    raUnit: RAUnits.degrees,
     onHover: (row, index) => { 
       hoveredSource.value = row as ALMAGalSource | null; 
     },
@@ -590,7 +608,13 @@ onMounted(() => {
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
     
     // wait for spreadhseet to load
-    await almagalSpreadsheetLayer.createLayer();
+    await almagalSpreadsheetLayer.createLayer().then(layer => {
+      const colorCol = almagalSpreadsheetLayer.getColumnIndex("color");
+      if (layer && colorCol) {
+        layer.set_colorMapColumn(colorCol);
+      }
+        
+    });
     almagalSpreadsheetLayer.applyFilter();
     sourcesInView.setup();
     /*
