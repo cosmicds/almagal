@@ -20,7 +20,10 @@
       >
       <span class="rni-display">{{ formatSigFigs(maxValue) }}</span>
     </div>
-    <div class="rni-drs">
+    <div 
+      :class="['rni-drs', sliderFiducial ? 'has-fiducial' : '']"
+      :style="{'--fiducial-value': sliderFiducial}"
+    >
       <double-range-slider
         ref="sliderEl"
         :min="sliderMin"
@@ -28,6 +31,10 @@
         :step="sliderStep"
         @input="onSliderInput"
       />
+      <span
+        v-if="sliderFiducial"
+        class="rni-fiducial-display"
+      ></span>
     </div>
   </div>
 </template>
@@ -50,6 +57,7 @@ const props = defineProps<{
   max: number;
   steps?: number;
   log?: boolean;
+  fiducial?: number;
 }>();
 
 const transform = (v: number) => props.log ? Math.log10(v) : v;
@@ -76,6 +84,7 @@ const maxValue = computed({
 const sliderMin = computed(() => transform(props.min));
 const sliderMax = computed(() => transform(props.max));
 const sliderStep = computed(() => (sliderMax.value - sliderMin.value) / (props.steps ?? 100));
+const sliderFiducial = computed(() => props.fiducial ? (transform(props.fiducial) - sliderMin.value)/(sliderMax.value - sliderMin.value) : undefined);
 
 const sliderEl = ref<DoubleRangeSlider | null>(null);
 
@@ -152,10 +161,33 @@ onMounted(() => {
 }
 
 .rni-drs {
+  position: relative;
   padding-top: 0.75em;
-  padding-bottom: 0.5em;
+  padding-bottom: 0.75em;
   padding-left: 0;
   padding-right: 0;
+}
+
+/* after puts it on top, before will put it below the track */
+//The 14 px comes from out setting for the thumb width. 
+.rni-fiducial-display {
+  position: absolute;
+  top: 0;
+  left: 7px;
+  right: 7px;
+  bottom: 0;
+  pointer-events: none;
+}
+.rni-fiducial-display::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--fiducial-value) * 100%);
+  top: 50%;
+  height: 75%;
+  transform: translateY(-50%) translateX(50%);
+  width: auto;
+  border: 2px solid hsl(327, 70%, 90%);
+  
 }
 
 double-range-slider {
