@@ -139,6 +139,22 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
                   </h4>
                   <h5>
                     <easyLink
+                      href="https://www.almagal.org/"
+                    >
+                      ALMAGAL Survey
+                    </easyLink>
+                  </h5>
+                  <p>Dr. Jennifer Wallace</p>
+                  <p>Prof. Cara Battersby (Co-I, ALMAGAL)</p>
+                  <br />
+                  <p>
+                    Data and Catalog from ALMAGAL. 
+                  </p>
+                  <p>
+                    Paper reference: Wallace et al. 2016 (<easyLink href="https://ui.adsabs.harvard.edu/abs/2026ApJ...998..302W">2026ApJ...998..302W</easyLink>>)
+                  </p>
+                  <h5>
+                    <easyLink
                       href="https://www.cosmicds.cfa.harvard.edu/"
                     >
                       CosmicDS
@@ -182,7 +198,7 @@ import { supportsTouchscreen, FundingAcknowledgement } from '@cosmicds/vue-toolk
 
 // https://v3-migration.vuejs.org/breaking-changes/functional-components
 const easyLink = (props: { href: string }, { slots }: SetupContext) => {
-  return h('a', { href: props.href, target: '_blank', rel: 'noopener noreferrer' }, slots.default?.());
+  return h('a', { href: props.href, target: '_blank' }, slots.default?.());
 };
 
 
