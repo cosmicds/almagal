@@ -801,7 +801,7 @@ function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer
 }
 
 watch(selectedAlmagalSource, (newSource, oldSource) => {
-  if (newSource) {
+  if (newSource && !in3dView.value) {
     store.gotoRADecZoom({
       raRad: newSource.ra * D2R,
       decRad: newSource.dec * D2R,
