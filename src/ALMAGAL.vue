@@ -1363,7 +1363,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   flex-direction: column;
   gap: 0.5em;
   width: fit-content;
-  max-width: 260px;
+  max-width: 220px;
   max-height: 50vh;
   overflow-y: scroll;
   pointer-events: auto;
