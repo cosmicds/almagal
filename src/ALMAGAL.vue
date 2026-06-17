@@ -40,7 +40,17 @@
                 :key="field"
                 class="filter-slider"
               >
-                <label><span>{{ filterFieldLabels[field] }}</span>
+                <label>
+                  <span v-html="filterFieldLabels[field]"></span>&nbsp;
+                  <span 
+                    v-if="hoveredSource" 
+                    class="fiducial-display"
+                  > 
+                    &ndash; {{ hoveredSource[field] }} 
+                    <span v-if="filterFieldUnits[field]">
+                      <span v-html="filterFieldUnits[field]"></span>
+                    </span> 
+                  </span> 
                   <RangeNumberInputs
                     :model-value="filterSpec.get(field)!"
                     :min="almagalColumnRanges[field].min"
@@ -51,6 +61,24 @@
                     @update:model-value="(val) => filterSpec.set(field, val)"
                   />
                 </label>
+              </div>
+              <hr class="mt-3" />
+              <div class="clump-type-filter">
+                <span>Clump type</span>
+                <div class="clump-type-options">
+                  <label
+                    v-for="type in CLUMP_TYPES"
+                    :key="type"
+                    class="clump-type-option"
+                  >
+                    <input
+                      v-model="clumpTypeFilter"
+                      type="checkbox"
+                      :value="type"
+                    />
+                    {{ type }}
+                  </label>
+                </div>
               </div>
             </fieldset>
             <div
@@ -380,7 +408,7 @@ const positionSet = ref(false);
 const accentColor = ref("#306C9F");
 const accentColor2 = ref("#FC9954");
 
-
+const CLUMP_TYPES = ["isolated", "empty", "simple", "rich", "unknown"];
 /* Get the source list first */
 import almagalClumps from "./assets/almagal_clump_props_WWT.json";
 // merge almagalClumps "type" and an "included field" based on iid/INTERNAL_ID
@@ -486,9 +514,9 @@ const FITS_LAYER_SETTINGS = {
   cmap: 'rdbu' as Colormaps,
   opacity: 1.0,
   stretch: {
-    stretch: ScaleTypes.linear,
-    vmin: -0.0005,
-    vmax: 0.0015,
+    stretch: ScaleTypes.log,
+    vmin: 0,
+    vmax: 0.015,
   }
 };
 
@@ -496,9 +524,9 @@ const FITS_LAYER_SETTINGS_RESET = {
   cmap: 'rdbu' as Colormaps,
   opacity: 1.0,
   stretch: {
-    stretch: ScaleTypes.linear,
-    vmin: -0.0005,
-    vmax: 0.0015,
+    stretch: ScaleTypes.log,
+    vmin: 0,
+    vmax: 0.015,
   }
 } as const;
 
@@ -569,6 +597,7 @@ function createSunLayer() {
       throw new Error("Failed to create sun layer");
     }
     layer.set_plotType(PlotTypes.gaussian);
+    layer.set_opacity(1);
     layer.set_markerScale(MarkerScales.screen);
     store.applyTableLayerSettings({
       id: layer.id.toString(),
@@ -710,16 +739,27 @@ type AlmaGalSourceFilterSpec = Map<keyof ALMAGalSource, AlmaGalSourceFilterRange
 
 // Numeric source fields exposed as range-filter sliders. Edit this list to add or remove sliders.
 const filterFields = ["mass", "lum", "lm", "tdust", "dist_ag", "tbol"] as const;
+const clumpTypeFilter = ref<string[]>(CLUMP_TYPES); // separate filter for clump type, since it is categorical not numeric
 
 // Human-readable labels for the filter sliders above.
 const filterFieldLabels: Record<typeof filterFields[number], string> = {
-  mass: "Mass",
-  lum: "Luminosity",
+  mass: "Mass (M<sub>⊙</sub>)",
+  lum: "Luminosity (L<sub>⊙</sub>)",
   lm: "Lum/Mass",
-  tdust: "Dust Temp.",
+  tdust: "Dust Temp. (K)",
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "dist_ag": "Distance (pc)",
-  tbol: "Bolometric Temp.",
+  tbol: "Bolometric Temp. (K)",
+};
+
+const  filterFieldUnits: Record<typeof filterFields[number], string> = {
+  mass: "M<sub>⊙</sub>",
+  lum: "L<sub>⊙</sub>",
+  lm: "",
+  tdust: "K",
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "dist_ag": "pc",
+  tbol: "K",
 };
 
 // Full [min, max] of each filterable column, measured from the loaded sources.
@@ -750,6 +790,10 @@ function filterFunction(row: Record<string, string>) {
     if (range.min != null && value < range.min) return false;
     if (range.max != null && value > range.max) return false;
   }
+
+  const ctype = row["type"];
+  if (!clumpTypeFilter.value.includes(ctype)) return false;
+
   return true;
 }
 
@@ -758,6 +802,7 @@ almagalSpreadsheetLayer.setFilter(filterFunction);
 
 //Re-apply filter whenever the spec changes. does nothing if layer doesn't exist
 watch(filterSpec, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
+watch(clumpTypeFilter, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 
 
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
@@ -1233,8 +1278,9 @@ and remember, position:absolute is still a positioned parent, so children can be
   flex-direction: column;
   gap: 0.5em;
   width: fit-content;
+  max-width: 250px;
   pointer-events: auto;
-  padding-inline: 5px;
+  padding: 0.5em 0.75em;
   background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(8px);
   border-radius: 8px;
@@ -1250,6 +1296,22 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 .almagal-filterset label > span {
   font-weight: bold;
+}
+
+.almagal-filterset > .clump-type-filter {
+  margin: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.clump-type-filter > span {
+  font-weight: bold;
+}
+.clump-type-filter > .clump-type-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.25em;
 }
 
 .pending-source-label {
