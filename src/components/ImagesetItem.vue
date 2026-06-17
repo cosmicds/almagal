@@ -52,6 +52,7 @@
         @click="handleDelete"
       />
       <font-awesome-icon
+        v-if="!hideReset"
         v-hide="!hasFocus"
         class="icon-button"
         icon="arrow-rotate-right"
@@ -216,6 +217,7 @@ const props = defineProps({
   hideVrange: { type: Boolean, required: false, default: false },
   hideGoto: { type: Boolean, required: false, default: false },
   hideVisibility: { type: Boolean, required: false, default: false },
+  hideReset: { type: Boolean, required: false, default: false },
   noOpen: { type: Boolean, required: false, default: false },
 });
 

@@ -217,6 +217,7 @@
                   hide-opacity
                   hide-colormap
                   hide-vrange
+                  hide-reset
                   no-open
                 />
               </div>
