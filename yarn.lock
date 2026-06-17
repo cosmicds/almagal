@@ -2408,14 +2408,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wwtelescope/engine@npm:^7.37.2":
-  version: 7.37.2
-  resolution: "@wwtelescope/engine@npm:7.37.2"
+"@wwtelescope/engine@npm:^7.38.0":
+  version: 7.38.0
+  resolution: "@wwtelescope/engine@npm:7.38.0"
   dependencies:
     "@wwtelescope/engine-types": "npm:>=0.6.0"
     pako: "npm:^1.0.11"
     uuid: "npm:^14.0.0"
-  checksum: 10c0/1054cc8eea4886f5915832f3e6edda078f4241c7802bcc00066b973d91ffc03b1c60c5e6490f0bc92403058c900eebc582e9d6feaf4c79e7fd25a941bc4dbd5f
+  checksum: 10c0/306c877df48d6b5573a6bc06658b345eeac107bb0c7205708c9f4b137fec472fc80edf1d2be98123a7cb1ee3ad1500f7c091009b71db470864dcde5ac81d688b
   languageName: node
   linkType: hard
 
