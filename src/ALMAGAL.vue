@@ -191,20 +191,12 @@
                   instant
                   :crange="{min: -0.001, max: 1}"
                   log-stretch-slider
-                />
-                <div
-                  style="pointer-events: auto;"
+                  @reset="() => setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
                 >
-                  <v-btn
-                    size="small"
-                    variant="outlined"
-                    class="blur-button"
-                    prepend-icon="mdi-refresh"
-                    @click="setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
-                  >
-                    Reset
-                  </v-btn>
-                </div>
+                  <template #name>
+                    Image Settings
+                  </template>
+                </ImagesetItem>
               </div>
             </div>
             <div
