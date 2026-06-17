@@ -47,7 +47,21 @@
               >
               </v-btn>
             </div>
-            <fieldset class="almagal-filterset">
+            <v-tooltip text="Filter sources">
+              <template #activator="p">
+                <v-btn
+                  :icon="showFilters ? 'mdi-close' : 'mdi-filter'"
+                  v-bind="p.props"
+                  size="small"
+                  color="surface-variant"
+                  @click="showFilters = !showFilters"
+                />
+              </template>
+            </v-tooltip>
+            <fieldset
+              v-if="showFilters"
+              class="almagal-filterset"
+            >
               <!-- mass, lum, lm, tdust, dist_ag, tbol -->
               <div
                 v-for="field in filterFields"
@@ -108,7 +122,6 @@
                   <v-btn
                     v-bind="tooltipProps"
                     prepend-icon="mdi-magnify"
-                    style="pointer-events: auto;"
                     class="blur-button"
                     variant="outlined"
                     @click="showSearch = true"
@@ -134,7 +147,6 @@
                 <v-btn
                   icon="mdi-close"
                   size="small"
-                  style="pointer-events: auto;"
                   variant="outlined"
                   class="blur-button"
                   @click="showSearch = false"
@@ -185,7 +197,6 @@
               v-if="showAllInView && !in3dView"
               class="blur-button"
               variant="outlined"
-              style="pointer-events: auto;"
               @click="showAllSourcesInView"
             >
               Get {{ sourcesInView.count }} source{{ sourcesInView.count > 1 ? 's' : '' }} in view
@@ -271,7 +282,6 @@
               bg-color="#00000062"
             />
             <v-btn
-              style="pointer-events: auto;"
               class="blur-button"
               variant="outlined"
               :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -438,6 +448,8 @@ const layersLoaded = ref(false);
 const positionSet = ref(false);
 const accentColor = ref("#306C9F");
 const accentColor2 = ref("#FC9954");
+
+const showFilters = ref(false);
 
 const CLUMP_TYPES = ["isolated", "empty", "simple", "rich", "unknown"];
 /* Get the source list first */
@@ -1268,6 +1280,9 @@ and remember, position:absolute is still a positioned parent, so children can be
   overflow: auto;
 }
 
+.v-btn {
+  pointer-events: auto;
+}
 
 .blur-background {
   background-color: rgba(0, 0, 0, 0.364);
