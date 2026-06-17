@@ -474,7 +474,7 @@ function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource
       ...source,
       type: clump ? clump.TYPE : "unknown",
       included: !!clump,
-      color: clump ? "#ec42f5" : "#999999", // color sources with clumps green, others gray
+      color: clump ? "#32CD32" : "#999999", // color sources with clumps green, others gray
     };
   });
 }
@@ -1363,7 +1363,9 @@ and remember, position:absolute is still a positioned parent, so children can be
   flex-direction: column;
   gap: 0.5em;
   width: fit-content;
-  max-width: 250px;
+  max-width: 260px;
+  max-height: 50vh;
+  overflow-y: scroll;
   pointer-events: auto;
   padding: 0.5em 0.75em;
   background-color: rgba(0, 0, 0, 0.364);
@@ -1371,6 +1373,8 @@ and remember, position:absolute is still a positioned parent, so children can be
   border-radius: 8px;
   font-size: 0.9em;
   padding-bottom: 1em;
+  padding-right: 1em;
+  scrollbar-gutter: stable;
   border: 1px solid white;
 }
 
