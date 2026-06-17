@@ -49,7 +49,7 @@
         @click="handleDelete"
       />
     </div>
-    <transition-expand>
+    <v-expand-transition>
       <div
         v-if="isSelected"
         class="detail-container"
@@ -140,7 +140,7 @@
           ></component>
         </div>
       </div>
-    </transition-expand>
+    </v-expand-transition>
   </div>
 </template>
 

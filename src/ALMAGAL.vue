@@ -15,7 +15,7 @@
       ></WorldWideTelescope>
       <wwt-loader v-model="isLoading" />
 
-      
+
       <!-- This contains the splash screen content -->
       <SplashScreen
         v-model="showSplashScreen"
@@ -29,7 +29,7 @@
       <div
         v-show="!(showSplashScreen)"
         id="wwt-overlay"
-      > 
+      >
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
@@ -53,7 +53,7 @@
                 </label>
               </div>
             </fieldset>
-            <div 
+            <div
               v-if="!in3dView"
               class="d-flex align-center mt-1 ga-2"
             >
@@ -153,7 +153,7 @@
             >
               <div
                 v-for="layer in almagalWtml.imagesetLayers"
-                
+
                 :key="layer.id.toString()"
                 class="layer-list__item elevation-2 my-2"
               >
@@ -179,7 +179,7 @@
                 </div>
               </div>
             </div>
-            <div 
+            <div
               v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0) && !in3dView"
               class="layer-list"
             >
@@ -197,7 +197,6 @@
                   hide-opacity
                   hide-colormap
                   hide-vrange
-                  hide-goto
                   no-open
                 />
               </div>
@@ -282,20 +281,20 @@ import { useDisplay } from "vuetify";
 
 /* WWT imports */
 import { GotoRADecZoomParams, engineStore, ImageSetLayerState } from "@wwtelescope/engine-pinia";
-import { 
-  BackgroundImageset, 
-  skyBackgroundImagesets, 
-  supportsTouchscreen, 
-  useWWTKeyboardControls, 
+import {
+  BackgroundImageset,
+  skyBackgroundImagesets,
+  supportsTouchscreen,
+  useWWTKeyboardControls,
   useFullscreen,
 } from "@cosmicds/vue-toolkit";
 import { D2R  } from "@wwtelescope/astro";
-import { 
-  WWTControl, 
-  LayerManager, 
-  Place, 
-  ImageSetLayer, 
-  Imageset, 
+import {
+  WWTControl,
+  LayerManager,
+  Place,
+  ImageSetLayer,
+  Imageset,
   TileCache,
   Coordinates,
   Color,
@@ -323,9 +322,9 @@ import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsh
 import { useSourcesInView } from "./composables/useSourcesInView";
 import { setFitsLayerSettings } from "./wwt-helpers";
 
-import { 
+import {
   almagalSources,
-  getAlmagalSourceById, 
+  getAlmagalSourceById,
   getAlmagalSourceUrl,
   type ALMAGalSource
 } from "./almagal_utils";
@@ -426,7 +425,7 @@ const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
     onHover: (row, index) => { 
       hoveredSource.value = row as ALMAGalSource | null; 
     },
-    onClick: (row) => { 
+    onClick: (row) => {
       selectedAlmagalSource.value = row as ALMAGalSource;
     },
   }
@@ -453,7 +452,7 @@ function moveToImageset(layer: ImageSetLayer, instant = true) {
   });
 }
 
-/* Load WTMLS for different background layers. 
+/* Load WTMLS for different background layers.
    Don't forget to add them to `foregroundImageOptions` and the `foregroundImage` watcher!
 */
 // In principle we could use autoload: true. But it is useful to try to load things in order
@@ -509,10 +508,10 @@ const url = './almagal.wtml';
 
 const almagalWtmlState = ref<ImageSetLayerState | null>(null); // This will go into the ImagesetItem to control our fits properties
 // Load the WTML. This goes down to level 12
-const almagalWtml = reactive(useWtmlLoader(url, { 
-  autoload: false, 
+const almagalWtml = reactive(useWtmlLoader(url, {
+  autoload: false,
   onLoad: (out, index) => {
-    // out contains: folder, place, imageset, layer. 
+    // out contains: folder, place, imageset, layer.
     console.log(`Loaded place ${out.place.get_name()} at index ${index}`);
     if (out.layer) {
       setFitsLayerSettings(out.layer.id.toString(), store, FITS_LAYER_SETTINGS);
@@ -531,7 +530,7 @@ ra,dec,d
 106.069042627535,-11.4743592401899,1E-8
 `;
 function createSunLayer() {
-  /* idk what i did wrong with this */ 
+  /* idk what i did wrong with this */
   // return store.createTableLayer({
   //   referenceFrame: "Sky",
   //   name: "The Sun",
@@ -557,7 +556,7 @@ function createSunLayer() {
   //   });
   //   return layer;
   // });
-    
+
   return useSpreadsheetLayer([[106.069042627535, -11.4743592401899, 1E-8]], {
     name: "The Sun",
     color: "#ffff0a",
@@ -584,7 +583,7 @@ function createSunLayer() {
 
 const sunLayer = ref<SpreadSheetLayer | null>(null);
 onMounted(() => {
-  // boiler plate to disable WWT and let warning be 
+  // boiler plate to disable WWT and let warning be
   // shown to user if WebGL2 is not supported.
   if (webglDisabled.value) {
     showSplashScreen.value = false;
@@ -595,8 +594,8 @@ onMounted(() => {
     WWTControl.singleton.renderOneFrame = function() {};
     return;
   }
-  
-  
+
+
   store.waitForReady().then(async () => {
     // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
     store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
@@ -607,7 +606,7 @@ onMounted(() => {
     await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for hipparchos to load so later swtich is quicker
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
-    
+
     // wait for spreadhseet to load
     await almagalSpreadsheetLayer.createLayer().then(layer => {
       const colorCol = almagalSpreadsheetLayer.getColumnIndex("color");
@@ -620,27 +619,27 @@ onMounted(() => {
     sourcesInView.setup();
     /*
      * The order in which image layers are loaded is important as they will stack.
-     * awaiting makes sure the imageset layers are registered before moving on. 
+     * awaiting makes sure the imageset layers are registered before moving on.
      */
     // wait for glimpse backgrund to load
     glimpse.load();
     await glimpse.ready;
-    
-    // // 
+
+    // //
     herschel.load();
     await herschel.ready.then(() => {
       herschel.hide();
     });
-    
+
     decaps.load();
     await decaps.ready.then(() => {
       decaps.hide();
     });
-      
+
     // wait for almagal toasted wtml to load, so that it is on top
     almagalWtml.load();
     await almagalWtml.ready;
-    
+
     createSunLayer().then((layer) => {
       layer.set_enabled(false); // start with sun layer disabled, as it is just a reference point for the galactic center and can be distracting
       sunLayer.value = layer;
@@ -654,10 +653,10 @@ onMounted(() => {
 });
 
 function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number) {
-  const [ra, dec] = Coordinates.galactictoJ2000(glon, glat); 
+  const [ra, dec] = Coordinates.galactictoJ2000(glon, glat);
   // convert kpc to aU
   const distAu = dist_kpc * 1000 * 206265;
-  
+
   return store.gotoRADecZoom({
     raRad: ra * D2R,
     decRad: dec * D2R,
@@ -672,7 +671,7 @@ function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number)
 const in3dView = ref(false);
 
 watch(in3dView, (in3d) => {
-  sunLayer.value?.set_enabled(in3d); 
+  sunLayer.value?.set_enabled(in3d);
 });
 
 let first3dswap = true;
@@ -752,9 +751,9 @@ function filterFunction(row: Record<string, string>) {
     if (range.max != null && value > range.max) return false;
   }
   return true;
-}  
+}
 
-// the filter function closes over a reactive, so this function changes as the filter spec changes. 
+// the filter function closes over a reactive, so this function changes as the filter spec changes.
 almagalSpreadsheetLayer.setFilter(filterFunction);
 
 //Re-apply filter whenever the spec changes. does nothing if layer doesn't exist
@@ -770,17 +769,17 @@ const pendingSourceIids = ref<ALMAGalSource["iid"][]>([]);
  * The create layer get's added to almagalSourceLayers
  */
 function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer> {
-  // make sure it has not already been loaded. 
+  // make sure it has not already been loaded.
   if (almagalSourceLayers.value.has(iid)) {
     return Promise.resolve(almagalSourceLayers.value.get(iid)!);
   }
-  
+
   // otherwise get it's url and load it as a new "fits" ImageSetLayer
   const source = getAlmagalSourceById(iid);
   if (!source) {
     throw new Error(`Source with id ${iid} not found`);
   }
-  
+
   // keep track of what is being loaded
   if (!pendingSourceIids.value.includes(iid)) {
     pendingSourceIids.value.push(iid);
@@ -790,7 +789,7 @@ function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer
   console.warn("The CORS is ok. It takes a moment to fetch via WWT Proxy");
   return store.addImageSetLayer({
     url: url,
-    mode: "fits", 
+    mode: "fits",
     name: source.aid,
     goto: false,
   }).then(layer => {
@@ -849,31 +848,31 @@ function updateImagesetLayerDisplaySettings() {
     setFitsLayerSettings(state.getGuid(), store, FITS_LAYER_SETTINGS);
   }
 }
-watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmax : null, (newVmax, oldVmax) => {  
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmax : null, (newVmax, oldVmax) => {
   if (newVmax && newVmax !== oldVmax) {
     FITS_LAYER_SETTINGS.stretch.vmax = newVmax;
     updateImagesetLayerDisplaySettings();
   }
 });
-watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmin : null, (newVmin, oldVmin) => {  
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.vmin : null, (newVmin, oldVmin) => {
   if (newVmin && newVmin !== oldVmin) {
     FITS_LAYER_SETTINGS.stretch.vmin = newVmin;
     updateImagesetLayerDisplaySettings();
   }
 });
-watch(() => almagalWtmlState.value ? almagalWtmlState.value.scaleType : null, (newScale, oldScale) => {  
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.scaleType : null, (newScale, oldScale) => {
   if (newScale && newScale !== oldScale) {
     FITS_LAYER_SETTINGS.stretch.stretch = newScale;
     updateImagesetLayerDisplaySettings();
   }
 });
-watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.colorMapperName : null, (newCmap, oldCmap) => {  
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.colorMapperName : null, (newCmap, oldCmap) => {
   if (newCmap && newCmap !== oldCmap) {
     FITS_LAYER_SETTINGS.cmap = newCmap as Colormaps;
     updateImagesetLayerDisplaySettings();
   }
 });
-watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : null, (newOp, oldOp) => {  
+watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : null, (newOp, oldOp) => {
   if (newOp && newOp !== oldOp) {
     FITS_LAYER_SETTINGS.opacity = newOp;
     updateImagesetLayerDisplaySettings();
