@@ -183,11 +183,20 @@
             </div>
             <v-btn
               v-if="showAllInView && !in3dView"
+              class="blur-button"
+              variant="outlined"
               style="pointer-events: auto;"
               @click="showAllSourcesInView"
             >
               Get {{ sourcesInView.count }} source{{ sourcesInView.count > 1 ? 's' : '' }} in view
             </v-btn>
+            <div 
+              v-else 
+              class="blur-background  py-2 px-4 rounded"
+              style="max-width: 220px;"
+            >
+              Zoom in to download full images
+            </div>
             <div
               v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0) && !in3dView"
               class="layer-list"
@@ -1259,6 +1268,15 @@ and remember, position:absolute is still a positioned parent, so children can be
   overflow: auto;
 }
 
+
+.blur-background {
+  background-color: rgba(0, 0, 0, 0.364);
+  backdrop-filter: blur(6px);
+}
+
+.white-outline {
+  border: 1px solid white;
+}
 
 
 .main-logo-text {
