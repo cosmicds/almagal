@@ -277,6 +277,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ref, reactive, computed, onMounted, watch, shallowRef } from "vue";
 import { useDisplay } from "vuetify";
+import { storeToRefs } from "pinia";
 
 /* WWT imports */
 import { GotoRADecZoomParams, engineStore, ImageSetLayerState } from "@wwtelescope/engine-pinia";
@@ -347,6 +348,9 @@ const skipSplash = searchParams.get("splash")?.toLowerCase() === "false";
 console.log("kiosk mode?", kiosk);
 console.log("skip splash?", skipSplash);
 const store = engineStore();
+const {
+  zoomDeg,
+} = storeToRefs(store);
 
 useWWTKeyboardControls(store);
 
@@ -415,6 +419,10 @@ const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
 const spreadsheetVisible = ref(true);
 watch(spreadsheetVisible, (visible) => {
   almagalSpreadsheetLayer.setVisible(visible);
+});
+
+watch(zoomDeg, (zoom: number) => {
+  spreadsheetVisible.value = zoom > 0.5;
 });
 
 
