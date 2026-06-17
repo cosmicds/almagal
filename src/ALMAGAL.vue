@@ -143,25 +143,20 @@
             </div>
           </div>
           <div id="right-buttons">
+            <button
+              class="learn-more-card"
+              @click="showAlmaGalInfo = true"
+            >
+              <span class="learn-more-text">
+                Learn More About ALMAGAL
+              </span>
+              <img
+                src="https://battersby-physics.media.uconn.edu/wp-content/uploads/sites/2230/2020/09/ALMAGAL_Logo1_SM.jpg"
+                alt="ALMAGAL logo"
+                class="learn-more-logo"
+              />
+            </button>
             <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
-              <wwt-3d-switch
-                v-model="in3dView"
-                @3d="setup3DView"
-              >
-                <template #default="{ in3d, onClick}">
-                  <v-btn
-                    @click="onClick"
-                  >
-                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
-                  </v-btn>
-                </template>
-              </wwt-3d-switch>
-              <v-btn
-                style="pointer-events: auto;"
-                @click="showInfoSheet = true"
-              >
-                Show Info
-              </v-btn>
               <v-btn
                 v-if="showAllInView && !in3dView"
                 style="pointer-events: auto;"
@@ -279,7 +274,7 @@
           >
             <credit-logos
               :default-logos="['cosmicds', 'wwt', 'sciact', 'nasa']"
-              :logo-size="smallSize ? '1em' : '2.5em'"
+              :logo-size="smallSize ? '1em' : '1.5em'"
               :extra-logos="[
                 {
                   alt: 'ALMAGAL',
@@ -306,12 +301,14 @@
         v-model="showInfoSheet"
         :tab-color="accentColor"
         text-color="#e6e6e6"
+        :tab-title="showAlmaGalInfo ? 'ALMAGAL' : 'Information'"
+        @close="showAlmaGalInfo=false"
       >
         <!-- default slot appears under Information heading -->
-        <div>
-          <p>
-            ALMAGAL: ALMA Evolutionary study of High Mass Protocluster Formation in the Galaxy
-          </p>
+        <div v-if="showAlmaGalInfo">
+          ALMAGAL Survey Informational blurb
+        </div>
+        <div v-else>
           <AlmaGalSourceInfoDisplay
             v-if="currentSource && !in3dView"
             :source="currentSource"
@@ -421,6 +418,8 @@ const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
 
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const showInfoSheet = ref(false);
+const showAlmaGalInfo = ref(false);
+watch(showAlmaGalInfo, (v) => { if (v) showInfoSheet.value = true;});
 const showSearch = ref(false);
 const showSplashScreen = ref(false);
 const layersLoaded = ref(false);
@@ -882,6 +881,9 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
     loadAlmaGalFitsSource(newSource.iid).then(layer => {
       setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
     });
+  }
+  if (newSource && showAlmaGalInfo.value && showInfoSheet) {
+    showAlmaGalInfo.value = false;
   }
 });
 
@@ -1364,5 +1366,42 @@ and remember, position:absolute is still a positioned parent, so children can be
 .v-field__outline {
   --v-field-border-width: 1px !important;
   --v-field-border-opacity: 1 !important;
+}
+
+
+
+.learn-more-card {
+  
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.5em 0.75em;
+  
+  text-align: left;
+  font-size: 0.95em;
+  font-weight: bold;
+
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.364);
+  
+  border: 1px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  
+  width: fit-content;
+  max-width: 250px;
+  pointer-events: auto;
+
+}
+
+.learn-more-text {
+  flex: 1;
+}
+
+.learn-more-logo {
+  height: 2.75em;
+  width: auto;
+  border-radius: 4px;
 }
 </style>
