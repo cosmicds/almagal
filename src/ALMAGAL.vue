@@ -43,7 +43,7 @@
                 class="ml-2"
                 density="compact"
                 icon="mdi-information-slab-circle-outline"
-                @click="showInfoSheet = true"
+                @click="showInfoSheet = !showInfoSheet"
               >
               </v-btn>
             </div>
