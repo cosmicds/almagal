@@ -33,6 +33,20 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
+            <div class="hovered-source-info">
+              <span v-if="hoveredSource">Currently hovering: {{ hoveredSource.aid }}</span>
+              <span v-else-if="selectedAlmagalSource">Last selected: {{ selectedAlmagalSource.aid }}</span>
+              <span v-else>Currently hovering: none</span>
+              <v-btn
+                v-if="hoveredSource || selectedAlmagalSource"
+                style="pointer-events: auto;"
+                class="ml-2"
+                density="compact"
+                icon="mdi-information-slab-circle-outline"
+                @click="showInfoSheet = true"
+              >
+              </v-btn>
+            </div>
             <fieldset class="almagal-filterset">
               <!-- mass, lum, lm, tdust, dist_ag, tbol -->
               <div
@@ -163,19 +177,6 @@
                 {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
               </v-btn>
             </div>
-            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
-            <v-select
-              v-if="!in3dView"
-              v-model="foregroundImage"
-              :items="foregroundImageOptions"
-              item-title="label"
-              item-value="value"
-              hide-details
-              density="compact"
-              style="pointer-events: auto; max-width: 220px;"
-              class="blur-button"
-              label="Background survey"
-            />
             <div
               v-if="!in3dView"
             >
@@ -243,8 +244,34 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
-          <div class="hovered-source-info">
-            Currently hovering: {{ hoveredSource ? hoveredSource.aid : "none" }}
+          <div class="control-bar">
+            <wwt-3d-switch
+              v-model="in3dView"
+              @3d="setup3DView"
+            >
+              <template #default="{ in3d, onClick}">
+                <v-btn
+                  variant="outlined"
+                  class="blur-button"
+                  @click="onClick"
+                >
+                  {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
+                </v-btn>
+              </template>
+            </wwt-3d-switch>
+            <v-select
+              v-if="!in3dView"
+              v-model="foregroundImage"
+              :items="foregroundImageOptions"
+              item-title="label"
+              item-value="value"
+              hide-details
+              density="compact"
+              style="pointer-events: auto; max-width: 220px;"
+              class="blur-button"
+              label="Background survey"
+              variant="outlined"
+            />
           </div>
           <div
             id="body-logos"
@@ -286,8 +313,8 @@
             ALMAGAL: ALMA Evolutionary study of High Mass Protocluster Formation in the Galaxy
           </p>
           <AlmaGalSourceInfoDisplay
-            v-if="selectedAlmagalSource && !in3dView"
-            :source="selectedAlmagalSource"
+            v-if="currentSource && !in3dView"
+            :source="currentSource"
           />
         </div>
       </InformationSheet>
@@ -443,6 +470,7 @@ const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
     markerType: "point",
     distanceColumn: "dist_ag",
     raUnit: RAUnits.degrees,
+    emitNull: true,
     onHover: (row, index) => { 
       if (spreadsheetVisible.value) {
         hoveredSource.value = row as ALMAGalSource | null; 
@@ -863,7 +891,9 @@ const ready = computed(() => positionSet.value && layersLoaded.value);
 const isLoading = computed(() => !ready.value);
 
 
-
+const currentSource = computed(() => {
+  return hoveredSource.value ?? selectedAlmagalSource.value;
+});
 
 /* This lets us inject component data into element CSS */
 const cssVars = computed(() => {
@@ -1283,6 +1313,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   border-radius: 8px;
   font-size: 0.9em;
   padding-bottom: 1em;
+  border: 1px solid white;
 }
 
 // style the legend to be centerd
@@ -1320,5 +1351,18 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 .bunch-o-buttons {
   max-width: 300px;
+}
+
+#bottom-content > .control-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+}
+
+.v-field__outline {
+  --v-field-border-width: 1px !important;
+  --v-field-border-opacity: 1 !important;
 }
 </style>
