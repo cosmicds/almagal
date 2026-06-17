@@ -443,10 +443,14 @@ const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
     distanceColumn: "dist_ag",
     raUnit: RAUnits.degrees,
     onHover: (row, index) => { 
-      hoveredSource.value = row as ALMAGalSource | null; 
+      if (spreadsheetVisible.value) {
+        hoveredSource.value = row as ALMAGalSource | null; 
+      }
     },
     onClick: (row) => {
-      selectedAlmagalSource.value = row as ALMAGalSource;
+      if (spreadsheetVisible.value) {
+        selectedAlmagalSource.value = row as ALMAGalSource;
+      }
     },
   }
 );
