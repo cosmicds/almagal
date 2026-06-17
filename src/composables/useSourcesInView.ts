@@ -1,4 +1,4 @@
-import { computed, shallowRef } from "vue";
+import { computed, shallowRef, reactive } from "vue";
 import { watchThrottled } from "@vueuse/core";
 import { engineStore } from "@wwtelescope/engine-pinia";
 import { WWTControl } from "@wwtelescope/engine";
@@ -79,5 +79,5 @@ export function useSourcesInView<T extends RaDecPair>(
 
   const count = computed(() => sourcesInView.value.length);
 
-  return { sourcesInView, count, recompute, setup };
+  return reactive({ sourcesInView, count, recompute, setup });
 }

@@ -157,20 +157,6 @@
               />
             </button>
             <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
-              <v-btn
-                v-if="showAllInView && !in3dView"
-                style="pointer-events: auto;"
-                @click="showAllSourcesInView"
-              >
-                Show all in view ({{ sourcesInView.count }})
-              </v-btn>
-              <v-btn
-                style="pointer-events: auto;"
-                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                @click="spreadsheetVisible = !spreadsheetVisible"
-              >
-                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
-              </v-btn>
             </div>
             <div
               v-if="!in3dView"
@@ -195,6 +181,13 @@
                 </ImagesetItem>
               </div>
             </div>
+            <v-btn
+              v-if="showAllInView && !in3dView"
+              style="pointer-events: auto;"
+              @click="showAllSourcesInView"
+            >
+              Get {{ sourcesInView.count }} source{{ sourcesInView.count > 1 ? 's' : '' }} in view
+            </v-btn>
             <div
               v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0) && !in3dView"
               class="layer-list"
@@ -266,7 +259,17 @@
               class="blur-button"
               label="Background survey"
               variant="outlined"
+              bg-color="#00000062"
             />
+            <v-btn
+              style="pointer-events: auto;"
+              class="blur-button"
+              variant="outlined"
+              :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
+              @click="spreadsheetVisible = !spreadsheetVisible"
+            >
+              {{ spreadsheetVisible ? 'Hide Catalog' : 'Show Catalog' }}
+            </v-btn>
           </div>
           <div
             id="body-logos"
@@ -447,12 +450,12 @@ function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource
 
 const almagalSourceList = shallowRef(mergedCatalog(almagalSources, almagalClumps));
 const hoveredSource = ref<ALMAGalSource | null>(null);
-const MAX_ITEMS_TO_SHOW = 2;
+const MAX_ITEMS_TO_SHOW = 4;
 const sourcesInView= useSourcesInView(almagalSourceList.value);
-const showAllInView = computed(() => sourcesInView.count.value > 0 && sourcesInView.count.value <= MAX_ITEMS_TO_SHOW);
+const showAllInView = computed(() => sourcesInView.count > 0 && sourcesInView.count <= MAX_ITEMS_TO_SHOW);
 
 function showAllSourcesInView() {
-  sourcesInView.sourcesInView.value.forEach(source => {
+  sourcesInView.sourcesInView.forEach(source => {
     loadAlmaGalFitsSource(source.iid).then(layer => {
       setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
     });
@@ -1264,7 +1267,7 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 .v-btn.blur-button.v-btn--variant-outlined {
-  // background-color: black;
+  background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(6px);
 }
 
