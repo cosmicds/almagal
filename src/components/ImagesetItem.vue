@@ -16,7 +16,8 @@
       id="main-container"
     >
       <label
-        focusable="false"
+        focusable="true"
+        tabindex="0"
         class="name-label ellipsize"
         @click="noOpen ? ()=>null : (isSelected = !isSelected)"
         @keyup.enter="noOpen ? ()=>null : (isSelected = !isSelected)"
@@ -61,6 +62,7 @@
     </div>
 
     <div
+      v-show="isSelected"
       :class="`detail-container ${isSelected ? 'container-visible' : 'container-hidden'} `"
     >
       <div

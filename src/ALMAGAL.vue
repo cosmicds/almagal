@@ -47,111 +47,121 @@
               >
               </v-btn>
             </div>
-            <v-tooltip text="Filter sources">
-              <template #activator="p">
-                <v-btn
-                  :icon="showFilters ? 'mdi-close' : 'mdi-filter'"
-                  v-bind="p.props"
-                  size="small"
-                  color="surface-variant"
-                  @click="showFilters = !showFilters"
-                />
-              </template>
-            </v-tooltip>
-            <fieldset
-              v-if="showFilters"
-              class="almagal-filterset"
+            <div 
+              class="source-controls"
+              :class="{
+                'flex-column': showFilters,
+              }"
             >
-              <!-- mass, lum, lm, tdust, dist_ag, tbol -->
-              <div
-                v-for="field in filterFields"
-                :key="field"
-                class="filter-slider"
+              <v-tooltip 
+                text="Filter sources"
+                :location="showFilters ? 'right' : 'bottom'"
               >
-                <label>
-                  <span v-html="filterFieldLabels[field]"></span>&nbsp;
-                  <span 
-                    v-if="hoveredSource" 
-                    class="fiducial-display"
-                  > 
-                    &ndash; {{ hoveredSource[field] }} 
-                    <span v-if="filterFieldUnits[field]">
-                      <span v-html="filterFieldUnits[field]"></span>
-                    </span> 
-                  </span> 
-                  <RangeNumberInputs
-                    :model-value="filterSpec.get(field)!"
-                    :min="almagalColumnRanges[field].min"
-                    :max="almagalColumnRanges[field].max"
-                    :fiducial="hoveredSource ? hoveredSource[field] : undefined"
-                    :steps="500"
-                    log
-                    @update:model-value="(val) => filterSpec.set(field, val)"
-                  />
-                </label>
-              </div>
-              <hr class="mt-3" />
-              <div class="clump-type-filter">
-                <span>Clump type</span>
-                <div class="clump-type-options">
-                  <label
-                    v-for="type in CLUMP_TYPES"
-                    :key="type"
-                    class="clump-type-option"
-                  >
-                    <input
-                      v-model="clumpTypeFilter"
-                      type="checkbox"
-                      :value="type"
-                    />
-                    {{ type }}
-                  </label>
-                </div>
-              </div>
-            </fieldset>
-            <div
-              v-if="!in3dView"
-              class="d-flex align-center mt-1 ga-2"
-            >
-              <v-tooltip
-                v-if="!showSearch"
-                text="Search for source"
-                location="bottom"
-              >
-                <template #activator="{ props: tooltipProps }">
+                <template #activator="p">
                   <v-btn
-                    v-bind="tooltipProps"
-                    prepend-icon="mdi-magnify"
-                    class="blur-button"
-                    variant="outlined"
-                    @click="showSearch = true"
-                  >
-                    Search for source
-                  </v-btn>
+                    :icon="showFilters ? 'mdi-close' : 'mdi-filter'"
+                    v-bind="p.props"
+                    size="small"
+                    color="surface-variant"
+                    @click="showFilters = !showFilters"
+                  />
                 </template>
               </v-tooltip>
-              <template v-else>
-                <v-autocomplete
-                  v-if="almagalSourceList"
-                  v-model="selectedAlmagalSource"
-                  class="almagal-v-select"
-                  :items="almagalSourceList"
-                  item-title="iid"
-                  item-value="iid"
-                  return-object
-                  hide-details
-                  label="ALMAGAL Source"
-                  :loading="pendingSourceIids.length > 0"
-                  autofocus
-                />
-                <v-btn
-                  icon="mdi-close"
-                  size="small"
-                  variant="outlined"
-                  class="blur-button"
-                  @click="showSearch = false"
-                />
-              </template>
+              <fieldset
+                v-if="showFilters"
+                class="almagal-filterset"
+              >
+                <!-- mass, lum, lm, tdust, dist_ag, tbol -->
+                <div
+                  v-for="field in filterFields"
+                  :key="field"
+                  class="filter-slider"
+                >
+                  <label>
+                    <span v-html="filterFieldLabels[field]"></span>&nbsp;
+                    <span
+                      v-if="hoveredSource"
+                      class="fiducial-display"
+                    >
+                      &ndash; {{ hoveredSource[field] }}
+                      <span v-if="filterFieldUnits[field]">
+                        <span v-html="filterFieldUnits[field]"></span>
+                      </span>
+                    </span>
+                    <RangeNumberInputs
+                      :model-value="filterSpec.get(field)!"
+                      :min="almagalColumnRanges[field].min"
+                      :max="almagalColumnRanges[field].max"
+                      :fiducial="hoveredSource ? hoveredSource[field] : undefined"
+                      :steps="500"
+                      log
+                      @update:model-value="(val) => filterSpec.set(field, val)"
+                    />
+                  </label>
+                </div>
+                <hr class="mt-3" />
+                <div class="clump-type-filter">
+                  <span>Clump type</span>
+                  <div class="clump-type-options">
+                    <label
+                      v-for="type in CLUMP_TYPES"
+                      :key="type"
+                      class="clump-type-option"
+                    >
+                      <input
+                        v-model="clumpTypeFilter"
+                        type="checkbox"
+                        :value="type"
+                      />
+                      {{ type }}
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+              <div
+                v-if="!in3dView"
+                class="d-flex align-center mt-1 ga-2"
+              >
+                <v-tooltip
+                  v-if="!showSearch"
+                  text="Search for source"
+                  location="bottom"
+                >
+                  <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                      v-bind="tooltipProps"
+                      prepend-icon="mdi-magnify"
+                      class="blur-button"
+                      variant="outlined"
+                      @click="showSearch = true"
+                    >
+                      Search for source
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+                <template v-else>
+                  <v-autocomplete
+                    v-if="almagalSourceList"
+                    v-model="selectedAlmagalSource"
+                    class="almagal-v-select"
+                    :items="almagalSourceList"
+                    item-title="iid"
+                    item-value="iid"
+                    return-object
+                    hide-details
+                    label="ALMAGAL Source"
+                    :loading="pendingSourceIids.length > 0"
+                    autofocus
+                  />
+                  <v-btn
+                    icon="mdi-close"
+                    size="small"
+                    variant="outlined"
+                    class="blur-button"
+                    @click="showSearch = false"
+                  />
+                </template>
+              </div>
             </div>
           </div>
           <div id="right-buttons">
@@ -1253,6 +1263,11 @@ and remember, position:absolute is still a positioned parent, so children can be
   border-radius: .025rem;
 }
 
+.v-field__input > input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .layout-debug {
   #main-content {
     border: 2px solid red;
@@ -1291,6 +1306,11 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 .white-outline {
   border: 1px solid white;
+}
+
+.source-controls {
+  display: flex;
+  gap: 8px;
 }
 
 
@@ -1400,8 +1420,8 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 .v-field__outline {
-  --v-field-border-width: 1px !important;
-  --v-field-border-opacity: 1 !important;
+  // --v-field-border-width: 1px !important;
+  // --v-field-border-opacity: 1 !important;
 }
 
 
