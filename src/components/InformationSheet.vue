@@ -9,7 +9,7 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
       v-model="tab"
       :color="tabColor"
       :slider-color="tabColor"
-      dense
+      density="compact"
       align-tabs="end"
     >
       <v-tab
@@ -32,8 +32,8 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
       icon="times"
       size="lg"
       tabindex="0"
-      @click="showTextSheet = false"
-      @keyup.enter="showTextSheet = false"
+      @click="handleClose"
+      @keyup.enter="handleClose"
     >
     </font-awesome-icon>
 
@@ -45,7 +45,7 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
       :style="cssVars"
     >
       <v-window-item>
-        <v-card class="scrollable border-radius-0">
+        <v-card class="scrollable border-radius-0" elevation="0">
           <v-card-text class="info-text scrollable">
             <slot />
           </v-card-text>
@@ -139,6 +139,22 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
                   </h4>
                   <h5>
                     <easyLink
+                      href="https://www.almagal.org/"
+                    >
+                      ALMAGAL Survey
+                    </easyLink>
+                  </h5>
+                  <p>Dr. Jennifer Wallace</p>
+                  <p>Prof. Cara Battersby (Co-I, ALMAGAL)</p>
+                  <br />
+                  <p>
+                    Data and Catalog from ALMAGAL. 
+                  </p>
+                  <p>
+                    Paper reference: Wallace et al. 2016 (<easyLink href="https://ui.adsabs.harvard.edu/abs/2026ApJ...998..302W">2026ApJ...998..302W</easyLink>>)
+                  </p>
+                  <h5>
+                    <easyLink
                       href="https://www.cosmicds.cfa.harvard.edu/"
                     >
                       CosmicDS
@@ -182,7 +198,7 @@ import { supportsTouchscreen, FundingAcknowledgement } from '@cosmicds/vue-toolk
 
 // https://v3-migration.vuejs.org/breaking-changes/functional-components
 const easyLink = (props: { href: string }, { slots }: SetupContext) => {
-  return h('a', { href: props.href, target: '_blank', rel: 'noopener noreferrer' }, slots.default?.());
+  return h('a', { href: props.href, target: '_blank' }, slots.default?.());
 };
 
 
@@ -193,6 +209,7 @@ const touchscreen = supportsTouchscreen();
 
 
 const showTextSheet = defineModel<boolean>();
+  
 
 interface Props {
   tabColor: string,
@@ -217,6 +234,14 @@ const cssVars = computed(() => {
 
   };
 });
+
+const emit = defineEmits(['close']);
+
+function handleClose() {
+  showTextSheet.value = false;
+  emit('close');
+}
+
 
 </script>
 
@@ -329,7 +354,7 @@ const cssVars = computed(() => {
 
   #close-text-icon {
     position: absolute;
-    top: 0.25em;
+    top: 0.5em;
     right: calc((3em - 0.6875em) / 3); // font-awesome-icons have width 0.6875em
     color: white;
 

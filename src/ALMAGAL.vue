@@ -33,120 +33,153 @@
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
           <div id="left-buttons">
-            <fieldset class="almagal-filterset">
-              <!-- mass, lum, lm, tdust, dist_ag, tbol -->
-              <div
-                v-for="field in filterFields"
-                :key="field"
-                class="filter-slider"
+            <div class="hovered-source-info">
+              <span v-if="hoveredSource">Currently hovering: {{ hoveredSource.aid }}</span>
+              <span v-else-if="selectedAlmagalSource">Last selected: {{ selectedAlmagalSource.aid }}</span>
+              <span v-else>Currently hovering: none</span>
+              <v-btn
+                v-if="hoveredSource || selectedAlmagalSource"
+                style="pointer-events: auto;"
+                class="ml-2"
+                density="compact"
+                icon="mdi-information-slab-circle-outline"
+                @click="showInfoSheet = !showInfoSheet"
               >
-                <label><span>{{ field }}</span>
-                  <RangeNumberInputs
-                    :model-value="filterSpec.get(field)!"
-                    :min="almagalColumnRanges[field].min"
-                    :max="almagalColumnRanges[field].max"
-                    :steps="500"
-                    log
-                    @update:model-value="(val) => filterSpec.set(field, val)"
-                  />
-                </label>
-              </div>
-            </fieldset>
-            <div
-              v-if="!in3dView"
-              class="d-flex align-center mt-1 ga-2"
+              </v-btn>
+            </div>
+            <div 
+              class="source-controls"
+              :class="{
+                'flex-column': showFilters,
+              }"
             >
-              <v-tooltip
-                v-if="!showSearch"
-                text="Search for source"
-                location="bottom"
+              <v-tooltip 
+                text="Filter sources"
+                :location="showFilters ? 'right' : 'bottom'"
               >
-                <template #activator="{ props: tooltipProps }">
+                <template #activator="p">
                   <v-btn
-                    v-bind="tooltipProps"
-                    prepend-icon="mdi-magnify"
-                    style="pointer-events: auto;"
-                    class="blur-button"
-                    variant="outlined"
-                    @click="showSearch = true"
-                  >
-                    Search for source
-                  </v-btn>
+                    :icon="showFilters ? 'mdi-close' : 'mdi-filter'"
+                    v-bind="p.props"
+                    size="small"
+                    color="surface-variant"
+                    @click="showFilters = !showFilters"
+                  />
                 </template>
               </v-tooltip>
-              <template v-else>
-                <v-autocomplete
-                  v-if="almagalSourceList"
-                  v-model="selectedAlmagalSource"
-                  class="almagal-v-select"
-                  :items="almagalSourceList"
-                  item-title="aid"
-                  item-value="iid"
-                  return-object
-                  hide-details
-                  label="ALMAGAL Source"
-                  :loading="pendingSourceIids.length > 0"
-                  autofocus
-                />
-                <v-btn
-                  icon="mdi-close"
-                  size="small"
-                  style="pointer-events: auto;"
-                  variant="outlined"
-                  class="blur-button"
-                  @click="showSearch = false"
-                />
-              </template>
+              <fieldset
+                v-if="showFilters"
+                class="almagal-filterset"
+              >
+                <!-- mass, lum, lm, tdust, dist_ag, tbol -->
+                <div
+                  v-for="field in filterFields"
+                  :key="field"
+                  class="filter-slider"
+                >
+                  <label>
+                    <span v-html="filterFieldLabels[field]"></span>&nbsp;
+                    <span
+                      v-if="hoveredSource"
+                      class="fiducial-display"
+                    >
+                      &ndash; {{ hoveredSource[field] }}
+                      <span v-if="filterFieldUnits[field]">
+                        <span v-html="filterFieldUnits[field]"></span>
+                      </span>
+                    </span>
+                    <RangeNumberInputs
+                      :model-value="filterSpec.get(field)!"
+                      :min="almagalColumnRanges[field].min"
+                      :max="almagalColumnRanges[field].max"
+                      :fiducial="hoveredSource ? hoveredSource[field] : undefined"
+                      :steps="500"
+                      log
+                      @update:model-value="(val) => filterSpec.set(field, val)"
+                    />
+                  </label>
+                </div>
+                <hr class="mt-3" />
+                <div class="clump-type-filter">
+                  <span>Clump type</span>
+                  <div class="clump-type-options">
+                    <label
+                      v-for="type in CLUMP_TYPES"
+                      :key="type"
+                      class="clump-type-option"
+                    >
+                      <input
+                        v-model="clumpTypeFilter"
+                        type="checkbox"
+                        :value="type"
+                      />
+                      {{ type }}
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+              <div
+                v-if="!in3dView"
+                class="d-flex align-center mt-1 ga-2"
+              >
+                <v-tooltip
+                  v-if="!showSearch"
+                  text="Search for source"
+                  location="bottom"
+                >
+                  <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                      v-bind="tooltipProps"
+                      prepend-icon="mdi-magnify"
+                      class="blur-button"
+                      variant="outlined"
+                      @click="showSearch = true"
+                    >
+                      Search for source
+                    </v-btn>
+                  </template>
+                </v-tooltip>
+                <template v-else>
+                  <v-autocomplete
+                    v-if="almagalSourceList"
+                    v-model="selectedAlmagalSource"
+                    class="almagal-v-select"
+                    :items="almagalSourceList"
+                    item-title="iid"
+                    item-value="iid"
+                    return-object
+                    hide-details
+                    label="ALMAGAL Source"
+                    :loading="pendingSourceIids.length > 0"
+                    autofocus
+                  />
+                  <v-btn
+                    icon="mdi-close"
+                    size="small"
+                    variant="outlined"
+                    class="blur-button"
+                    @click="showSearch = false"
+                  />
+                </template>
+              </div>
             </div>
           </div>
           <div id="right-buttons">
+            <button
+              class="learn-more-card"
+              @click="showAlmaGalInfo = true"
+            >
+              <span class="learn-more-text">
+                Learn More About ALMAGAL
+              </span>
+              <img
+                src="https://battersby-physics.media.uconn.edu/wp-content/uploads/sites/2230/2020/09/ALMAGAL_Logo1_SM.jpg"
+                alt="ALMAGAL logo"
+                class="learn-more-logo"
+              />
+            </button>
             <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
-              <wwt-3d-switch
-                v-model="in3dView"
-                @3d="setup3DView"
-              >
-                <template #default="{ in3d, onClick}">
-                  <v-btn
-                    @click="onClick"
-                  >
-                    {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
-                  </v-btn>
-                </template>
-              </wwt-3d-switch>
-              <v-btn
-                style="pointer-events: auto;"
-                @click="showInfoSheet = true"
-              >
-                Show Info
-              </v-btn>
-              <v-btn
-                v-if="showAllInView && !in3dView"
-                style="pointer-events: auto;"
-                @click="showAllSourcesInView"
-              >
-                Show all in view ({{ sourcesInView.count }})
-              </v-btn>
-              <v-btn
-                style="pointer-events: auto;"
-                :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
-                @click="spreadsheetVisible = !spreadsheetVisible"
-              >
-                {{ spreadsheetVisible ? 'Hide sources' : 'Show sources' }}
-              </v-btn>
             </div>
-            <!-- The main wtml layer. there is just one, but a loop avoids an annoting v-if -->
-            <v-select
-              v-if="!in3dView"
-              v-model="foregroundImage"
-              :items="foregroundImageOptions"
-              item-title="label"
-              item-value="value"
-              hide-details
-              density="compact"
-              style="pointer-events: auto; max-width: 220px;"
-              class="blur-button"
-              label="Background survey"
-            />
             <div
               v-if="!in3dView"
             >
@@ -162,21 +195,28 @@
                   instant
                   :crange="{min: -0.001, max: 1}"
                   log-stretch-slider
-                />
-                <div
-                  style="pointer-events: auto;"
+                  @reset="() => setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
                 >
-                  <v-btn
-                    size="small"
-                    variant="outlined"
-                    class="blur-button"
-                    prepend-icon="mdi-refresh"
-                    @click="setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
-                  >
-                    Reset
-                  </v-btn>
-                </div>
+                  <template #name>
+                    Image Settings
+                  </template>
+                </ImagesetItem>
               </div>
+            </div>
+            <v-btn
+              v-if="showAllInView && !in3dView"
+              class="blur-button"
+              variant="outlined"
+              @click="showAllSourcesInView"
+            >
+              Get {{ sourcesInView.count }} source{{ sourcesInView.count > 1 ? 's' : '' }} in view
+            </v-btn>
+            <div 
+              v-else 
+              class="blur-background  py-2 px-4 rounded"
+              style="max-width: 220px;"
+            >
+              Zoom in to download full images
             </div>
             <div
               v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0) && !in3dView"
@@ -196,6 +236,7 @@
                   hide-opacity
                   hide-colormap
                   hide-vrange
+                  hide-reset
                   no-open
                 />
               </div>
@@ -221,8 +262,43 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
-          <div class="hovered-source-info">
-            Currently hovering: {{ hoveredSource ? hoveredSource.aid : "none" }}
+          <div class="control-bar">
+            <wwt-3d-switch
+              v-model="in3dView"
+              @3d="setup3DView"
+            >
+              <template #default="{ in3d, onClick}">
+                <v-btn
+                  variant="outlined"
+                  class="blur-button"
+                  @click="onClick"
+                >
+                  {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
+                </v-btn>
+              </template>
+            </wwt-3d-switch>
+            <v-select
+              v-if="!in3dView"
+              v-model="foregroundImage"
+              :items="foregroundImageOptions"
+              item-title="label"
+              item-value="value"
+              hide-details
+              density="compact"
+              style="pointer-events: auto; max-width: 220px;"
+              class="blur-button"
+              label="Background survey"
+              variant="outlined"
+              bg-color="#00000062"
+            />
+            <v-btn
+              class="blur-button"
+              variant="outlined"
+              :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
+              @click="spreadsheetVisible = !spreadsheetVisible"
+            >
+              {{ spreadsheetVisible ? 'Hide Catalog' : 'Show Catalog' }}
+            </v-btn>
           </div>
           <div
             id="body-logos"
@@ -230,7 +306,7 @@
           >
             <credit-logos
               :default-logos="['cosmicds', 'wwt', 'sciact', 'nasa']"
-              :logo-size="smallSize ? '1em' : '2.5em'"
+              :logo-size="smallSize ? '1em' : '1.5em'"
               :extra-logos="[
                 {
                   alt: 'ALMAGAL',
@@ -257,15 +333,17 @@
         v-model="showInfoSheet"
         :tab-color="accentColor"
         text-color="#e6e6e6"
+        :tab-title="showAlmaGalInfo ? 'ALMAGAL' : 'Information'"
+        @close="showAlmaGalInfo=false"
       >
         <!-- default slot appears under Information heading -->
-        <div>
-          <p>
-            ALMAGAL: ALMA Evolutionary study of High Mass Protocluster Formation in the Galaxy
-          </p>
+        <div v-if="showAlmaGalInfo">
+          ALMAGAL Survey Informational blurb
+        </div>
+        <div v-else>
           <AlmaGalSourceInfoDisplay
-            v-if="selectedAlmagalSource && !in3dView"
-            :source="selectedAlmagalSource"
+            v-if="currentSource && !in3dView"
+            :source="currentSource"
           />
         </div>
       </InformationSheet>
@@ -376,6 +454,8 @@ const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
 
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const showInfoSheet = ref(false);
+const showAlmaGalInfo = ref(false);
+watch(showAlmaGalInfo, (v) => { if (v) showInfoSheet.value = true;});
 const showSearch = ref(false);
 const showSplashScreen = ref(false);
 const layersLoaded = ref(false);
@@ -383,16 +463,34 @@ const positionSet = ref(false);
 const accentColor = ref("#306C9F");
 const accentColor2 = ref("#FC9954");
 
+const showFilters = ref(false);
 
+const CLUMP_TYPES = ["isolated", "empty", "simple", "rich", "unknown"];
 /* Get the source list first */
-const almagalSourceList = shallowRef(almagalSources);
+import almagalClumps from "./assets/almagal_clump_props_WWT.json";
+// merge almagalClumps "type" and an "included field" based on iid/INTERNAL_ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource & { type: string; included: boolean })[] {
+  const clumpMap = new Map(clumps.map(clump => [clump.INTERNAL_ID, clump]));
+  return sources.map(source => {
+    const clump = clumpMap.get(source.iid);
+    return {
+      ...source,
+      type: clump ? clump.TYPE : "unknown",
+      included: !!clump,
+      color: clump ? "#32CD32" : "#999999", // color sources with clumps green, others gray
+    };
+  });
+}
+
+const almagalSourceList = shallowRef(mergedCatalog(almagalSources, almagalClumps));
 const hoveredSource = ref<ALMAGalSource | null>(null);
-const MAX_ITEMS_TO_SHOW = 2;
+const MAX_ITEMS_TO_SHOW = 4;
 const sourcesInView= useSourcesInView(almagalSourceList.value);
-const showAllInView = computed(() => sourcesInView.count.value > 0 && sourcesInView.count.value <= MAX_ITEMS_TO_SHOW);
+const showAllInView = computed(() => sourcesInView.count > 0 && sourcesInView.count <= MAX_ITEMS_TO_SHOW);
 
 function showAllSourcesInView() {
-  sourcesInView.sourcesInView.value.forEach(source => {
+  sourcesInView.sourcesInView.forEach(source => {
     loadAlmaGalFitsSource(source.iid).then(layer => {
       setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
     });
@@ -405,14 +503,20 @@ const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
   {
     name: "ALMAGAL Sources",
     color: "#32CD32",
-    markerSize: 5,
+    markerSize: 7,
     markerType: "point",
     distanceColumn: "dist_ag",
-    onHover: (row, index) => {
-      hoveredSource.value = row as ALMAGalSource | null;
+    raUnit: RAUnits.degrees,
+    emitNull: true,
+    onHover: (row, index) => { 
+      if (spreadsheetVisible.value) {
+        hoveredSource.value = row as ALMAGalSource | null; 
+      }
     },
     onClick: (row) => {
-      selectedAlmagalSource.value = row as ALMAGalSource;
+      if (spreadsheetVisible.value) {
+        selectedAlmagalSource.value = row as ALMAGalSource;
+      }
     },
   }
 );
@@ -476,9 +580,9 @@ const FITS_LAYER_SETTINGS = {
   cmap: 'rdbu' as Colormaps,
   opacity: 1.0,
   stretch: {
-    stretch: ScaleTypes.linear,
-    vmin: -0.0005,
-    vmax: 0.0015,
+    stretch: ScaleTypes.log,
+    vmin: 0,
+    vmax: 0.015,
   }
 };
 
@@ -486,15 +590,15 @@ const FITS_LAYER_SETTINGS_RESET = {
   cmap: 'rdbu' as Colormaps,
   opacity: 1.0,
   stretch: {
-    stretch: ScaleTypes.linear,
-    vmin: -0.0005,
-    vmax: 0.0015,
+    stretch: ScaleTypes.log,
+    vmin: 0,
+    vmax: 0.015,
   }
 } as const;
 
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
-const url = 'https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/main/almagal/almagal_toast/almagal.wtml';
+const url = './almagal.wtml';
 
 const almagalWtmlState = ref<ImageSetLayerState | null>(null); // This will go into the ImagesetItem to control our fits properties
 // Load the WTML. This goes down to level 12
@@ -551,7 +655,7 @@ function createSunLayer() {
     name: "The Sun",
     color: "#ffff0a",
     markerSize: 10,
-    markerType: "point",
+    markerType: "gaussian",
     raUnit: RAUnits.degrees,
     distanceUnit: AltUnits.parsecs,
   }).createLayer().then(layer => {
@@ -559,6 +663,8 @@ function createSunLayer() {
       throw new Error("Failed to create sun layer");
     }
     layer.set_plotType(PlotTypes.gaussian);
+    layer.set_opacity(1);
+    layer.set_markerScale(MarkerScales.screen);
     store.applyTableLayerSettings({
       id: layer.id.toString(),
       settings: [
@@ -592,12 +698,18 @@ onMounted(() => {
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
     // get the hipparcos catalog to start loading
     store.setBackgroundImageByName("Solar System");
-    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for that too load
+    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for hipparchos to load so later swtich is quicker
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
 
     // wait for spreadhseet to load
-    await almagalSpreadsheetLayer.createLayer();
+    await almagalSpreadsheetLayer.createLayer().then(layer => {
+      const colorCol = almagalSpreadsheetLayer.getColumnIndex("color");
+      if (layer && colorCol) {
+        layer.set_colorMapColumn(colorCol);
+      }
+        
+    });
     almagalSpreadsheetLayer.applyFilter();
     sourcesInView.setup();
     /*
@@ -693,6 +805,28 @@ type AlmaGalSourceFilterSpec = Map<keyof ALMAGalSource, AlmaGalSourceFilterRange
 
 // Numeric source fields exposed as range-filter sliders. Edit this list to add or remove sliders.
 const filterFields = ["mass", "lum", "lm", "tdust", "dist_ag", "tbol"] as const;
+const clumpTypeFilter = ref<string[]>(CLUMP_TYPES); // separate filter for clump type, since it is categorical not numeric
+
+// Human-readable labels for the filter sliders above.
+const filterFieldLabels: Record<typeof filterFields[number], string> = {
+  mass: "Mass (M<sub>⊙</sub>)",
+  lum: "Luminosity (L<sub>⊙</sub>)",
+  lm: "Lum/Mass",
+  tdust: "Dust Temp. (K)",
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "dist_ag": "Distance (pc)",
+  tbol: "Bolometric Temp. (K)",
+};
+
+const  filterFieldUnits: Record<typeof filterFields[number], string> = {
+  mass: "M<sub>⊙</sub>",
+  lum: "L<sub>⊙</sub>",
+  lm: "",
+  tdust: "K",
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "dist_ag": "pc",
+  tbol: "K",
+};
 
 // Full [min, max] of each filterable column, measured from the loaded sources.
 const almagalColumnRanges = filterFields.reduce((ranges, field) => {
@@ -722,6 +856,10 @@ function filterFunction(row: Record<string, string>) {
     if (range.min != null && value < range.min) return false;
     if (range.max != null && value > range.max) return false;
   }
+
+  const ctype = row["type"];
+  if (!clumpTypeFilter.value.includes(ctype)) return false;
+
   return true;
 }
 
@@ -730,6 +868,7 @@ almagalSpreadsheetLayer.setFilter(filterFunction);
 
 //Re-apply filter whenever the spec changes. does nothing if layer doesn't exist
 watch(filterSpec, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
+watch(clumpTypeFilter, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 
 
 const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
@@ -773,7 +912,7 @@ function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer
 }
 
 watch(selectedAlmagalSource, (newSource, oldSource) => {
-  if (newSource) {
+  if (newSource && !in3dView.value) {
     store.gotoRADecZoom({
       raRad: newSource.ra * D2R,
       decRad: newSource.dec * D2R,
@@ -785,6 +924,9 @@ watch(selectedAlmagalSource, (newSource, oldSource) => {
       setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
     });
   }
+  if (newSource && showAlmaGalInfo.value && showInfoSheet) {
+    showAlmaGalInfo.value = false;
+  }
 });
 
 
@@ -793,7 +935,9 @@ const ready = computed(() => positionSet.value && layersLoaded.value);
 const isLoading = computed(() => !ready.value);
 
 
-
+const currentSource = computed(() => {
+  return hoveredSource.value ?? selectedAlmagalSource.value;
+});
 
 /* This lets us inject component data into element CSS */
 const cssVars = computed(() => {
@@ -1127,6 +1271,11 @@ and remember, position:absolute is still a positioned parent, so children can be
   border-radius: .025rem;
 }
 
+.v-field__input > input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 .layout-debug {
   #main-content {
     border: 2px solid red;
@@ -1154,6 +1303,23 @@ and remember, position:absolute is still a positioned parent, so children can be
   overflow: auto;
 }
 
+.v-btn {
+  pointer-events: auto;
+}
+
+.blur-background {
+  background-color: rgba(0, 0, 0, 0.364);
+  backdrop-filter: blur(6px);
+}
+
+.white-outline {
+  border: 1px solid white;
+}
+
+.source-controls {
+  display: flex;
+  gap: 8px;
+}
 
 
 .main-logo-text {
@@ -1162,7 +1328,7 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 .v-btn.blur-button.v-btn--variant-outlined {
-  // background-color: black;
+  background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(6px);
 }
 
@@ -1205,13 +1371,19 @@ and remember, position:absolute is still a positioned parent, so children can be
   flex-direction: column;
   gap: 0.5em;
   width: fit-content;
+  max-width: 220px;
+  max-height: 50vh;
+  overflow-y: scroll;
   pointer-events: auto;
-  padding-inline: 5px;
+  padding: 0.5em 0.75em;
   background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(8px);
   border-radius: 8px;
   font-size: 0.9em;
   padding-bottom: 1em;
+  padding-right: 1em;
+  scrollbar-gutter: stable;
+  border: 1px solid white;
 }
 
 // style the legend to be centerd
@@ -1224,6 +1396,22 @@ and remember, position:absolute is still a positioned parent, so children can be
   font-weight: bold;
 }
 
+.almagal-filterset > .clump-type-filter {
+  margin: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.clump-type-filter > span {
+  font-weight: bold;
+}
+.clump-type-filter > .clump-type-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.25em;
+}
+
 .pending-source-label {
   color: white;
   font-size: 0.85em;
@@ -1233,5 +1421,55 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 .bunch-o-buttons {
   max-width: 300px;
+}
+
+#bottom-content > .control-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2em;
+}
+
+.v-field__outline {
+  // --v-field-border-width: 1px !important;
+  // --v-field-border-opacity: 1 !important;
+}
+
+
+
+.learn-more-card {
+  
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.5em 0.75em;
+  
+  text-align: left;
+  font-size: 0.95em;
+  font-weight: bold;
+
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.364);
+  
+  border: 1px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  
+  width: fit-content;
+  max-width: 250px;
+  pointer-events: auto;
+
+}
+
+.learn-more-text {
+  flex: 1;
+}
+
+.learn-more-logo {
+  height: 2.75em;
+  width: auto;
+  border-radius: 4px;
 }
 </style>

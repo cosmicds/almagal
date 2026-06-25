@@ -20,6 +20,7 @@ export interface HoverableSpreadsheetLayerOptions<T extends RaDecPair> extends S
   pixelThreshold?: number;
   onHover?: (row: T | null, index: number) => void;
   onClick?: (row: T | null, index: number) => void;
+  emitNull?: boolean
 }
 
 export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
@@ -30,12 +31,12 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   type ClosestRowFinder = (event: PointerEvent) => { row: T, index: number } | null;
 
   const store = engineStore();
-  const { pixelThreshold = 20, onHover, ...spreadsheetOptions } = options;
+  const { pixelThreshold = 20, onHover, emitNull = false, ...spreadsheetOptions } = options;
 
   // ra in hours for the WWT layer column
   // const points = rows.map(r => [r.ra / 15, r.dec] as [number, number]);
   // convert row to have ra in hours
-  const points = rows.map(r => ({ ...r, ra: r.ra / 15 }));
+  const points = rows.map(r => ({ ...r, ra: r.ra  }));
   const spreadsheet = useSpreadsheetLayer(points, spreadsheetOptions); // create the underlying spreadsheet layer
 
   // add mouse/pointer trackings (like green-comet, brute force)
@@ -64,8 +65,12 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
 
     // check if we are within the pixel threshold
     const pixelDist = Math.sqrt((pt.x - screenPoint.x) ** 2 + (pt.y - screenPoint.y) ** 2);
+    if (pixelDist >= pixelThreshold) return null;
 
-    return pixelDist < pixelThreshold ? { row: closest, index: closestIndex } : null;
+    // respect the spreadsheet's current filter, if one has been set
+    if (spreadsheet.filterMask[closestIndex] === false) return null;
+
+    return { row: closest, index: closestIndex };
   }
 
   function findClosestRow3D(event: PointerEvent) {
@@ -145,8 +150,8 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     const rowFinder = activeRowFinder();
     if (!rowFinder) return;
     const result = rowFinder(event);
-    if (result) {
-      options.onClick(result.row ?? null, result.index ?? -1);
+    if (result || emitNull) {
+      options.onClick(result?.row ?? null, result?.index ?? -1);
     }
   }
 

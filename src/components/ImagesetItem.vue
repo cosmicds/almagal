@@ -16,11 +16,15 @@
       id="main-container"
     >
       <label
-        focusable="false"
+        focusable="true"
+        tabindex="0"
         class="name-label ellipsize"
         @click="noOpen ? ()=>null : (isSelected = !isSelected)"
         @keyup.enter="noOpen ? ()=>null : (isSelected = !isSelected)"
-      >{{ imageset.settings.name }}
+      >
+        <slot name="name">
+          {{ imageset.settings.name }}
+        </slot>
       </label>
       <!-- <span
         class="in-view-dot"
@@ -48,99 +52,107 @@
         icon="trash-can"
         @click="handleDelete"
       />
+      <font-awesome-icon
+        v-if="!hideReset"
+        v-hide="!hasFocus"
+        class="icon-button"
+        icon="arrow-rotate-right"
+        @click="handleReset"
+      />
     </div>
-    <v-expand-transition>
+
+    <div
+      v-show="isSelected"
+      :class="`detail-container ${isSelected ? 'container-visible' : 'container-hidden'} `"
+    >
       <div
-        v-if="isSelected"
-        class="detail-container"
+        v-if="!hideOpacity"
+        class="detail-row"
       >
-        <div
-          v-if="!hideOpacity"
-          class="detail-row"
-        >
-          <span class="prompt">Opacity:</span>
-          <v-slider
-            v-model="twoWayOpacity"
-            class="scrubber"
-            :max="1"
-            :min="0"
-            :step="0.01"
-            hide-details
-          ></v-slider>
-        </div>
-
-        <div
-          v-if="!hideColormap"
-          class="detail-row"
-        >
-          <span class="prompt">Colormap:</span><select v-model="twoWayColorMapperName">
-            <option
-              v-for="x in uiColorMaps"
-              :key="x.desc"
-              :value="x.wwt"
-            >
-              {{ x.desc }}
-            </option>
-          </select>
-        </div>
-
-        <div
-          v-if="!hideVrange"
-          class="detail-row"
-        >
-          <span class="prompt">Stretch:</span><select v-model="twoWayScaleType">
-            <option
-              v-for="x in uiScaleTypes"
-              :key="x.desc"
-              :value="x.wwt"
-            >
-              {{ x.desc }}
-            </option>
-          </select>
-        </div>
-      
-        <div
-          v-if="!hideVrange"
-          class="detail-row"
-        >
-          <span class="prompt cutoff">Low:</span>
-          <input
-            v-model.lazy="twoWayVMinText"
-            type="text"
-            class="cutoff-input"
-          />
-          <component 
-            :is="logStretchSlider ? 'v-log-slider' : 'v-slider'"
-            v-model="twoWayVMin"
-            class="scrubber"
-            :min="fitsDataMin"
-            :max="fitsDataMax"
-            :step="cutoffStep"
-            hide-details
-          ></component>
-        </div>
-        <div
-          v-if="!hideVrange"
-          class="detail-row"
-        >
-          <span class="prompt cutoff">High:</span>
-          <input
-            v-model.lazy="twoWayVMaxText"
-            type="text"
-            class="cutoff-input"
-          />
-          <component 
-            :is="logStretchSlider ? 'v-log-slider' : 'v-slider'"
-            v-model="twoWayVMax"
-            class="scrubber"
-            :min="fitsDataMin"
-            :max="fitsDataMax"
-            :step="cutoffStep"
-            hide-details
-          ></component>
-        </div>
+        <span class="prompt">Opacity:</span>
+        <v-slider
+          v-model="twoWayOpacity"
+          class="scrubber"
+          :max="1"
+          :min="0"
+          :step="0.01"
+          hide-details
+        ></v-slider>
       </div>
-    </v-expand-transition>
+
+      <div
+        v-if="!hideColormap"
+        class="detail-row"
+      >
+        <span class="prompt">Colormap:</span><select v-model="twoWayColorMapperName">
+          <option
+            v-for="x in uiColorMaps"
+            :key="x.desc"
+            :value="x.wwt"
+          >
+            {{ x.desc }}
+          </option>
+        </select>
+      </div>
+
+      <div
+        v-if="!hideVrange"
+        class="detail-row"
+      >
+        <span class="prompt">Stretch:</span><select v-model="twoWayScaleType">
+          <option
+            v-for="x in uiScaleTypes"
+            :key="x.desc"
+            :value="x.wwt"
+          >
+            {{ x.desc }}
+          </option>
+        </select>
+      </div>
+      
+      <div
+        v-if="!hideVrange"
+        class="detail-row"
+      >
+        <span class="prompt cutoff">Low:</span>
+        <input
+          v-model.lazy="twoWayVMinText"
+          type="text"
+          class="cutoff-input"
+        />
+        <component 
+          :is="logStretchSlider ? 'v-log-slider' : 'v-slider'"
+          v-model="twoWayVMin"
+          class="scrubber"
+          :min="fitsDataMin"
+          :max="fitsDataMax"
+          :step="cutoffStep"
+          hide-details
+        ></component>
+      </div>
+      <div
+        v-if="!hideVrange"
+        class="detail-row"
+      >
+        <span class="prompt cutoff">High:</span>
+        <input
+          v-model.lazy="twoWayVMaxText"
+          type="text"
+          class="cutoff-input"
+        />
+        <component 
+          :is="logStretchSlider ? 'v-log-slider' : 'v-slider'"
+          v-model="twoWayVMax"
+          class="scrubber"
+          :min="fitsDataMin"
+          :max="fitsDataMax"
+          :step="cutoffStep"
+          hide-details
+        ></component>
+      </div>
+    </div>
+
+    <slot />
   </div>
 </template>
 
@@ -207,6 +219,7 @@ const props = defineProps({
   hideVrange: { type: Boolean, required: false, default: false },
   hideGoto: { type: Boolean, required: false, default: false },
   hideVisibility: { type: Boolean, required: false, default: false },
+  hideReset: { type: Boolean, required: false, default: false },
   noOpen: { type: Boolean, required: false, default: false },
 });
 
@@ -347,6 +360,11 @@ function applySettings(settings: ImageSetLayerSetting[]) {
     id: props.imageset.getGuid(),
     settings: settings,
   });
+}
+
+const emit = defineEmits(['reset']);
+function handleReset() {
+  emit('reset');
 }
 
 function handleDelete() {
@@ -530,12 +548,21 @@ function handleCutoffInteract(isMax: boolean) {
 select {
   width: 70%;
   max-width: fit-content;
+  
 }
 
 .detail-container {
   font-size: 9pt;
   margin: 0px 5px;
   padding-left: 15px;
+  transition: max-height 0.2s ease-in;
+}
+
+.detail-container.container-visible {
+  max-height: 20em;
+}
+.detail-container.container-hidden {
+  max-height: 0;
 }
 
 .icon-button {
@@ -558,6 +585,11 @@ select {
   align-items: center;
   gap: 2px;
   justify-content: flex-start;
+  user-select: none;
+}
+
+.detail-row > select {
+  cursor: pointer;
 }
 
 .detail-input {
@@ -596,6 +628,13 @@ select {
   width: 60px;
   flex-shrink: 0;
   text-align: center;
+}
+
+/* from research app App.vue */
+.ellipsize {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 </style>

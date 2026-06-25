@@ -2,6 +2,14 @@
 import _almagalSources from "./assets/almagal_sources.json";
 // rename the keys to be more friendly, from R.A. to ra, and Dec. to dec
 
+// almagal sources to ignore by iid
+const _ignore = [
+  'G348.7342-01.0359B', // overlapping
+  'G323.7410-00.2552C', // overlapping
+  '615590', // overlapping
+  '653755', // WR
+];
+
 function hmsToDegrees(hms: string): number {
   const [h, m, s] = hms.split(":").map(Number);
   return (h + m / 60 + s / 3600) * 15; // convert hours to degrees
@@ -89,7 +97,7 @@ export function getAlmagalSourceUrl(source: ALMAGalSource, pbcor = true): string
 }
 
 export function getAlmagalSources(): ALMAGalSource[] {
-  return _almagalSources as unknown as ALMAGalSource[];
+  return _almagalSources.filter(source => !_ignore.includes(source.iid)) as unknown as ALMAGalSource[];
 }
 
 export const almagalSources = getAlmagalSources();
