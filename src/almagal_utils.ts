@@ -106,3 +106,5 @@ export function getAlmagalSourceById(iid: string): ALMAGalSource | undefined {
   return getAlmagalSources().find(source => source.iid === iid);
 }
 
+export const formatSigFigs = (v: number, sigFigs = 3) =>
+  Number.isFinite(v) ? Number(v.toPrecision(sigFigs)).toString() : String(v);

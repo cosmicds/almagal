@@ -83,10 +83,7 @@
                       v-if="hoveredSource"
                       class="fiducial-display"
                     >
-                      &ndash; {{ hoveredSource[field] }}
-                      <span v-if="filterFieldUnits[field]">
-                        <span v-html="filterFieldUnits[field]"></span>
-                      </span>
+                      {{formatSigFigs(hoveredSource[field]) }}
                     </span>
                     <RangeNumberInputs
                       :model-value="filterSpec.get(field)!"
@@ -403,6 +400,7 @@ import {
   almagalSources,
   getAlmagalSourceById,
   getAlmagalSourceUrl,
+  formatSigFigs,
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
@@ -688,9 +686,9 @@ onMounted(() => {
     store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     store.applySetting(["solarSystemCosmos", false]);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
-    // get the hipparcos catalog to start loading
+    // get the Hipparcos catalog to start loading
     store.setBackgroundImageByName("Solar System");
-    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for hipparchos to load so later swtich is quicker
+    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for Hipparcos to load so later swtich is quicker
     store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
 
@@ -803,17 +801,17 @@ const clumpTypeFilter = ref<string[]>(CLUMP_TYPES); // separate filter for clump
 const filterFieldLabels: Record<typeof filterFields[number], string> = {
   mass: "Mass (M<sub>⊙</sub>)",
   lum: "Luminosity (L<sub>⊙</sub>)",
-  lm: "Lum/Mass",
+  lm: "Lum. / Mass (L<sub>⊙</sub>/M<sub>⊙</sub>)",
   tdust: "Dust Temp. (K)",
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "dist_ag": "Distance (pc)",
-  tbol: "Bolometric Temp. (K)",
+  tbol: "Bol. Temp. (K)",
 };
 
 const  filterFieldUnits: Record<typeof filterFields[number], string> = {
   mass: "M<sub>⊙</sub>",
   lum: "L<sub>⊙</sub>",
-  lm: "",
+  lm: "L<sub>⊙</sub>/M<sub>⊙</sub>",
   tdust: "K",
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "dist_ag": "pc",
@@ -1353,6 +1351,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(10px);
   width: fit-content;
+  min-height: 50px;
   padding: 0.5em 1em;
   border-radius: 8px;
 }
@@ -1362,8 +1361,8 @@ and remember, position:absolute is still a positioned parent, so children can be
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  width: fit-content;
-  max-width: 220px;
+  width: 100%;
+  max-width: 230px;
   max-height: 50vh;
   overflow-y: scroll;
   pointer-events: auto;
@@ -1376,6 +1375,22 @@ and remember, position:absolute is still a positioned parent, so children can be
   padding-right: 1em;
   scrollbar-gutter: stable;
   border: 1px solid white;
+}
+
+.filter-slider label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fiducial-display {
+  background-color: #c7d8fd;
+  min-width: 50px;
+  margin-left: auto;
+  text-align: right;
+  color: black;
+  padding-inline: 4px;
+  border-radius: 3px;
 }
 
 // style the legend to be centerd
