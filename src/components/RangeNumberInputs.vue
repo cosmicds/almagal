@@ -10,7 +10,6 @@
         :max="max"
       >
       <span class="rni-display">{{ formatSigFigs(minValue) }}</span>
-      <span class="sep">&mdash;</span>
       <input
         v-if="false"
         v-model.number="maxValue"
@@ -42,6 +41,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from "vue";
 import { DoubleRangeSlider } from "double-range-slider-web";
+import { formatSigFigs } from "../almagal_utils";
 
 // Register the custom element <double-range-slider> (idempotent: no-ops if
 // already registered, so it's fine for this component to own it).
@@ -62,9 +62,6 @@ const props = defineProps<{
 
 const transform = (v: number) => props.log ? Math.log10(v) : v;
 const inverse = (v: number) => props.log ? 10 ** v : v;
-
-const formatSigFigs = (v: number, sigFigs = 3) =>
-  Number.isFinite(v) ? Number(v.toPrecision(sigFigs)).toString() : String(v);
 
 const minValue = computed({
   get: () => model.value.min ?? props.min,

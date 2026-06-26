@@ -160,8 +160,8 @@ a<!-- eslint-disable vue/max-attributes-per-line -->
                       CosmicDS
                     </easyLink>
                   </h5>
-                  <p>Jon Carifio</p>
                   <p>John Lewis</p>
+                  <p>Jon Carifio</p>
                   <p>Pat Udomprasert</p>
                   <p>Alyssa Goodman</p>
 
