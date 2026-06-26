@@ -43,27 +43,18 @@ export function useSourcesInView<T extends RaDecPair>(
     }
     const w = ctl.renderContext.width;
     const h = ctl.renderContext.height;
-
-    const corners = [
-      store.findRADecForScreenPoint({ x: 0, y: 0 }), // TL
-      store.findRADecForScreenPoint({ x: w, y: 0 }), // TR
-      store.findRADecForScreenPoint({ x: 0, y: h }), // BL
-      store.findRADecForScreenPoint({ x: w, y: h }), // BR
-    ];
-
-    const ras = corners.map(c => c.ra);
-    const decs = corners.map(c => c.dec);
+    const skyMode = store.backgroundImageset?.get_dataSetType()=== ImageSetType.sky;
     
-    const minRa = Math.min(...ras);
-    const maxRa = Math.max(...ras);
-    const minDec = Math.min(...decs);
-    const maxDec = Math.max(...decs);
-
-    sourcesInView.value = rows.filter(row =>
-      // TODO: fix wrap-around when view straddles 0°/360° RA boundary
-      row.ra >= minRa && row.ra <= maxRa &&
-      row.dec >= minDec && row.dec <= maxDec
-    );
+    if (!skyMode) {
+      sourcesInView.value = [];
+      return;
+    }
+    // this doesn't actually take very long - even for 1000 sources
+    // probably don't even need to throttle tbh
+    sourcesInView.value = rows.filter(row => {
+      const pt = ctl.getScreenPointForCoordinates(row.ra / 15, row.dec);
+      return pt.x >= 0 && pt.x < w && pt.y >= 0 && pt.y < h;
+    });
   }
 
   let setupOnlyOnce = false;
