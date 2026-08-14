@@ -53,20 +53,64 @@
                 'flex-column': showFilters,
               }"
             >
-              <v-tooltip 
-                text="Filter sources"
-                :location="showFilters ? 'right' : 'bottom'"
-              >
-                <template #activator="p">
-                  <v-btn
-                    :icon="showFilters ? 'mdi-close' : 'mdi-filter'"
-                    v-bind="p.props"
-                    size="small"
-                    color="surface-variant"
-                    @click="showFilters = !showFilters"
-                  />
-                </template>
-              </v-tooltip>
+              <div class="d-flex flex-row ga-2">
+                <v-tooltip 
+                  text="Filter sources"
+                  :location="showFilters ? 'right' : 'bottom'"
+                >
+                  <template #activator="p">
+                    <v-btn
+                      :icon="showFilters ? 'mdi-close' : 'mdi-filter'"
+                      v-bind="p.props"
+                      size="small"
+                      color="surface-variant"
+                      @click="showFilters = !showFilters"
+                    />
+                  </template>
+                </v-tooltip>
+                <div
+                  v-if="!in3dView"
+                  class="d-flex"
+                >
+                  <v-tooltip
+                    v-if="!showSearch"
+                    text="Search for source"
+                    location="bottom"
+                  >
+                    <template #activator="p">
+                      <v-btn
+                        v-bind="p.props"
+                        icon="mdi-magnify"
+                        size="small"
+                        color="surface-variant"
+                        @click="showSearch = true"
+                      />
+                    </template>
+                  </v-tooltip>
+                  <template v-else>
+                    <v-autocomplete
+                      v-if="almagalSourceList"
+                      v-model="selectedAlmagalSource"
+                      class="almagal-v-select"
+                      :items="almagalSourceList"
+                      item-title="iid"
+                      item-value="iid"
+                      return-object
+                      hide-details
+                      label="ALMAGAL Source"
+                      :loading="pendingSourceIids.length > 0"
+                      autofocus
+                    />
+                    <v-btn
+                      icon="mdi-close"
+                      size="small"
+                      variant="outlined"
+                      class="blur-button"
+                      @click="showSearch = false"
+                    />
+                  </template>
+                </div>
+              </div>
               <fieldset
                 v-if="showFilters"
                 class="almagal-filterset"
@@ -83,7 +127,7 @@
                       v-if="hoveredSource"
                       class="fiducial-display"
                     >
-                      {{formatSigFigs(hoveredSource[field]) }}
+                      {{ formatSigFigs(hoveredSource[field]) }}
                     </span>
                     <RangeNumberInputs
                       :model-value="filterSpec.get(field)!"
@@ -115,50 +159,6 @@
                   </div>
                 </div>
               </fieldset>
-              <div
-                v-if="!in3dView"
-                class="d-flex align-center mt-1 ga-2"
-              >
-                <v-tooltip
-                  v-if="!showSearch"
-                  text="Search for source"
-                  location="bottom"
-                >
-                  <template #activator="{ props: tooltipProps }">
-                    <v-btn
-                      v-bind="tooltipProps"
-                      prepend-icon="mdi-magnify"
-                      class="blur-button"
-                      variant="outlined"
-                      @click="showSearch = true"
-                    >
-                      Search for source
-                    </v-btn>
-                  </template>
-                </v-tooltip>
-                <template v-else>
-                  <v-autocomplete
-                    v-if="almagalSourceList"
-                    v-model="selectedAlmagalSource"
-                    class="almagal-v-select"
-                    :items="almagalSourceList"
-                    item-title="iid"
-                    item-value="iid"
-                    return-object
-                    hide-details
-                    label="ALMAGAL Source"
-                    :loading="pendingSourceIids.length > 0"
-                    autofocus
-                  />
-                  <v-btn
-                    icon="mdi-close"
-                    size="small"
-                    variant="outlined"
-                    class="blur-button"
-                    @click="showSearch = false"
-                  />
-                </template>
-              </div>
             </div>
           </div>
           <div id="right-buttons">
@@ -1316,6 +1316,8 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 .source-controls {
   display: flex;
+  align-items: start;
+  justify-content: center;
   gap: 8px;
 }
 
