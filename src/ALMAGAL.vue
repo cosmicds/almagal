@@ -330,10 +330,10 @@
       @webgl2-disabled="webglDisabled = true"
     />
     <component
-      :is="false ? 'v-navigation-drawer' : 'v-bottom-sheet'"
+      :is="isLandscape || !smallSize ? 'v-navigation-drawer' : 'v-bottom-sheet'"
       id="side-drawer"
       v-model="showInfoSheet"
-      :class="[false ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
+      :class="[isLandscape || !smallSize ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
     >
       <InformationSheet
         v-model="showInfoSheet"
