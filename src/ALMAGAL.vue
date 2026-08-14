@@ -2,7 +2,7 @@
   <v-app
     id="app"
     :style="cssVars"
-    :class="[smallSize ? 'app-is-small' : '', isLandscape ? 'app-is-landscape' : '']"
+    :class="[smallSize ? 'app-is-small' : '', isLandscape ? 'app-is-landscape' : '', sidePanel ? 'app-side-panel' : '']"
   >
     <div
       id="main-content"
@@ -329,11 +329,47 @@
     <WebGlTest
       @webgl2-disabled="webglDisabled = true"
     />
+    <!--
+      OLD: overlay version. v-navigation-drawer / v-bottom-sheet position
+      themselves (fixed/teleported), so they float over #main-content instead
+      of taking space in the .v-application__wrap flex row.
+
     <component
       :is="isLandscape || !smallSize ? 'v-navigation-drawer' : 'v-bottom-sheet'"
       id="side-drawer"
       v-model="showInfoSheet"
       :class="[isLandscape || !smallSize ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
+    >
+      <InformationSheet
+        v-model="showInfoSheet"
+        :tab-color="accentColor"
+        text-color="#e6e6e6"
+        :tab-title="showTour ? 'Tour' : showAlmaGalInfo ? 'ALMAGAL' : 'Information'"
+        @close="showAlmaGalInfo=false; showTour=false"
+      >
+        <TourPlayer v-if="showTour" />
+        <div v-else-if="showAlmaGalInfo">
+          ALMAGAL Survey Informational blurb
+        </div>
+        <div v-else>
+          <AlmaGalSourceInfoDisplay
+            v-if="currentSource && !in3dView"
+            :source="currentSource"
+          />
+        </div>
+      </InformationSheet>
+    </component>
+    -->
+
+    <!--
+      NEW: a plain div is a flex sibling of #main-content inside
+      .v-application__wrap, so opening it pushes/shrinks the WWT view rather
+      than covering it. #main-content has `order: 2`, which puts this panel on
+      the left in the row layout, and below the view when the app is small.
+    -->
+    <div
+      id="side-drawer"
+      :class="[sidePanel ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
     >
       <InformationSheet
         v-model="showInfoSheet"
@@ -354,7 +390,7 @@
           />
         </div>
       </InformationSheet>
-    </component>
+    </div>
   </v-app>
 </template>
 
@@ -447,6 +483,10 @@ const  { smAndDown, width: viewportWidth, height: viewportHeight } = useDisplay(
 const isVertical = computed(() => viewportHeight.value > viewportWidth.value);
 const smallSize = computed(() => smAndDown.value);
 const isLandscape = computed(() => viewportWidth.value > viewportHeight.value * 1.25);
+// Where the info sheet lives: beside the view when there's width to spare,
+// otherwise across the bottom. A tall/portrait window gets the bottom panel
+// even when it's wide enough not to count as `smallSize`.
+const sidePanel = computed(() => isLandscape.value || (!smallSize.value && !isVertical.value));
 
 // default to the galactic center
 const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
@@ -1028,16 +1068,19 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
 // so we need to apply height definitions here
 // for a display with a side-panel this is generally
 // what we want
-.v-application__wrap {
-  flex-direction: row;
+// Scoped under #app so these beat Vuetify's own `.v-application__wrap` rule,
+// which sets `flex-direction: column`. A bare `.v-application__wrap` selector
+// only ties it on specificity and loses on source order, which left the panel
+// stacked on top of the view at 34% width.
+// Default is the column/bottom-panel layout; a side panel opts in.
+#app > .v-application__wrap {
+  flex-direction: column;
   max-height: 100svh;  // force the application to be 100%
 }
 
-#app.app-is-small {
-  .v-application__wrap {
-    flex-direction: column;  // add for the side panel
-    max-height: 100svh;  // force the application to be 100%
-  }
+#app.app-side-panel > .v-application__wrap {
+  flex-direction: row;
+  max-height: 100svh;  // force the application to be 100%
 }
 
 
@@ -1048,13 +1091,25 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
   // Its height is determined by the flex layout in `#app`.
   flex: 1 0 auto;
   overflow: hidden;
-  order: 2;
+  // default (column layout): view on top, panel below it
+  order: 1;
   transition: height 0.1s ease-in-out;
 }
 
-#app.app-is-small #main-content {
-  order: 1;
+// side-panel layout: #side-drawer follows #main-content in the DOM, so flipping
+// the order is what puts the panel on the left of the view
+#app.app-side-panel {
+  #main-content {
+    order: 2;
+  }
+
+  #side-drawer {
+    order: 1;
+  }
 }
+
+/* OLD: overlay version. Taken out of flow with `position: absolute`, so it
+   slid over #main-content and the WWT view never changed size.
 
 #side-drawer {
   position: absolute;
@@ -1073,8 +1128,6 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
   }
 }
 
-
-
 #side-drawer.info-bottom {
   left: 0;
   width: 100%;
@@ -1086,6 +1139,39 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
 
   &.side-drawer-open {
     height: 34vh;
+  }
+}
+*/
+
+// NEW: in-flow flex sibling of #main-content, so opening it shrinks the WWT
+// view instead of covering it (same idea as artemis-ii / why-roman).
+// Default is the bottom panel: full width, growing in height.
+#side-drawer {
+  flex: 0 0 auto;
+  overflow: hidden;
+  order: 2;
+  width: 100%;
+  height: 0;
+  transition: height 0.3s ease-in-out;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+
+  &.side-drawer-open {
+    height: 34%;
+  }
+}
+
+// side panel: full height, growing in width
+#app.app-side-panel #side-drawer {
+  width: 0;
+  height: 100%;
+  transition: width 0.3s ease-in-out;
+  border-top-left-radius: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+
+  &.side-drawer-open {
+    width: 34%;
   }
 }
 
