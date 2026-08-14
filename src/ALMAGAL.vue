@@ -296,6 +296,15 @@
             >
               {{ spreadsheetVisible ? 'Hide Catalog' : 'Show Catalog' }}
             </v-btn>
+            <v-btn
+              id="learn-button"
+              variant="elevated"
+              elevation="8"
+              :color="accentColor"
+              @click="showTour = !showTour"
+            >
+              I want to<br>learn
+            </v-btn>
           </div>
           <div
             id="body-logos"
@@ -330,11 +339,12 @@
         v-model="showInfoSheet"
         :tab-color="accentColor"
         text-color="#e6e6e6"
-        :tab-title="showAlmaGalInfo ? 'ALMAGAL' : 'Information'"
-        @close="showAlmaGalInfo=false"
+        :tab-title="showTour ? 'Tour' : showAlmaGalInfo ? 'ALMAGAL' : 'Information'"
+        @close="showAlmaGalInfo=false; showTour=false"
       >
         <!-- default slot appears under Information heading -->
-        <div v-if="showAlmaGalInfo">
+        <TourPlayer v-if="showTour" />
+        <div v-else-if="showAlmaGalInfo">
           ALMAGAL Survey Informational blurb
         </div>
         <div v-else>
@@ -390,6 +400,7 @@ import InformationSheet from "./components/InformationSheet.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
 import RangeNumberInputs from "./components/RangeNumberInputs.vue";
 import Wwt3dSwitch from "./components/Wwt3dSwitch.vue";
+import TourPlayer from "./tour/TourPlayer.vue";
 
 
 import { useWtmlLoader } from "./composables/useWtmlLoader";
@@ -453,7 +464,9 @@ const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
 const showInfoSheet = ref(false);
 const showAlmaGalInfo = ref(false);
+const showTour = ref(false);
 watch(showAlmaGalInfo, (v) => { if (v) showInfoSheet.value = true;});
+watch(showTour, (v) => { if (v) showInfoSheet.value = true;});
 const showSearch = ref(false);
 const showSplashScreen = ref(false);
 const layersLoaded = ref(false);
@@ -1330,6 +1343,19 @@ and remember, position:absolute is still a positioned parent, so children can be
 .v-btn.blur-button.v-btn--variant-outlined {
   background-color: rgba(0, 0, 0, 0.364);
   backdrop-filter: blur(6px);
+}
+
+// two-line label, so the button needs to grow vertically
+#learn-button {
+  height: auto;
+  min-height: 40px;
+  padding-block: 0.4em;
+  line-height: 1.2;
+
+  .v-btn__content {
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .layer-list {

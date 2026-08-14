@@ -1,4 +1,4 @@
-a<!-- eslint-disable vue/max-attributes-per-line -->
+<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
   <v-card
     class="info-sheet"
