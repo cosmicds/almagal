@@ -97,9 +97,9 @@
             Data and Catalog from ALMAGAL. 
           </p>
           <p>
-            Paper reference: Wallace et al. 2016 (<easyLink href="https://ui.adsabs.harvard.edu/abs/2026ApJ...998..302W">
+            Paper reference: Wallace et al. 2026 (<easyLink href="https://ui.adsabs.harvard.edu/abs/2026ApJ...998..302W">
               2026ApJ...998..302W
-            </easyLink>>)
+            </easyLink>)
           </p>
           <h5>
             <easyLink

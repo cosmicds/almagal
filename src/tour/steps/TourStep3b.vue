@@ -18,7 +18,7 @@
             </v-btn>
           </td>
           <td>
-            One compact, roughly round patch of emission. 8200 M<sub>&#9737;</sub> of dust at 9 K,
+            One compact, roughly round patch of emission. About 8000 M<sub>&#9737;</sub> of dust at 9 K,
             barely lit: L/M = 0.05.
           </td>
         </tr>
@@ -33,17 +33,13 @@
             </v-btn>
           </td>
           <td>
-            The same emission, broken into a straggling shape. 16 times less massive, 34 times more
-            luminous: L/M = 26.
+            A more complex structure. About 500 M<sub>&#9737;</sub> , 34 times more
+            luminous: L/M = 26. Note the bright source behind it.
           </td>
         </tr>
       </tbody>
     </table>
 
-    <p>
-      That is the survey&rsquo;s finding in miniature: the more evolved a clump is, the more complex
-      the structure inside it. L/M is the clock &mdash; use it to cut the catalog by stage.
-    </p>
 
     <table class="tour-actions-table">
       <tbody>
@@ -57,7 +53,7 @@
               L/M &lt; 1
             </v-btn>
           </td>
-          <td>423 clumps in the earliest stages, still cold.</td>
+          <td>Objects likely in the earlier stages of star formation</td>
         </tr>
         <tr>
           <td>
@@ -69,7 +65,7 @@
               1&ndash;10
             </v-btn>
           </td>
-          <td>318 with protostars already warming them from inside.</td>
+          <td></td>
         </tr>
         <tr>
           <td>
@@ -81,7 +77,7 @@
               L/M &gt; 10
             </v-btn>
           </td>
-          <td>270 of the most evolved, up to the HII region stage.</td>
+          <td>The likely most evolved objects</td>
         </tr>
         <tr>
           <td>
@@ -93,7 +89,7 @@
               All
             </v-btn>
           </td>
-          <td>Clear the cut and put the whole sample back.</td>
+          <td>Clear the filter</td>
         </tr>
       </tbody>
     </table>
