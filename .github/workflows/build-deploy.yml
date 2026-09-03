@@ -3,8 +3,8 @@ name: Single Branch Build and Deploy
 on:
   push:
     branches:
-      - '**'
-      - '!gh-pages'
+      - main
+      - dev
 
 permissions:
   contents: write
@@ -53,3 +53,9 @@ jobs:
           branch: gh-pages
           folder: dist
           clean: true
+          # `clean` deletes inside `target-folder`, so a root deploy would
+          # wipe dev/, so exclude. 
+          clean-exclude: /dev
+          # Work aimed at dev (a PR into it, or a push to it) lands in /dev;
+          # main deploys to the root.
+          target-folder: ${{ (github.base_ref || github.ref_name) == 'dev' && 'dev' || '' }}
