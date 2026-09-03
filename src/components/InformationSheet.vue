@@ -1,217 +1,62 @@
-a<!-- eslint-disable vue/max-attributes-per-line -->
+<!-- eslint-disable vue/max-attributes-per-line -->
 <template>
-  <v-card
-    class="info-sheet"
-    height="100%"
-  >
+  <v-card class="info-sheet" height="100%">
+    <!-- Vuetify gives the unselected tab tabindex="-1" (the ARIA roving-tabindex
+         pattern, where arrow keys move between tabs) but its own arrow handling
+         does not fire here, leaving that tab unreachable by keyboard. Drive it
+         ourselves. -->
     <v-tabs
-      id="tabs"
       v-model="tab"
+      class="info-sheet-tabs"
       :color="tabColor"
       :slider-color="tabColor"
       density="compact"
       align-tabs="end"
+      @keydown.left.prevent="cycleTab(-1)"
+      @keydown.right.prevent="cycleTab(1)"
     >
-      <v-tab
-        class="info-tabs"
+      <!-- tabindex="0" on every tab, not just the selected one: Vuetify's
+           default is the roving-tabindex pattern, where Tab reaches the bar and
+           arrows move within it. With two tabs that just reads as "the second
+           one is unreachable", so make both Tab stops. Arrow keys still work. -->
+      <v-tab 
+        v-for="tabName in tabs" 
+        :key="tabName"
+        class="info-sheet-tab" 
         tabindex="0"
       >
-        <h3>{{ tabTitle ?? 'Information' }}</h3>
-      </v-tab>
-      <v-tab
-        v-if="!hideUserGuide"
-        class="info-tabs"
-        tabindex="0"
-      >
-        <h3>User Guide</h3>
+        <h3>{{ tabName }}</h3>
       </v-tab>
     </v-tabs>
-    <font-awesome-icon
+    <v-icon
       id="close-text-icon"
       class="control-icon"
-      icon="times"
-      size="lg"
+      size="large"
+      icon="mdi-close"
       tabindex="0"
       @click="handleClose"
       @keyup.enter="handleClose"
     >
-    </font-awesome-icon>
+    </v-icon>
 
     <!-- Information Content -->
-    <v-window
-      id="tab-items"
-      v-model="tab"
-      class="pb-2"
-      :style="cssVars"
-    >
-      <v-window-item>
-        <v-card class="scrollable border-radius-0" elevation="0">
-          <v-card-text class="info-text scrollable">
-            <slot />
-          </v-card-text>
-        </v-card>
-      </v-window-item>
-
-      <!-- User Guide Content -->
-      <v-window-item v-if="!hideUserGuide">
-        <v-card class="scrollable border-radius-0">
-          <v-card-text class="info-text scrollable">
-            <h4 class="user-guide-header mt-5">
-              Sky Navigation
-            </h4>
-            <p>
-              To navigate the WWT view, use the following controls:
-            </p>
-            <v-row
-              align="center"
-              dense
-              class="mt-2 mx-3"
-            >
-              <v-col cols="4">
-                <v-chip
-                  label
-                  density="compact"
-                  variant="outlined"
-                >
-                  Pan
-                </v-chip>
-              </v-col>
-              <v-col
-                cols="8"
-                class="pt-1"
-              >
-                <strong>{{ touchscreen ? "press + drag" : "click + drag" }}</strong> {{ touchscreen ? "" : "or" }}
-                <strong>{{ touchscreen ? "" : "W-A-S-D" }}</strong> {{ touchscreen ? "" : "keys" }}<br>
-              </v-col>
-            </v-row>
-            <v-row
-              align="center"
-              dense
-              class="mx-3"
-            >
-              <v-col cols="4">
-                <v-chip
-                  label
-                  density="compact"
-                  variant="outlined"
-                >
-                  Zoom
-                </v-chip>
-              </v-col>
-              <v-col
-                cols="8"
-                class="pt-1"
-              >
-                <strong>{{ touchscreen ? "pinch in and out" : "scroll in and out" }}</strong> {{ touchscreen ? "" :
-                  "or" }} <strong>{{ touchscreen ? "" : "I-O" }}</strong> {{ touchscreen ? "" : "keys" }}<br>
-              </v-col>
-            </v-row>
-            <v-row
-              align="center"
-              dense
-              class="mx-3"
-            >
-              <v-col cols="4">
-                <v-chip
-                  label
-                  density="compact"
-                  variant="outlined"
-                >
-                  Rotate
-                </v-chip>
-              </v-col>
-              <v-col
-                cols="8"
-                class="pt-1"
-              >
-                {{ touchscreen ? "" : "press" }} <strong>{{ touchscreen ? "pinch and twist" : "control + click + drag"
-                }}</strong> {{ touchscreen ? "" : "" }} <strong>{{ touchscreen ? "" : "" }}</strong> {{ touchscreen
-                  ? "" : "" }}<br>
-              </v-col>
-            </v-row>
-
-            <!-- Credits -->
-            <v-row>
-              <v-col cols="12">
-                <div class="credits">
-                  <h4 class="user-guide-header mt-3">
-                    Credits
-                  </h4>
-                  <h5>
-                    <easyLink
-                      href="https://www.almagal.org/"
-                    >
-                      ALMAGAL Survey
-                    </easyLink>
-                  </h5>
-                  <p>Dr. Jennifer Wallace</p>
-                  <p>Prof. Cara Battersby (Co-I, ALMAGAL)</p>
-                  <br />
-                  <p>
-                    Data and Catalog from ALMAGAL. 
-                  </p>
-                  <p>
-                    Paper reference: Wallace et al. 2016 (<easyLink href="https://ui.adsabs.harvard.edu/abs/2026ApJ...998..302W">2026ApJ...998..302W</easyLink>>)
-                  </p>
-                  <h5>
-                    <easyLink
-                      href="https://www.cosmicds.cfa.harvard.edu/"
-                    >
-                      CosmicDS
-                    </easyLink>
-                  </h5>
-                  <p>John Lewis</p>
-                  <p>Jon Carifio</p>
-                  <p>Pat Udomprasert</p>
-                  <p>Alyssa Goodman</p>
-
-                  <h5>
-                    <a
-                      href="https://www.worldwidetelescope.org/home"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >WorldWide Telescope</a>
-                  </h5>
-                  <p>Jon Carifio</p>
-                  <p>Peter Williams</p>
-                  <p>David Weigel</p>
-                </div>
-                <v-spacer class="end-spacer"></v-spacer>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <funding-acknowledgement />
-              </v-col>
-            </v-row>
-            <!-- </v-container> -->
-          </v-card-text>
-        </v-card>
-      </v-window-item>
+    <v-window id="tab-items" v-model="tab" class="pb-2" :style="cssVars">
+      <slot />
     </v-window>
   </v-card>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, watch, h, type SetupContext} from 'vue';
-import { supportsTouchscreen, FundingAcknowledgement } from '@cosmicds/vue-toolkit';
+<script lang="ts">
 
-// https://v3-migration.vuejs.org/breaking-changes/functional-components
-const easyLink = (props: { href: string }, { slots }: SetupContext) => {
-  return h('a', { href: props.href, target: '_blank' }, slots.default?.());
-};
-
-
-
-const tab = ref(0);
-const touchscreen = supportsTouchscreen();
-
-
-
-const showTextSheet = defineModel<boolean>();
+import type { InjectionKey, Ref } from "vue";
+export const injectionKey = Symbol("vTabs") as InjectionKey<{
+    withinTabs: boolean;
+    registerTab: (title: string) => number;
+    activeTab: Readonly<Ref<number | undefined>>;
+    activateTab: (index: number) => void;
+  }>;
   
-
-interface Props {
+export interface Props {
   tabColor: string,
   textColor?: string,
   headingColor?: string,
@@ -219,6 +64,72 @@ interface Props {
   tabTitle?: string,
   hideUserGuide?: boolean,
 }
+</script>
+
+<script setup lang="ts">
+import { ref, computed, watch, nextTick } from 'vue';
+import{ provide, readonly } from 'vue';
+
+
+// adapted from https://vueschool.io/articles/vuejs-tutorials/tightly-coupled-components-vue-components-with-provide-inject/
+const tabs = ref<string[]>([]);
+// const tab = ref(0);
+const tab = defineModel<number>('tab', {default: 0});
+// This function will allow the child `vTabPanels` to register their title
+// with the parent `vTabs`
+// Again it's a function because of the reasoning above.
+function registerTab(title: string) {
+  const existing = tabs.value.indexOf(title);
+  if (existing !== -1) return existing;
+  tabs.value.push(title);
+  return tabs.value.length - 1;
+}
+
+function activateTab(index: number) {
+  tab.value = index;
+}
+
+// left/right through the tabs, wrapping, then move focus to the new one so the
+// keyboard user can see where they are
+function cycleTab(delta: number) {
+  const count = tabs.value.length;
+  if (count < 2) {
+    return;
+  }
+  tab.value = (tab.value + delta + count) % count;
+  nextTick(() => {
+    const selected = document.querySelector<HTMLElement>(".info-sheet-tab.v-tab--selected");
+    selected?.focus();
+  });
+}
+
+// This is where the magic happens.
+// The provide function exposes the data to the child
+// The injection key is a unique identifier so that we can
+// "pickup" the data in the child using the same key
+provide(injectionKey, {
+  // This is just a good way for us to check in the child that the `vTabPanel`
+  // was correctly used in the context of the `vTabs` component
+  withinTabs: true,
+
+  // We expose the 2 functions defined above to the child
+  registerTab,
+  activateTab,
+
+  // We expose the active tab to the child
+  // but notice we use readonly to keep the child from directly mutating it
+  activeTab: readonly(tab),
+});
+
+
+
+
+
+
+const showTextSheet = defineModel<boolean>();
+
+
+
 
 const props = defineProps<Props>();
 
@@ -245,13 +156,18 @@ function handleClose() {
 
 </script>
 
+
 <style lang="less">
+// NB: these styles aren't scoped, and nothing in here uses .intro-card, so this
+// rule only lands on consumers
 .intro-card {
   padding: 1em;
-  container-type: size;
 }
 
-.info-tabs h3 {
+// the tab class is `info-sheet-tab` here; why-roman's copy of this file still
+// names the older `.info-tabs`, so the h3 inside each tab lost its size and
+// fell back to the UA default of 1.17em bold
+.info-sheet-tab h3 {
   font-size: 0.9em;
 }
 
@@ -320,7 +236,7 @@ function handleClose() {
   }
 
 
-  #tabs {
+  .info-sheet-tabs {
     width: calc(100% - 3em);
     align-self: left;
   }
@@ -341,8 +257,12 @@ function handleClose() {
     .v-card-text {
       font-size: ~"max(13px, calc(0.6em + 0.3vw))";
       padding-top: ~"max(2vw, 16px)";
-      padding-left: ~"max(4vw, 16px)";
-      padding-right: ~"max(4vw, 16px)";
+      // Fixed, not 4vw: the sheet's column is capped at a fixed width now, so
+      // viewport-relative gutters grew while the column did not -- on an
+      // ultrawide they took 276px of it and left the prose ~21 characters wide.
+      // 16px is the floor this already resolved to on a phone.
+      padding-left: 16px;
+      padding-right: 16px;
 
 
       .end-spacer {
@@ -362,6 +282,13 @@ function handleClose() {
       cursor: pointer;
     }
   }
+  
+
+  #close-text-icon {
+    top: 0.25em;
+    right: calc((2em - 0.6875em) / 3);
+  }
+
 
   // This prevents the tabs from having some extra space to the left when the screen is small
   // (around 400px or less)

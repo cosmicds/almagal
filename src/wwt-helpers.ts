@@ -1,6 +1,78 @@
 import type { Colormaps } from "./wwt-colormaps/colormaps";
-import type { engineStore } from "@wwtelescope/engine-pinia";
+import { engineStore } from "@wwtelescope/engine-pinia";
+import type { ImageSetLayer } from "@wwtelescope/engine";
 import { ScaleTypes } from "@wwtelescope/engine-types";
+import { D2R } from "@wwtelescope/astro";
+
+/** A loaded WTML collection: what `useWtmlLoader` hands back, refs unwrapped. */
+export interface LoadedWtml {
+  imagesets: import("@wwtelescope/engine").Imageset[];
+  imagesetLayers: ImageSetLayer[];
+}
+
+/** Enable these imagesets of a collection by index and disable the rest; with
+    no indices, turn the collection off. */
+export function showImagesets(wtml: LoadedWtml, ...indices: number[]) {
+  wtml.imagesetLayers.forEach((layer, index) => {
+    layer.set_enabled(indices.includes(index));
+    layer.set_opacity(1);
+  });
+}
+
+export interface ImagesetView {
+  /** height of the view in degrees (WWT's own zoom number is six times this) */
+  zoom: number;
+  /** defaults to the imageset's own centre, in degrees */
+  ra?: number;
+  dec?: number;
+  /** "imageset" takes the image's own rotation; a number is degrees */
+  roll?: number | "imageset";
+  instant?: boolean;
+  duration?: number;
+}
+
+/** Move the view to one imageset of a collection, by index. */
+export function goToImageset(
+  wtml: LoadedWtml,
+  index: number,
+  view: ImagesetView,
+  store = engineStore()
+) {
+  const imageset = wtml.imagesets[index];
+  if (!imageset) {
+    console.warn(`goToImageset: no imageset at index ${index}`);
+    return;
+  }
+  const rollDeg = view.roll === "imageset" ? imageset.get_rotation() : (view.roll ?? 0);
+  return store.gotoRADecZoom({
+    raRad: (view.ra ?? imageset.get_centerX()) * D2R,
+    decRad: (view.dec ?? imageset.get_centerY()) * D2R,
+    zoomDeg: view.zoom * 6,
+    rollRad: rollDeg * D2R,
+    instant: view.instant ?? true,
+    duration: view.duration,
+  });
+}
+
+/** Centre the view on an imageset layer, framed the way WWT would frame it. */
+export function moveToImageset(
+  layer: ImageSetLayer,
+  store = engineStore(),
+  instant = true
+) {
+  const imageset = layer.get_imageSet();
+
+  // @ts-expect-error _guessZoomSetting is internal; gives projection-aware zoom
+  const zoomDeg = imageset._guessZoomSetting(Number.POSITIVE_INFINITY);
+
+  return store.gotoRADecZoom({
+    raRad: imageset.get_centerX() * D2R,
+    decRad: imageset.get_centerY() * D2R,
+    zoomDeg,
+    rollRad: store.rollRad,
+    instant,
+  });
+}
 
 
 export function setFitsLayerSettings(
