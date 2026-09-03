@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True"
+  Group="Explorer"
+  Name="GLIMPSE360"
+  Searchable="True">
+  <Place Angle="0"
+    AngularSize="0"
+    Constellation="PSC"
+    DataSetType="Sky"
+    Dec="0"
+    Magnitude="0"
+    Name="GLIMPSE360"
+    Opacity="100"
+    RA="0"
+    Rotation="0"
+    Thumbnail="http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=glimpsetn"
+    ZoomLevel="0">
+    <ForegroundImageSet>
+      <ImageSet BandPass="IR"
+        BaseDegreesPerTile="180"
+        BaseTileLevel="0"
+        BottomsUp="False"
+        CenterX="0"
+        CenterY="0"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType=".png"
+        Generic="False"
+        Name="GLIMPSE360"
+        Projection="Toast"
+        QuadTreeMap=""
+        Rotation="0"
+        Sparse="False"
+        StockSet="False"
+        TileLevels="12"
+        Url="http://cdn.worldwidetelescope.org/wwtweb/g360.aspx?q={1},{2},{3}"
+        WidthFactor="1">
+        <Credits>NASA/JPL-Caltech/Univ. of Wisconsin. The GLIMPSE 360 survey was performed using the Spitzer Space Telescope.</Credits>
+        <CreditsUrl>http://www.astro.wisc.edu/sirtf/</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=glimpsetn</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>

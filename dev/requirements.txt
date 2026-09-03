@@ -1,0 +1,6 @@
+wwt_data_formats
+toasty
+# the below will be installed by the above
+matplotlib
+reproject
+astropy

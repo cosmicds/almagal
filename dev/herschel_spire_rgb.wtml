@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True" Group="Explorer" Name="SPIRE_RGBnorm" Searchable="True">
+  <Place Angle="0" AngularSize="0" Constellation="CET" DataSetType="Sky" Dec="0.9792235891486053" Magnitude="0" Name="SPIRE_RGBnorm" Opacity="100" RA="2.94140625" Rotation="0" Thumbnail="https://skies.esac.esa.int/Herschel/normalized/SPIRE_pnorm_RGB/preview.jpg" ZoomLevel="0.08588716029543514">
+    <ForegroundImageSet>
+      <ImageSet BandPass="IR" BaseDegreesPerTile="180" BaseTileLevel="0" BottomsUp="False" CenterX="0" CenterY="0" DataSetType="Sky" ElevationModel="False" FileType="png" Generic="False" MeanRadius="1" Name="SPIRE_RGBnorm" Projection="Healpix" QuadTreeMap="0123" ReferenceFrame="Sky" Rotation="0" Sparse="True" StockSet="False" TileLevels="7" Url="https://skies.esac.esa.int/Herschel/normalized/SPIRE_pnorm_RGB/Norder{0}/Dir{1}/Npix{2}" WidthFactor="1">
+        <Credits>ESA/HSA</Credits>
+        <CreditsUrl>http://www.cosmos.esa.int/web/herschel/publishing-rules-guidelines</CreditsUrl>
+        <Description>A color composition using all public SPIRE observations from the Herschel Science Archive at 250 micron (blue), 350 micron (green) and 500 micron (red). The data have been normalised using Herschel-optimised cuts and stretch prior to the HiPS generation.</Description>
+        <ThumbnailUrl>https://skies.esac.esa.int/Herschel/normalized/SPIRE_pnorm_RGB/preview.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>

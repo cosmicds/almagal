@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True"
+  Group="Explorer"
+  Name="AllWISE color  Red (W4) , Green (W2) , Blue (W1) from raw Atlas Images"
+  Searchable="True">
+  <Place Angle="0"
+    AngularSize="0"
+    Constellation="PSC"
+    DataSetType="Sky"
+    Dec="0"
+    Magnitude="0"
+    Name="AllWISE color  Red (W4) , Green (W2) , Blue (W1) from raw Atlas Images"
+    Opacity="100"
+    RA="0"
+    Rotation="0"
+    Thumbnail="http://alasky.u-strasbg.fr/AllWISE/RGB-W4-W2-W1/preview.jpg"
+    ZoomLevel="0">
+    <ForegroundImageSet>
+      <ImageSet BandPass="IR"
+        BaseDegreesPerTile="180"
+        BaseTileLevel="0"
+        BottomsUp="False"
+        CenterX="0"
+        CenterY="0"
+        DataSetType="Sky"
+        ElevationModel="False"
+        FileType="jpeg"
+        Generic="False"
+        MeanRadius="1"
+        Name="AllWISE color  Red (W4) , Green (W2) , Blue (W1) from raw Atlas Images"
+        Projection="Healpix"
+        QuadTreeMap="0123"
+        ReferenceFrame="Sky"
+        Rotation="0"
+        Sparse="True"
+        StockSet="False"
+        TileLevels="8"
+        Url="http://alasky.u-strasbg.fr/AllWISE/RGB-W4-W2-W1/Norder{0}/Dir{1}/Npix{2}"
+        WidthFactor="1">
+        <Credits>IPAC/NASA</Credits>
+        <CreditsUrl>http://wise2.ipac.caltech.edu/docs/release/allsky/</CreditsUrl>
+        <Description>HiPS List ID: CDS/P/allWISE/color</Description>
+        <ThumbnailUrl>http://alasky.u-strasbg.fr/AllWISE/RGB-W4-W2-W1/preview.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>
