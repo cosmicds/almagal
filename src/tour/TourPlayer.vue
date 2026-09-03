@@ -1,47 +1,5 @@
 <template>
   <div class="tour-player">
-    <div class="tour-nav">
-      <v-btn
-        density="compact"
-        elevation="0"
-        variant="text"
-        icon="mdi-chevron-left"
-        aria-label="Previous step"
-        :disabled="step === 0"
-        @click="step--"
-      ></v-btn>
-
-      <v-breadcrumbs
-        class="tour-crumbs pa-0"
-        density="compact"
-        :items="crumbs"
-      >
-        <template #divider>
-          <v-icon icon="mdi-chevron-right"></v-icon>
-        </template>
-        <template #title="{ index }">
-          <span
-            class="tour-crumb"
-            :class="{ 'tour-crumb--active': index === step }"
-            role="button"
-            tabindex="0"
-            @click="step = index"
-            @keyup.enter="step = index"
-          >{{ index + 1 }}</span>
-        </template>
-      </v-breadcrumbs>
-
-      <v-btn
-        density="compact"
-        elevation="0"
-        variant="text"
-        icon="mdi-chevron-right"
-        aria-label="Next step"
-        :disabled="step === TOUR_STEPS.length - 1"
-        @click="step++"
-      ></v-btn>
-    </div>
-
     <v-window
       v-model="step"
       class="tour-window"
@@ -49,46 +7,71 @@
       <v-window-item
         v-for="(component, index) in TOUR_STEPS"
         :key="index"
-        :value="index"
+        :value="index + 1"
       >
-        <component
-          :is="component"
-          :active="index === step"
-        />
+        <component :is="component" />
       </v-window-item>
     </v-window>
+
+    <TourBreadcrumbs
+      :step="step"
+      :total-steps="TOUR_STEPS.length"
+      show-back-on-first-step
+      show-next-on-last-step
+      @previous="step--"
+      @next="step++"
+      @step="(n) => step = n"
+    >
+      <template #back>
+        <v-btn
+          class="tour-nav-button"
+          density="compact"
+          elevation="0"
+          variant="text"
+          icon="mdi-chevron-left"
+          aria-label="Previous step"
+          :disabled="step === 1"
+          @click="step--"
+        ></v-btn>
+      </template>
+      <template #next>
+        <v-btn
+          class="tour-nav-button"
+          density="compact"
+          elevation="0"
+          variant="text"
+          icon="mdi-chevron-right"
+          aria-label="Next step"
+          :disabled="step === TOUR_STEPS.length"
+          @click="step++"
+        ></v-btn>
+      </template>
+    </TourBreadcrumbs>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref, watch } from "vue";
 import { TOUR_STEPS } from "./steps";
+import { setupTourStep } from "./tourActions";
+import TourBreadcrumbs from "./TourBreadcrumbs.vue";
 
-const step = ref(0);
+// 1-indexed, to match the step numbers shown and `setupTourStep`
+const step = ref(1);
 
-const crumbs = computed(() =>
-  TOUR_STEPS.map((_component, index) => ({
-    title: String(index + 1),
-    disabled: false,
-  }))
-);
+watch(step, (n) => setupTourStep(n), { immediate: true });
 </script>
 
 <style scoped lang="less">
-.tour-nav {
+.tour-player {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.25em;
+  flex-direction: column;
 }
 
-.tour-crumb {
-  cursor: pointer;
-  opacity: 0.6;
-
-  &--active {
-    opacity: 1;
-    font-weight: bold;
-  }
+/* TourBreadcrumbs fills its own buttons in accent colour; these are bare
+   chevrons. Two classes deep to beat its `.tour-text-controls .v-btn`. */
+.tour-text-controls .tour-nav-button {
+  border: none;
+  background-color: transparent;
 }
 </style>

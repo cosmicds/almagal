@@ -1,41 +1,21 @@
 <template>
-  <TourStep title="Step 2">
-    <v-img
-      class="step-image"
-      src="https://picsum.photos/200"
-      alt=""
-    ></v-img>
+  <TourStep title="Massive Star Formation">
     <p>
-      Interesting text
+      Both low and high-mass stars form from the gas and dust that make up the ISM. Through forces
+      such as gravity, dust and gas coalesce into diffuse clouds, dense clumps, and at the smallest
+      scales, pre-/protostellar &ldquo;cores&rdquo; &ndash; the direct progenitors of stars. Over the
+      last few decades we have made extensive observations of nearby low-mass star-forming regions
+      and have developed a solid theoretical framework for how low-mass protostars form.
+    </p>
+    <p>
+      However, despite their significant impact on our Galaxy, we don&rsquo;t fully understand how
+      massive protostars form. This is largely because high-mass protostars are much rarer than
+      their low-mass counterparts and are embedded in densely clustered environments, making it
+      difficult to observe them directly.
     </p>
   </TourStep>
 </template>
 
 <script setup lang="ts">
-import { toRef } from "vue";
-import { D2R } from "@wwtelescope/astro";
 import TourStep from "../TourStep.vue";
-import { useTourStep } from "../useTourStep";
-
-const props = defineProps<{ active: boolean }>();
-
-// out along the plane to Eta Carinae (10 45 03.00 -59 41 04.00)
-useTourStep(toRef(props, "active"), (store) => {
-  store.gotoRADecZoom({
-    raRad: (10 + 45 / 60 + 3.00 / 3600) * 15 * D2R,
-    decRad: -(59 + 41 / 60 + 4.00 / 3600) * D2R,
-    zoomDeg: 5,
-    instant: false,
-  });
-});
 </script>
-
-<style scoped lang="less">
-.step-image {
-  float: right;
-  width: 40%;
-  max-width: 200px;
-  margin: 0 0 0.5em 1em;
-  border-radius: 4px;
-}
-</style>

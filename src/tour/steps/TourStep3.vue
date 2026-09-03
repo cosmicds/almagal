@@ -1,49 +1,22 @@
 <template>
-  <TourStep title="Step 3">
-    <v-img
-      class="step-image"
-      :src="source?.photo_url ?? 'https://picsum.photos/200'"
-      alt=""
-    ></v-img>
+  <TourStep title="What is the ALMAGAL Survey?">
     <p>
-      Interesting text about {{ SOURCE_NAME }}
+      The ALMA evolutionary study of high-mass protocluster formation in the Galaxy (ALMAGAL) Survey
+      observed 1013 dense clumps capable of producing massive protostars. This survey was performed
+      using the Atacama Large Millimeter Array (ALMA), an array of dish telescopes capable of
+      producing high-resolution images at the longer wavelengths necessary to penetrate dusty
+      star-forming environments.
+    </p>
+    <p>
+      These targeted regions were selected from a sample of very dense and massive clumps observed
+      in the infrared Hi-GAL survey. These regions span the full extent of massive star forming
+      environments, spanning the entire Galactic disk as well as the complete evolutionary sequence
+      of star formation &ndash; from quiescent clumps just starting to form prestellar cores to HII
+      regions containing newly formed massive stars.
     </p>
   </TourStep>
 </template>
 
 <script setup lang="ts">
-import { toRef } from "vue";
-import { D2R } from "@wwtelescope/astro";
 import TourStep from "../TourStep.vue";
-import { useTourStep } from "../useTourStep";
-import { getAlmagalSourceByName } from "../../almagal_utils";
-
-const props = defineProps<{ active: boolean }>();
-
-// example: look a source up by its ALMAGAL name and fly to it
-const SOURCE_NAME = "AG342.7054+0.1251";
-const source = getAlmagalSourceByName(SOURCE_NAME);
-
-useTourStep(toRef(props, "active"), (store) => {
-  if (!source) {
-    console.warn(`Tour step 3: no ALMAGAL source named ${SOURCE_NAME}`);
-    return;
-  }
-  store.gotoRADecZoom({
-    raRad: source.ra * D2R,
-    decRad: source.dec * D2R,
-    zoomDeg: 0.05,
-    instant: false,
-  });
-});
 </script>
-
-<style scoped lang="less">
-.step-image {
-  float: right;
-  width: 40%;
-  max-width: 200px;
-  margin: 0 0 0.5em 1em;
-  border-radius: 4px;
-}
-</style>
