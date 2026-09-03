@@ -17,7 +17,7 @@
               High mass
             </v-btn>
           </td>
-          <td>The 118 heaviest clumps, 2000 M<sub>&#9737;</sub> and up.</td>
+          <td>The heaviest clumps, 2000 M<sub>&#9737;</sub> and up.</td>
         </tr>
         <tr>
           <td>
@@ -29,7 +29,7 @@
               Low mass
             </v-btn>
           </td>
-          <td>The 132 lightest, 500 M<sub>&#9737;</sub> and below.</td>
+          <td>The lightest, 500 M<sub>&#9737;</sub> and below.</td>
         </tr>
         <tr>
           <td>
