@@ -7,7 +7,7 @@ layer.get_imageSet().get_fitsProperties().colorMapName = "viridisalpha"
 
 import { ColorMapContainer } from "@wwtelescope/engine";
 import rdbu from "@/assets/RdBu_r";
-import tempo from "@/assets/tempo";
+import { markerColors } from "@/assets/marker_colors";
 
 export const COLORMAPS = [
   'viridis',
@@ -30,7 +30,7 @@ export type Colormaps =  typeof COLORMAPS[number];
 
 export function addCustomColormaps() {
   const rdbuCm = ColorMapContainer.fromStringList(rdbu);
-  const tempoCm = ColorMapContainer.fromStringList(tempo);
+  const markerColorsCm = ColorMapContainer.fromStringList(markerColors);
   ColorMapContainer.registerNamedColormap("rdbu", rdbuCm);
-  ColorMapContainer.registerNamedColormap("tempo", tempoCm);
+  ColorMapContainer.registerNamedColormap("markers", markerColorsCm);
 }

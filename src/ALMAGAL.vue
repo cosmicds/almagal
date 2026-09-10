@@ -376,7 +376,24 @@
                     </div>
                     <hr class="mt-3" />
                     <div class="clump-type-filter">
-                      <span>Clump type</span>
+                      <div class="clump-type-header">
+                        <span>Clump type</span>
+                        <span class="clump-type-actions">
+                          <button
+                            type="button"
+                            @click="clumpTypeFilter = [...CLUMP_TYPES]"
+                          >
+                            All
+                          </button>
+                          <span aria-hidden="true">&middot;</span>
+                          <button
+                            type="button"
+                            @click="clumpTypeFilter = []"
+                          >
+                            None
+                          </button>
+                        </span>
+                      </div>
                       <div class="clump-type-options">
                         <label
                           v-for="type in CLUMP_TYPES"
@@ -388,7 +405,14 @@
                             type="checkbox"
                             :value="type"
                           />
-                          {{ type }}
+                          <span
+                            class="clump-type-swatch"
+                            :style="{
+                              backgroundColor: clumpTypeColor(type),
+                              color: clumpTypeCheckColor(type),
+                            }"
+                          ></span>
+                          <span class="clump-type-label">{{ type }}</span>
                         </label>
                       </div>
                     </div>
@@ -650,6 +674,8 @@ import {
   cancelAlmagalSourceDownload,
   downloadAlmagalSource,
   almagalSourceList,
+  clumpTypeCheckColor,
+  clumpTypeColor,
   clumpTypeFilter,
   filterFields,
   filterFunction,
@@ -1850,8 +1876,38 @@ and remember, position:absolute is still a positioned parent, so children can be
   gap: 0.5em;
 }
 
-.clump-type-filter > span {
+.clump-type-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1em;
   font-weight: bold;
+  color: var(--almagal-orange);
+}
+
+// --almagal-blue (#306C9F) goes muddy on this near-black panel, so the two
+// bulk-toggle links use a lightened version of it rather than the token.
+.clump-type-actions {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  font-weight: normal;
+  color: #7fb2e8;
+}
+
+.clump-type-actions > button {
+  color: inherit;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}
+
+// The separator is punctuation, not a third link: hold it back from the two.
+.clump-type-actions > span {
+  opacity: 0.5;
 }
 // 100px gives two across in the narrow one-column panel; the two-column
 // media query above raises it so the five types do not break 4 + a stray one
@@ -1859,6 +1915,76 @@ and remember, position:absolute is still a positioned parent, so children can be
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 0.25em;
+}
+
+// The swatch *is* the checkbox: it shows the color the point layer draws this
+// clump type in, and carries the check. The native input stays in the DOM,
+// visually hidden, so the control keeps its keyboard and screen-reader
+// behaviour for free.
+.clump-type-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  cursor: pointer;
+}
+
+.clump-type-option > input[type="checkbox"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.clump-type-swatch {
+  width: 1.4em;
+  height: 1.4em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  // The ring keeps the near-black "unknown" swatch visible on the dark panel.
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+
+  // Checkmark, in the ink color the template picks for this swatch.
+  &::after {
+    content: "";
+    width: 0.36em;
+    height: 0.62em;
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-0.08em) rotate(45deg);
+  }
+}
+
+// Two classes on purpose: it has to outrank `.almagal-filterset label > span`,
+// which bolds the slider captions.
+.clump-type-option > .clump-type-label {
+  font-weight: normal;
+}
+
+// Off: swatch dimmed with its check hidden, label struck through.
+.clump-type-option > input:not(:checked) {
+  + .clump-type-swatch {
+    opacity: 0.4;
+
+    &::after {
+      opacity: 0;
+    }
+  }
+
+  ~ .clump-type-label {
+    color: #8a8a8a;
+    text-decoration: line-through;
+  }
+}
+
+.clump-type-option > input:focus-visible + .clump-type-swatch {
+  outline: 2px solid var(--almagal-orange);
+  outline-offset: 2px;
 }
 
 .pending-source-label {
