@@ -40,8 +40,8 @@ export const CLUMP_COLORS: Record<string, ClumpTypeColors> = CLUMP_TYPES.reduce(
    entry. */
 const clumpColors = (type: string) => CLUMP_COLORS[type] ?? CLUMP_COLORS.unknown;
 
-export const clumpTypeColor = (type: string) => clumpColors(type).color;
-export const clumpTypeCheckColor = (type: string) => clumpColors(type).check;
+export const clumpTypeColor = (type: string) => clumpColors(type)?.color ?? "white";
+export const clumpTypeCheckColor = (type: string) => clumpColors(type)?.check ?? "black";
 
 // merge almagalClumps "type" and an "included field" based on iid/INTERNAL_ID
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
