@@ -352,24 +352,27 @@
                       :key="field"
                       class="filter-slider"
                     >
-                      <label>
-                        <span v-html="filterFieldLabels[field]"></span>&nbsp;
-                        <span
-                          v-if="hoveredSource"
-                          class="fiducial-display"
-                        >
-                          {{ formatSigFigs(hoveredSource[field]) }}
-                        </span>
+                      <div class="filter-slider-and-label">
+                        <div class="d-flex justify-between">
+                          <span v-html="filterFieldLabels[field]"></span>&nbsp;
+                          <span
+                            v-if="hoveredSource"
+                            class="fiducial-display"
+                          >
+                            {{ formatSigFigs(hoveredSource[field]) }}
+                          </span>
+                        </div>
                         <RangeNumberInputs
                           :model-value="filterSpec.get(field)!"
                           :min="almagalColumnRanges[field].min"
                           :max="almagalColumnRanges[field].max"
+                          :aria-label="filterFieldLabels[field]"
                           :fiducial="hoveredSource ? hoveredSource[field] : undefined"
                           :steps="500"
                           log
                           @update:model-value="(val) => filterSpec.set(field, val)"
                         />
-                      </label>
+                      </div>
                     </div>
                     <hr class="mt-3" />
                     <div class="clump-type-filter">
@@ -1806,10 +1809,8 @@ and remember, position:absolute is still a positioned parent, so children can be
   
 }
 
-.filter-slider label {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.filter-slider .filter-slider-and-label {
+  display: block; /* */
 }
 
 .fiducial-display {
@@ -1896,7 +1897,6 @@ and remember, position:absolute is still a positioned parent, so children can be
   display: flex;
   flex-direction: column;
   gap: 0.75em;
-  max-width: 420px;
 }
 
 .settings-hint {
