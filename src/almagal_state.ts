@@ -56,7 +56,7 @@ function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource
       included: !!clump,
       color: clumpTypeColor(type),
     };
-  });
+  }).filter(source => source.included); // only keep sources that have a clump entry
 }
 
 export const almagalSourceList = shallowRef(mergedCatalog(almagalSources, almagalClumps));
