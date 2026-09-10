@@ -13,15 +13,35 @@ import {
 } from "./almagal_utils";
 import { setFitsLayerSettings } from "./wwt-helpers";
 import type { Colormaps } from "./wwt-colormaps/colormaps";
-import tempo from "@/assets/tempo";
+import { markerColors, checkmarkColors } from "@/assets/marker_colors";
 import almagalClumps from "./assets/almagal_clump_props_WWT.json";
 
 export const CLUMP_TYPES = ["isolated", "empty", "simple", "rich", "unknown"];
 
-const getIndex = (type: string) => {
-  const index = CLUMP_TYPES.indexOf(type);
-  return Math.max(index, 0);
-};
+export interface ClumpTypeColors {
+  /** What the point layer draws this clump type in, and the filter swatch. */
+  color: string;   
+  /** Color for the checkmark on that swatch when the type is selected. */
+  check: string;   
+}
+
+export const CLUMP_COLORS: Record<string, ClumpTypeColors> = CLUMP_TYPES.reduce(
+  (colors, type, index) => {
+    colors[type] = {
+      color: markerColors[index],
+      check: checkmarkColors[index] ?? "white",
+    };
+    return colors;
+  },
+  {} as Record<string, ClumpTypeColors>,
+);
+
+/* A TYPE outside CLUMP_TYPES falls back to "unknown" rather than to the first
+   entry. */
+const clumpColors = (type: string) => CLUMP_COLORS[type] ?? CLUMP_COLORS.unknown;
+
+export const clumpTypeColor = (type: string) => clumpColors(type).color;
+export const clumpTypeCheckColor = (type: string) => clumpColors(type).check;
 
 // merge almagalClumps "type" and an "included field" based on iid/INTERNAL_ID
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,7 +54,7 @@ function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource
       ...source,
       type,
       included: !!clump,
-      color: tempo[getIndex(type)],
+      color: clumpTypeColor(type),
     };
   });
 }
