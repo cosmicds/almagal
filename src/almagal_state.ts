@@ -38,7 +38,7 @@ export const CLUMP_COLORS: Record<string, ClumpTypeColors> = CLUMP_TYPES.reduce(
 
 /* A TYPE outside CLUMP_TYPES falls back to "unknown" rather than to the first
    entry. */
-const clumpColors = (type: string) => CLUMP_COLORS[type] ?? CLUMP_COLORS.unknown;
+const clumpColors = (type: string) => CLUMP_COLORS[type] ?? "white";
 
 export const clumpTypeColor = (type: string) => clumpColors(type)?.color ?? "white";
 export const clumpTypeCheckColor = (type: string) => clumpColors(type)?.check ?? "black";
