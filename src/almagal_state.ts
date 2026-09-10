@@ -16,7 +16,7 @@ import type { Colormaps } from "./wwt-colormaps/colormaps";
 import { markerColors, checkmarkColors } from "@/assets/marker_colors";
 import almagalClumps from "./assets/almagal_clump_props_WWT.json";
 
-export const CLUMP_TYPES = ["isolated", "empty", "simple", "rich", "unknown"];
+export const CLUMP_TYPES = ["isolated", "empty", "simple", "rich"]; //, "unknown"];
 
 export interface ClumpTypeColors {
   /** What the point layer draws this clump type in, and the filter swatch. */
