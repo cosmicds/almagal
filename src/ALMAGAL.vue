@@ -1129,7 +1129,6 @@ function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number)
 
 /* singleton wwt 3d controller */
 import { useWwt3dControl } from "./composables/wwt3dControl";
-import { A } from "vue-router/dist/index-BQLwgiyK.js";
 const { in3D: in3dView, switchTo2D } = useWwt3dControl(store);
 
 watch(in3dView, (in3d) => {
