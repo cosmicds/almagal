@@ -16,7 +16,7 @@ import type { Colormaps } from "./wwt-colormaps/colormaps";
 import { markerColors, checkmarkColors } from "@/assets/marker_colors";
 import almagalClumps from "./assets/almagal_clump_props_WWT.json";
 
-export const CLUMP_TYPES = ["isolated", "empty", "simple", "rich", "unknown"];
+export const CLUMP_TYPES = ["isolated", "empty", "simple", "rich"]; //, "unknown"];
 
 export interface ClumpTypeColors {
   /** What the point layer draws this clump type in, and the filter swatch. */
@@ -38,10 +38,10 @@ export const CLUMP_COLORS: Record<string, ClumpTypeColors> = CLUMP_TYPES.reduce(
 
 /* A TYPE outside CLUMP_TYPES falls back to "unknown" rather than to the first
    entry. */
-const clumpColors = (type: string) => CLUMP_COLORS[type] ?? CLUMP_COLORS.unknown;
+const clumpColors = (type: string) => CLUMP_COLORS[type] ?? "white";
 
-export const clumpTypeColor = (type: string) => clumpColors(type).color;
-export const clumpTypeCheckColor = (type: string) => clumpColors(type).check;
+export const clumpTypeColor = (type: string) => clumpColors(type)?.color ?? "white";
+export const clumpTypeCheckColor = (type: string) => clumpColors(type)?.check ?? "black";
 
 // merge almagalClumps "type" and an "included field" based on iid/INTERNAL_ID
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,7 +56,7 @@ function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource
       included: !!clump,
       color: clumpTypeColor(type),
     };
-  });
+  }).filter(source => source.included); // only keep sources that have a clump entry
 }
 
 export const almagalSourceList = shallowRef(mergedCatalog(almagalSources, almagalClumps));
