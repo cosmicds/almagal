@@ -1305,6 +1305,7 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
   font-weight: 600;
 }
 
+
 // #app is a column flex container with two children:
 // #main-content and #bottom-drawer.
 // #main-content contains the WWT display and the overlay content.
@@ -1312,6 +1313,7 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
 #app {
   // Vuetify's root app element fills the viewport.
   overflow: hidden;
+  overscroll-behavior: none;
   // Vuetify's root app element is a column flex layout
   // lets #main-content take the remaining height
   // after `#bottom-drawer` takes its own height.
