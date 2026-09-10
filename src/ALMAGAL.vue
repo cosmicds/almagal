@@ -352,24 +352,27 @@
                       :key="field"
                       class="filter-slider"
                     >
-                      <label>
-                        <span v-html="filterFieldLabels[field]"></span>&nbsp;
-                        <span
-                          v-if="hoveredSource"
-                          class="fiducial-display"
-                        >
-                          {{ formatSigFigs(hoveredSource[field]) }}
-                        </span>
+                      <div class="filter-slider-and-label">
+                        <div class="d-flex justify-between">
+                          <span v-html="filterFieldLabels[field]"></span>&nbsp;
+                          <span
+                            v-if="hoveredSource"
+                            class="fiducial-display"
+                          >
+                            {{ formatSigFigs(hoveredSource[field]) }}
+                          </span>
+                        </div>
                         <RangeNumberInputs
                           :model-value="filterSpec.get(field)!"
                           :min="almagalColumnRanges[field].min"
                           :max="almagalColumnRanges[field].max"
+                          :aria-label="filterFieldLabels[field]"
                           :fiducial="hoveredSource ? hoveredSource[field] : undefined"
                           :steps="500"
                           log
                           @update:model-value="(val) => filterSpec.set(field, val)"
                         />
-                      </label>
+                      </div>
                     </div>
                     <hr class="mt-3" />
                     <div class="clump-type-filter">
@@ -1129,7 +1132,6 @@ function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number)
 
 /* singleton wwt 3d controller */
 import { useWwt3dControl } from "./composables/wwt3dControl";
-import { A } from "vue-router/dist/index-BQLwgiyK.js";
 const { in3D: in3dView, switchTo2D } = useWwt3dControl(store);
 
 watch(in3dView, (in3d) => {
@@ -1306,6 +1308,7 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
   font-weight: 600;
 }
 
+
 // #app is a column flex container with two children:
 // #main-content and #bottom-drawer.
 // #main-content contains the WWT display and the overlay content.
@@ -1313,6 +1316,7 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
 #app {
   // Vuetify's root app element fills the viewport.
   overflow: hidden;
+  overscroll-behavior: none;
   // Vuetify's root app element is a column flex layout
   // lets #main-content take the remaining height
   // after `#bottom-drawer` takes its own height.
@@ -1805,10 +1809,8 @@ and remember, position:absolute is still a positioned parent, so children can be
   
 }
 
-.filter-slider label {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+.filter-slider .filter-slider-and-label {
+  display: block; /* */
 }
 
 .fiducial-display {
@@ -1895,7 +1897,6 @@ and remember, position:absolute is still a positioned parent, so children can be
   display: flex;
   flex-direction: column;
   gap: 0.75em;
-  max-width: 420px;
 }
 
 .settings-hint {

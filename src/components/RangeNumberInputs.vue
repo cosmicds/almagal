@@ -190,7 +190,7 @@ onMounted(() => {
 
 double-range-slider {
   --dri-track-color: #ccc;
-  --dri-track-filled-color: #f72d9c;
+  --dri-track-filled-color: var(--almagal-orange);
   --dri-thumb-width: 14px;
   --dri-thumb-height: 14px;
 }

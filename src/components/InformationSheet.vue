@@ -43,7 +43,7 @@
       </v-tab>
     </v-tabs>
     <!-- v-else to preserve space for tabs -->
-    <div v-else-if="showCloseButton" class="cds-info-sheet-tabs" style="height: 1em;"></div>
+    <div v-else-if="showCloseButton" class="cds-info-sheet-tabs" style="height: 2.5em;"></div>
     <v-icon
       v-if="!stayOpen || showCloseButton"
       id="close-text-icon"
