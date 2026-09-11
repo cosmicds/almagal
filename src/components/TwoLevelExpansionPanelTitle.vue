@@ -15,13 +15,15 @@
   .v-expansion-panel-title.two-level-v-expansion-title {
 
     display: grid;
+    /* min-content on right column allows the first column to take up as much space as possibe */
     grid-template-columns: 1fr min-content;
-    grid-template-rows: min-content 1fr;
-    gap: 0px;
-    transition: gap 0.3s linear;
+    /* both rows should take the available space they need */
+    grid-template-rows: 1fr 1fr;
+    gap: 0px; /* get rid of any default gap so that vuetify g-* classes work */
+    transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
   }
   
-  .two-level-v-expansion-title .v-expansion-panel--active > .v-expansion-panel-title {
+  .v-expansion-panel--active > .v-expansion-panel-title.two-level-v-expansion-title {
     gap: 8px !important;
   }
   
