@@ -112,7 +112,6 @@
                       hide-details
                       label="ALMAGAL Source"
                       :loading="pendingSourceIids.length > 0"
-                      autofocus
                       density="compact"
                     />
                   </template>
@@ -519,7 +518,6 @@
                     item-title="label"
                     item-value="value"
                     hide-details
-                    autofocus
                     label="Background survey"
                     density="compact"
                     variant="underlined"
