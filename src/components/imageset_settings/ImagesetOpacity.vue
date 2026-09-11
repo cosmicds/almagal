@@ -1,17 +1,28 @@
 <template>
-  <div
-    class="detail-row"
+  <slot
+    :on="{
+      modelValue: twoWayOpacity,
+      'onUpdate:modelValue': (v: number) => {
+        twoWayOpacity = v;
+      }
+    }"
   >
-    <span class="prompt">Opacity:</span>
-    <v-slider
-      v-model="twoWayOpacity"
-      class="scrubber"
-      :max="1"
-      :min="0"
-      :step="0.01"
-      hide-details
-    ></v-slider>
-  </div>
+    <div
+      class="detail-row"
+    >
+      <span class="prompt">
+        Opacity:
+      </span>
+      <v-slider
+        v-model="twoWayOpacity"
+        class="scrubber"
+        :max="1"
+        :min="0"
+        :step="0.01"
+        hide-details
+      ></v-slider>
+    </div>
+  </slot>
 </template>
 
 <script setup lang="ts">
