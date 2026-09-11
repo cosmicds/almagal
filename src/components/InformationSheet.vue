@@ -42,8 +42,15 @@
         <h3>{{ _tabName.title }}</h3>
       </v-tab>
     </v-tabs>
-    <!-- v-else to preserve space for tabs -->
-    <div v-else-if="showCloseButton" class="cds-info-sheet-tabs" style="height: 2.5em;"></div>
+    <!-- v-else to preserve space for tabs. With the tabs hidden this row is the
+         only chrome the sheet has, so a `headerTitle` turns it into a proper
+         header rather than leaving the close button floating on its own. -->
+    <div
+      v-else-if="showCloseButton"
+      class="cds-info-sheet-tabs cds-info-sheet-header"
+      style="height: 2.5em;"
+    >
+    </div>
     <v-icon
       v-if="!stayOpen || showCloseButton"
       id="close-text-icon"
@@ -262,8 +269,9 @@ const cssVars = computed(() => {
 <style lang="less">
 
 .cds-info-sheet-tab h3 {
-  font-size: 0.9em;
+  font-size: 1.1em;
 }
+
 
 // this will make them narrower
 // the double .v-tab is used to beat vuetify's specificity.
