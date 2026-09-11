@@ -54,9 +54,9 @@
     >
       <double-range-slider
         ref="sliderEl"
-        :min="sliderMin"
-        :max="sliderMax"
-        :step="sliderStep"
+        :min="0"
+        :max="steps"
+        :step="1"
         @input="onSliderInput"
       />
       <span
@@ -126,10 +126,21 @@ const maxValue = computed({
 });
 
 
-// Slider bounds/step live in slider (possibly log10) space.
+// REAL Slider bounds/step live in slider (possibly log10) space.
 const sliderMin = computed(() => transform(props.min));
 const sliderMax = computed(() => transform(props.max));
-const sliderStep = computed(() => (sliderMax.value - sliderMin.value) / (props.steps ?? 100));
+
+const steps = computed(() => props.steps ?? 100);
+function toIndex(v: number): number {
+  // math.round just cleans up floating point errors at the ends, the index must be an int.
+  return Math.round(transform(v) - sliderMin.value) / (sliderMax.value - sliderMin.value) * steps.value;
+}
+function fromIndex(i: number): number {
+  if (i <= 0) return props.min;
+  if (i >= steps.value) return props.max;
+  return inverse(sliderMin.value + (i / steps.value) * (sliderMax.value - sliderMin.value));
+}
+
 const sliderFiducial = computed(() => props.fiducial ? (transform(props.fiducial) - sliderMin.value)/(sliderMax.value - sliderMin.value) : undefined);
 
 /** The hovered value, rounded the same way the min/max readouts are. */
@@ -139,19 +150,19 @@ const fiducialLabel = computed(() =>
 
 const sliderEl = ref<DoubleRangeSlider | null>(null);
 
-// slider -> model (detail is the [lower, upper] pair, in slider space)
+// slider -> model (detail is the [lower, upper] pair, as step indices)
 function onSliderInput(event: Event) {
   const [lower, upper] = (event as CustomEvent<[number, number]>).detail;
-  model.value.min = inverse(lower);
-  model.value.max = inverse(upper);
+  model.value.min = fromIndex(lower);
+  model.value.max = fromIndex(upper);
 }
 
 watch([minValue, maxValue], ([lo, hi]) =>
-  sliderEl.value?.setValues(transform(lo), transform(hi))
+  sliderEl.value?.setValues(toIndex(lo), toIndex(hi))
 );
 
 onMounted(() => {
-  sliderEl.value?.setValues(transform(minValue.value), transform(maxValue.value));
+  sliderEl.value?.setValues(toIndex(minValue.value), toIndex(maxValue.value));
   
   // override an internal style of the double-range-slider
   // https://stackoverflow.com/questions/37352637/shadow-dom-styling-from-the-outside
