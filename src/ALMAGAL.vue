@@ -118,6 +118,7 @@
                 </div>
 
 
+                <ShowHideAutoToggle v-model="displaySpreadsheet" variant="flat" />
                 <v-tooltip
                   text="View settings"
                   location="bottom"
@@ -709,6 +710,7 @@ import {
   showFilters,
   showInfoSheet,
   spreadsheetVisible,
+  displaySpreadsheet,
   ALMAGAL_TAB,
   SETTINGS_TAB,
   SOURCE_INFORMATION_TAB,
@@ -726,6 +728,7 @@ import {
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
+import ShowHideAutoToggle from "./components/ShowHideAutoToggle.vue";
 import { useSpreadsheetLayer } from "./composables/useSpreadsheetLayer";
 import { drawPointList } from "./wwt-hacks";
 
@@ -888,10 +891,16 @@ watch(spreadsheetVisible, (visible) => {
   almagalSpreadsheetLayer.setVisible(visible);
 });
 
-watch(zoomDeg, (zoom: number) => {
-  spreadsheetVisible.value = zoom > 0.5;
+const tooCloseForSpreadsheet = computed(() => zoomDeg.value < 0.5);
+
+watch(tooCloseForSpreadsheet, (tooClose: boolean) => {
+  if (displaySpreadsheet.value !== null) { return; }
+  spreadsheetVisible.value = !tooClose;
 });
 
+watch(displaySpreadsheet, (display) => {
+  spreadsheetVisible.value = display ?? !tooCloseForSpreadsheet.value;
+});
 
 /* Load WTMLS for different background layers.
    Don't forget to add them to `foregroundImageOptions` and the `foregroundImage` watcher!
