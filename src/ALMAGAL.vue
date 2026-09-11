@@ -306,8 +306,7 @@
         page-color="transparent"
         :stay-open="forceInfoSheetOpen"
         show-close-button
-        header-title="Controls"
-        :hide-tabs="infoSheetTab === 'settings'"
+        :align-tabs="'start'"
       >
         <!-- each page registers its own tab, in this order -->
         <InfoPage v-if="infoSheetTab === SOURCE_INFORMATION_TAB" title="ALMAGAL Source" value="source-information">
@@ -330,7 +329,7 @@
           -->
         <UserGuide v-if="inInfoGroup" />
 
-        <InfoPage v-if="infoSheetTab === SETTINGS_TAB" title="Settings">
+        <InfoPage v-if="infoSheetTab === SETTINGS_TAB" title="CONTROLS" value="settings">
           <div class="settings-page">
             <v-expansion-panels
               v-model="settingsPanels"
@@ -811,7 +810,7 @@ const forceInfoSheetOpen = ref(true);
    since the tour opens and closes the sheet per step. Each info sheet
    registers its tab when it is available in the DOM. */
 // the pages that mount together, and so show up as each other's tabs
-const infoGroupTabs: InfoSheetTab[] = [ALMAGAL_TAB, USER_GUIDE_TAB];
+const infoGroupTabs: InfoSheetTab[] = [USER_GUIDE_TAB, ALMAGAL_TAB];
 const inInfoGroup = computed(() => infoGroupTabs.includes(infoSheetTab.value));
 /* The info button only appears once a clump is hovered or selected, so the
    sheet needs its own way in for settings that have nothing to do with a clump. */
