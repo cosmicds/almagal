@@ -576,6 +576,7 @@
                       hide-details
                       density="compact"
                       variant="outlined"
+                      clearable
                       label="Comparison image"
                       @update:model-value="goToComparison"
                     />
@@ -585,8 +586,9 @@
                     <div class="settings-row segmented">
                       <v-btn
                         icon
-                        variant="text"
+                        variant="flat"
                         size="small"
+                        :color="almagalBlue"
                         aria-label="Previous comparison image"
                         @click="stepComparison(-1)"
                       >
@@ -599,8 +601,9 @@
                       </v-btn>
                       <v-btn
                         icon
-                        variant="text"
+                        variant="flat"
                         size="small"
+                        :color="almagalBlue"
                         aria-label="Next comparison image"
                         @click="stepComparison(1)"
                       >
@@ -973,7 +976,13 @@ function _toggleShowAllComparisons() {
   updateComparisonLayers();
 }
 
-function goToComparison(index: number) {
+function goToComparison(index: number | null) {
+  if (index === null) {
+    comparisonIndex.value = -1;
+    comparisonsVisible.value = false;
+    updateComparisonLayers();
+    return;
+  }
   const layer = comparisons.imagesetLayers[index];
   if (!layer) return;
   comparisonIndex.value = index;
@@ -1249,7 +1258,7 @@ const filterFieldLabels: Record<FilterField, string> = {
   tbol: "Bol. Temp. (K)",
 };
 
-const  filterFieldUnits: Record<FilterField, string> = {
+const  _filterFieldUnits: Record<FilterField, string> = {
   mass: "M<sub>⊙</sub>",
   lum: "L<sub>⊙</sub>",
   lm: "L<sub>⊙</sub>/M<sub>⊙</sub>",
@@ -1267,7 +1276,7 @@ watch(filterSpec, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 watch(clumpTypeFilter, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 
 
-watch(selectedAlmagalSource, (newSource, oldSource) => {
+watch(selectedAlmagalSource, (newSource) => {
   if (newSource && !in3dView.value) {
     store.gotoRADecZoom({
       raRad: newSource.ra * D2R,
@@ -2277,22 +2286,22 @@ and remember, position:absolute is still a positioned parent, so children can be
 // A segmented container, so the four icon buttons read as one control.
 .settings-page .settings-row.segmented {
   display: inline-flex;
-  gap: 0;
-  border: 1px solid var(--panel-border);
+  gap: 1rem;
+  // border: 1px solid var(--panel-border);
   border-radius: 4px;
   overflow: hidden;
   margin-block: 12px;
 
   .v-btn {
     border-radius: 0;
-    color: var(--panel-accent);
+    // color: var(--panel-accent);
 
-    & + .v-btn { border-left: 1px solid var(--panel-border); }
+    // & + .v-btn { border-left: 1px solid var(--panel-border); }
 
     // Hidden state has to be legible at a glance, so it gets its own color
     // rather than reading as just another idle icon.
     &.is-active {
-      background: var(--panel-border);
+      // background: var(--panel-border);
       color: var(--panel-title);
     }
   }
