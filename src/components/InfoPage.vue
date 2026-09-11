@@ -78,7 +78,7 @@ onUnmounted(() => {
   line-height: 1.425;
   letter-spacing: 0.0178571429em;
   font-size: ~"max(13px, calc(0.6em + 0.3vw))";
-  padding: ~"max(2vw, 16px)" 16px 1rem;
+  // padding: ~"max(2vw, 16px)" 16px 1rem;
   
   // takes the place of .scrollable
   overflow-y: visible;

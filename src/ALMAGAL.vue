@@ -302,10 +302,11 @@
         :slider-color="almagalOrange"
         :accent-color="almagalBlue"
         text-color="#e6e6e6"
-        :bg-color="almagalBlue"
+        :bg-color="infoSheetBg"
         page-color="transparent"
         :stay-open="forceInfoSheetOpen"
         show-close-button
+        header-title="Controls"
         :hide-tabs="infoSheetTab === 'settings'"
       >
         <!-- each page registers its own tab, in this order -->
@@ -338,14 +339,57 @@
               eager
               elevation="0"
             >
-              <v-expansion-panel title="Filters" value="filters"
-                                 class="mb-2" 
-                                 tile 
-              >
+              <v-expansion-panel value="filters" class="mb-2">
+                <v-expansion-panel-title>
+                  <h4>Source Filters</h4>
+                </v-expansion-panel-title>
                 <v-expansion-panel-text>
+                  <div class="clump-type-filter">
+                    <div class="clump-type-header">
+                      <span>Clump type</span>
+                      <span class="clump-type-actions">
+                        <button
+                          type="button"
+                          @click="clumpTypeFilter = [...CLUMP_TYPES]"
+                        >
+                          All
+                        </button>
+                        <span aria-hidden="true">&middot;</span>
+                        <button
+                          type="button"
+                          @click="clumpTypeFilter = []"
+                        >
+                          None
+                        </button>
+                      </span>
+                    </div>
+                    <div class="clump-type-options">
+                      <label
+                        v-for="type in CLUMP_TYPES"
+                        :key="type"
+                        class="clump-type-option"
+                      >
+                        <input
+                          v-model="clumpTypeFilter"
+                          type="checkbox"
+                          :value="type"
+                        />
+                        <span
+                          class="clump-type-swatch"
+                          :style="{
+                            backgroundColor: clumpTypeColor(type),
+                            color: clumpTypeCheckColor(type),
+                          }"
+                        ></span>
+                        <span class="clump-type-label">{{ type }}</span>
+                      </label>
+                    </div>
+                  </div>
                   <fieldset
                     class="almagal-filterset"
                   >
+                    <hr class="mt-5 mb-3" />
+                    <div class="clump-type-header">Properties</div>
                     <!-- mass, lum, lm, tdust, dist_ag, tbol -->
                     <div
                       v-for="field in filterFields"
@@ -374,57 +418,13 @@
                         />
                       </div>
                     </div>
-                    <hr class="mt-3" />
-                    <div class="clump-type-filter">
-                      <div class="clump-type-header">
-                        <span>Clump type</span>
-                        <span class="clump-type-actions">
-                          <button
-                            type="button"
-                            @click="clumpTypeFilter = [...CLUMP_TYPES]"
-                          >
-                            All
-                          </button>
-                          <span aria-hidden="true">&middot;</span>
-                          <button
-                            type="button"
-                            @click="clumpTypeFilter = []"
-                          >
-                            None
-                          </button>
-                        </span>
-                      </div>
-                      <div class="clump-type-options">
-                        <label
-                          v-for="type in CLUMP_TYPES"
-                          :key="type"
-                          class="clump-type-option"
-                        >
-                          <input
-                            v-model="clumpTypeFilter"
-                            type="checkbox"
-                            :value="type"
-                          />
-                          <span
-                            class="clump-type-swatch"
-                            :style="{
-                              backgroundColor: clumpTypeColor(type),
-                              color: clumpTypeCheckColor(type),
-                            }"
-                          ></span>
-                          <span class="clump-type-label">{{ type }}</span>
-                        </label>
-                      </div>
-                    </div>
                   </fieldset>
                 </v-expansion-panel-text>
               </v-expansion-panel>
               <v-expansion-panel value="imageset-settings" class="mb-2">
                 <v-expansion-panel-title class="ga-2 py-4">
                   <div class="d-flex flex-column flex-1-1">
-                    <div class="mb-2">
-                      ALMAGAL Imageset Settings
-                    </div>
+                    <h4 class="mb-2">ALMAGAL Images</h4>
                     <ImagesetOpacity
                       v-for="layer in almagalWtml.imagesetLayers"
                       :key="layer.id.toString()"
@@ -478,27 +478,35 @@
                   </div>
                 </v-expansion-panel-text>
               </v-expansion-panel>
-              <v-expansion-panel title="Background Survey" value="background" class="mb-2">
+              <v-expansion-panel value="background" class="mb-2">
+                <v-expansion-panel-title>
+                    <h4 class="mb-2">Background Surveys</h4>
+                </v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <wwt-3d-switch
                     class="mb-4"
                     @3d="setup3DView"
                   >
                     <template #default="{ onClick}">
-                      <div class="d-flex align-center">
-                        <!-- <div>2D</div> -->
+                      <!-- The knob carries no icon: the state is already named
+                           by the two labels either side of it. -->
+                      <div class="d-flex align-center ga-2">
+                        <span
+                          class="dimension-label"
+                          :class="{ 'is-active': !in3dView }"
+                        >2D</span>
                         <v-switch
                           :model-value="in3dView"
                           inset
-                          append-icon="mdi-video-3d"
-                          true-icon="mdi-video-3d"
-                          prepend-icon="mdi-video-2d"
-                          false-icon="mdi-video-2d"
                           hide-details
                           density="compact"
+                          aria-label="Switch between the 2D sky view and the 3D view"
                           @click="onClick"
                         />
-                        <!-- <div>3D</div> -->
+                        <span
+                          class="dimension-label"
+                          :class="{ 'is-active': in3dView }"
+                        >3D</span>
                       </div>
                     </template>
                   </wwt-3d-switch>
@@ -531,7 +539,10 @@
                   />
                 </v-expansion-panel-text>
               </v-expansion-panel>
-              <v-expansion-panel title="Comparison images" value="comparison" class="mb-2">
+              <v-expansion-panel value="comparison" class="mb-2">
+                <v-expansion-panel-title>
+                    <h4 class="mb-2">Comparison Images</h4>
+                </v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <template v-if="in3dView">
                     <p class="settings-hint">
@@ -550,35 +561,68 @@
                       variant="outlined"
                       @update:model-value="goToComparison"
                     />
-                    <div class="settings-row">
+                    <!-- One segmented control rather than four loose icons.
+                         The two toggles carry an active color, so "hidden" and
+                         "showing all" are legible without hovering. -->
+                    <div class="settings-row segmented">
                       <v-btn
+                        icon
                         variant="text"
-                        icon="mdi-chevron-left"
                         size="small"
                         aria-label="Previous comparison image"
                         @click="stepComparison(-1)"
-                      />
+                      >
+                        <v-icon icon="mdi-chevron-left" />
+                        <v-tooltip
+                          activator="parent"
+                          location="bottom"
+                          text="Previous comparison image"
+                        />
+                      </v-btn>
                       <v-btn
+                        icon
                         variant="text"
-                        icon="mdi-chevron-right"
                         size="small"
                         aria-label="Next comparison image"
                         @click="stepComparison(1)"
-                      />
+                      >
+                        <v-icon icon="mdi-chevron-right" />
+                        <v-tooltip
+                          activator="parent"
+                          location="bottom"
+                          text="Next comparison image"
+                        />
+                      </v-btn>
                       <v-btn
+                        icon
                         variant="text"
                         size="small"
-                        :icon="comparisonsVisible ? 'mdi-eye-off' : 'mdi-eye'"
+                        :class="{ 'is-active': !comparisonsVisible }"
                         :aria-label="comparisonsVisible ? 'Hide comparison images' : 'Show comparison images'"
                         @click="comparisonsVisible = !comparisonsVisible"
-                      />
+                      >
+                        <v-icon :icon="comparisonsVisible ? 'mdi-eye-off' : 'mdi-eye'" />
+                        <v-tooltip
+                          activator="parent"
+                          location="bottom"
+                          :text="comparisonsVisible ? 'Hide comparison images' : 'Show comparison images'"
+                        />
+                      </v-btn>
                       <v-btn
+                        icon
                         variant="text"
                         size="small"
-                        :icon="showAllComparisons ? 'mdi-layers-triple' : 'mdi-layers-triple-outline'"
+                        :class="{ 'is-active': showAllComparisons }"
                         :aria-label="showAllComparisons ? 'Show only the selected comparison image' : 'Show all comparison images'"
                         @click="toggleShowAllComparisons"
-                      />
+                      >
+                        <v-icon :icon="showAllComparisons ? 'mdi-layers-triple' : 'mdi-layers-triple-outline'" />
+                        <v-tooltip
+                          activator="parent"
+                          location="bottom"
+                          :text="showAllComparisons ? 'Show only the selected comparison image' : 'Show all comparison images'"
+                        />
+                      </v-btn>
                     </div>
                     <v-slider
                       v-model="comparisonOpacity"
@@ -680,6 +724,7 @@ import {
   filterFields,
   filterFunction,
   filterSpec,
+  resetFilters,
   foregroundImage,
   foregroundOpacity,
   infoSheetTab,
@@ -821,6 +866,10 @@ const almagalBlue = ref("#306C9F");
 const almagalBlueDarker = ref("#002f5c");
 const almagalOrange = ref("#FC9954");
 const almagalOrangeDarker = ref("##c05000");
+/* The info sheet's ground. Deliberately the quietest surface in the drawer so
+   the cards sit above it and neither fights the nebula behind the canvas.
+   Matches --panel-drawer in the stylesheet. */
+const infoSheetBg = ref("#0C1723");
 // all panels are open by default.
 const settingsPanels = ref<("filters" | "background" | "comparison")[]>(['filters', 'background', 'comparison']);
 watch(settingsPanels, (newVal) => {
@@ -1859,6 +1908,13 @@ and remember, position:absolute is still a positioned parent, so children can be
   grid-column-end: -1;
 }
 
+// A seam between two groups in the same card, not a rule that divides the
+// panel -- so it matches the card border rather than the text.
+.almagal-filterset > hr {
+  border: none;
+  border-top: 1px solid var(--panel-border);
+}
+
 // style the legend to be centerd
 .almagal-filterset > legend {
   margin-inline: auto;
@@ -1876,23 +1932,29 @@ and remember, position:absolute is still a positioned parent, so children can be
   gap: 0.5em;
 }
 
+// A subsection inside the Filters card, so it is demoted below the card title
+// rather than competing with it.
 .clump-type-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1em;
-  font-weight: bold;
-  color: var(--almagal-orange);
+  font-size: var(--panel-font-body);
+  padding-bottom: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--panel-accent2);
 }
 
-// --almagal-blue (#306C9F) goes muddy on this near-black panel, so the two
-// bulk-toggle links use a lightened version of it rather than the token.
 .clump-type-actions {
   display: flex;
   align-items: baseline;
   gap: 0.4em;
   font-weight: normal;
-  color: #7fb2e8;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--panel-accent);
 }
 
 .clump-type-actions > button {
@@ -1961,23 +2023,27 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 // Two classes on purpose: it has to outrank `.almagal-filterset label > span`,
-// which bolds the slider captions.
+// which sets the control-name color and weight.
 .clump-type-option > .clump-type-label {
   font-weight: normal;
+  font-size: var(--panel-font-body);
+  color: var(--panel-text);
 }
 
-// Off: swatch dimmed with its check hidden, label struck through.
-.clump-type-option > input:not(:checked) {
-  + .clump-type-swatch {
-    opacity: 0.4;
+/* Off: the whole cell drops to 40%, the check is removed and the label is
+   struck through. The white ring is deliberately identical on and off -- it is
+   the only reason the near-black "unknown" fill stays visible against the card,
+   and recoloring it would introduce a hue that means nothing. */
+.clump-type-option:has(> input:not(:checked)) {
+  opacity: 0.4;
+}
 
-    &::after {
-      opacity: 0;
-    }
+.clump-type-option > input:not(:checked) {
+  + .clump-type-swatch::after {
+    opacity: 0;
   }
 
   ~ .clump-type-label {
-    color: #8a8a8a;
     text-decoration: line-through;
   }
 }
@@ -2051,5 +2117,210 @@ and remember, position:absolute is still a positioned parent, so children can be
 .wwt-3d-swtich-container .v-input.v-switch > .v-input__append {
   margin-left: 4px;
   font-size: 20px;
+}
+
+/* ===================================================== control panel skin ==
+   One token set for the settings drawer. The drawer is the quietest surface
+   and the cards sit above it, so the panel stops competing with the nebula in
+   the canvas behind it. Everything below is scoped to .settings-page (or to
+   the sheet that holds it) so it cannot leak into the other info-sheet tabs. */
+#app {
+  --panel-drawer: #0C1723;   // drawer ground, behind the cards
+  --panel-card: #142433;     // card ground
+  --panel-border: #26619C; //#1E3C52;   // card borders, dividers, segmented-control seams
+  --panel-track: #26619C;    // slider track, unfilled
+  --panel-accent: #8CA4E8;   // slider fill, chevrons, links
+  --panel-accent2: #F68E13; // card subheaders
+  --panel-thumb: #E8EFF7;    // slider thumbs
+  --panel-title: #FFF;    // card titles
+  --panel-label: #E8EFF7;    // control names and subsection labels
+  --panel-value: #FFF;    // numeric readouts
+  --panel-muted: #6E8AA8;    // helper text, disabled labels
+  --panel-text: #E8EFF7;     // body text on a card
+
+  /* A three-step type scale, in rem rather than px or a fluid clamp. rem is
+     anchored to the root, so it inherits the reader's browser font-size setting
+     and doesn't compound the way em does through drawer -> card -> label. Fixed
+     rather than fluid because the drawer's width is near-constant (about 420px
+     of content at a 1440px viewport, 256px at 360px), and because 12px has no
+     room to shrink. To scale the panel on small screens, move these three here
+     rather than making each size fluid on its own. */
+  --panel-font-title: 1.1rem;     
+  --panel-font-body: 0.95rem;        
+  --panel-font-small: 0.75rem;    
+}
+
+.settings-page {
+  gap: 12px;
+  padding: 12px;
+}
+
+// Anchors the close button against a title instead of leaving it floating.
+// The title itself is styled in InformationSheet.vue, next to the tab rules it
+// mirrors; the row only has to stop stretching it to full height.
+.cds-info-sheet-header {
+  display: flex;
+  align-items: flex-end;
+}
+
+/* -- cards ------------------------------------------------------------- */
+
+.settings-page .v-expansion-panel {
+  background: var(--panel-card);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  overflow: hidden;
+
+  // Vuetify's accordion variant squares off and hairlines adjacent panels.
+  &::after { display: none; }
+  &.mb-2 { margin-bottom: 12px !important; }
+  &:last-child { margin-bottom: 0 !important; }
+}
+
+.settings-page .v-expansion-panel__shadow { display: none; }
+
+.settings-page .v-expansion-panel-title h4 {
+  color: var(--panel-title);
+  font-size: var(--panel-font-title);
+  font-weight: 700;
+  min-height: 0;
+  // padding: 14px 16px;
+}
+
+.settings-page .v-expansion-panel-text__wrapper {
+  // padding: 0 16px 14px;
+  color: var(--panel-text);
+}
+
+// Chevrons read as interactive rather than as decoration.
+.settings-page .v-expansion-panel-title__icon {
+  color: var(--panel-title);
+}
+
+/* The imageset title stacks a heading over an opacity slider. Left centred, the
+   chevron lines up with the slider and looks like it belongs to it, so pull it
+   up to the title's own line. Written flat rather than nested: `&` inside
+   `.settings-page .v-expansion-panel-title__icon` would expand to
+   `.v-expansion-panel-title:has(...) .settings-page ...`, which never matches. */
+.settings-page .v-expansion-panel-title:has(.detail-row) .v-expansion-panel-title__icon {
+  align-self: flex-start;
+  margin-top: 3px;
+}
+
+/* -- typography -------------------------------------------------------- */
+
+// Control names: the thing being set.
+.settings-page .almagal-filterset label > span,
+.settings-page .filter-slider-and-label > .d-flex > span:first-child {
+  color: var(--panel-label);
+  font-size: var(--panel-font-body);
+  font-weight: 400;
+}
+
+// Numeric readouts: the value it is set to. Tabular figures stop the numbers
+// jittering sideways while a slider is dragged.
+.settings-page .rni-display,
+.settings-page .fiducial-display {
+  color: var(--panel-value);
+  font-size: var(--panel-font-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.settings-page .settings-hint,
+.settings-page .settings-description {
+  color: var(--panel-muted);
+  font-size: var(--panel-font-small);
+  opacity: 1;
+}
+
+/* -- sliders ----------------------------------------------------------- */
+
+// The filter sliders are a custom element; the opacity sliders are Vuetify.
+// Both are painted here so the panel speaks one slider language.
+.settings-page double-range-slider {
+  --dri-track-color: var(--panel-track);
+  --dri-track-filled-color: var(--panel-accent);
+  --dri-thumb-color: var(--panel-thumb);
+  --dri-thumb-hover-color: #FFFFFF;
+  --dri-thumb-active-color: #FFFFFF;
+  --dri-thumb-border-color: var(--panel-drawer);
+  --dri-thumb-border-hover-color: var(--panel-drawer);
+  --dri-thumb-border-width: 1px;
+}
+
+.settings-page {
+  .v-slider-track__background { background: var(--panel-track); }
+  .v-slider-track__fill { background: var(--panel-accent); }
+
+  .v-slider-thumb {
+    color: var(--panel-thumb);
+
+    .v-slider-thumb__surface {
+      background: var(--panel-thumb);
+      // Keeps the thumb legible where it sits on top of the filled track.
+      border: 1px solid var(--panel-drawer);
+
+      &::before { display: none; } // Vuetify's hover halo, in the old accent
+    }
+  }
+
+  .v-slider .v-input__prepend .v-icon { color: var(--panel-label); }
+}
+
+/* -- 2D / 3D toggle ---------------------------------------------------- */
+
+.settings-page .wwt-3d-swtich-container {
+  .v-switch__thumb { background: var(--panel-accent); }
+  .v-switch__track { background: var(--panel-border); opacity: 1; }
+}
+
+.settings-page .dimension-label {
+  font-size: var(--panel-font-body);
+  color: var(--panel-muted);
+
+  &.is-active { color: var(--panel-text); }
+}
+
+/* -- comparison image controls ----------------------------------------- */
+
+// A segmented container, so the four icon buttons read as one control.
+.settings-page .settings-row.segmented {
+  display: inline-flex;
+  gap: 0;
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-block: 12px;
+
+  .v-btn {
+    border-radius: 0;
+    color: var(--panel-accent);
+
+    & + .v-btn { border-left: 1px solid var(--panel-border); }
+
+    // Hidden state has to be legible at a glance, so it gets its own color
+    // rather than reading as just another idle icon.
+    &.is-active {
+      background: var(--panel-border);
+      color: var(--panel-title);
+    }
+  }
+}
+
+/* -- per-card reset ---------------------------------------------------- */
+
+// Only rendered when something in the card is off its default, so the panel
+// says at a glance which controls are actually doing work.
+.settings-page .card-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--panel-font-small);
+  color: var(--panel-accent);
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  padding: 3px 9px;
+  margin-right: 12px;
+  cursor: pointer;
 }
 </style>

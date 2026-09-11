@@ -42,8 +42,18 @@
         <h3>{{ _tabName.title }}</h3>
       </v-tab>
     </v-tabs>
-    <!-- v-else to preserve space for tabs -->
-    <div v-else-if="showCloseButton" class="cds-info-sheet-tabs" style="height: 2.5em;"></div>
+    <!-- v-else to preserve space for tabs. With the tabs hidden this row is the
+         only chrome the sheet has, so a `headerTitle` turns it into a proper
+         header rather than leaving the close button floating on its own. -->
+    <div
+      v-else-if="showCloseButton"
+      class="cds-info-sheet-tabs cds-info-sheet-header"
+      style="height: 2.5em;"
+    >
+      <h3 v-if="headerTitle" class="cds-info-sheet-header-title">
+        {{ headerTitle }}
+      </h3>
+    </div>
     <v-icon
       v-if="!stayOpen || showCloseButton"
       id="close-text-icon"
@@ -98,6 +108,8 @@ export interface Props {
   alignTabs?: 'start' | 'center' | 'end' | 'title',
   /** show the close button even with stayOpen true */
   showCloseButton?: boolean,
+  /** title for the header row shown when the tab bar is hidden */
+  headerTitle?: string,
 }
 </script>
 
@@ -262,7 +274,32 @@ const cssVars = computed(() => {
 <style lang="less">
 
 .cds-info-sheet-tab h3 {
-  font-size: 0.9em;
+  font-size: 1.1em;
+}
+
+/* The header shown in place of the tab bar. Styled to read as one of the tabs
+   -- same uppercase Roboto and the same 2px slider rule Vuetify draws under the
+   selected tab -- so switching between Settings and the tabbed pages doesn't
+   change the shape of the sheet's chrome. The sizes mirror what a .v-tab
+   computes to (14px tab x the 1.1em h3 above, 1.25px tracking), in rem/em so
+   they follow the reader's font-size setting rather than being pinned to px. */
+.cds-info-sheet-header-title {
+  display: inline-flex;
+  align-items: center;
+  /* The header row is 2.5em while the tab bar is 36px, and both are bottom
+     aligned in the card -- so sitting on the row's bottom edge puts this rule
+     exactly where the selected tab's slider lands. */
+  align-self: flex-end;
+  height: 36px; // the measured .v-tab height
+  margin: 0;
+  padding-inline: 16px;
+  font-size: 0.9625rem; // 15.4px at a 16px root
+  font-weight: 700;
+  letter-spacing: 0.081em; // the tabs' 1.25px, kept proportional to the size
+  text-transform: uppercase;
+  color: var(--info-sheet-tab-color, white);
+  background-color: rgba(255, 255, 255, 0.05); // matches .v-tab--selected
+  border-bottom: 2px solid var(--info-sheet-slider-color, currentColor);
 }
 
 // this will make them narrower

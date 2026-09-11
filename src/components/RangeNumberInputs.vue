@@ -1,23 +1,32 @@
 <!-- min/max number inputs + a <double-range-slider>, all bound to one {min,max} model -->
 <template>
   <div class="range-number-inputs">
+    <!-- Typing a bound beats dragging to it on a log range spanning orders of
+         magnitude. The field shows the rounded value while idle and the full
+         value once focused, so editing never starts from a truncated number. -->
     <div class="rni-numbers">
       <input
-        v-if="false"
-        v-model.number="minValue"
+        class="rni-display"
         type="number"
+        :value="minFocused ? minValue : formatSigFigs(minValue)"
         :min="min"
         :max="max"
+        :aria-label="ariaLabel ? `${ariaLabel} minimum` : 'Minimum'"
+        @focus="minFocused = true"
+        @blur="minFocused = false"
+        @change="commit('min', $event)"
       >
-      <span class="rni-display">{{ formatSigFigs(minValue) }}</span>
       <input
-        v-if="false"
-        v-model.number="maxValue"
+        class="rni-display"
         type="number"
+        :value="maxFocused ? maxValue : formatSigFigs(maxValue)"
         :min="min"
         :max="max"
+        :aria-label="ariaLabel ? `${ariaLabel} maximum` : 'Maximum'"
+        @focus="maxFocused = true"
+        @blur="maxFocused = false"
+        @change="commit('max', $event)"
       >
-      <span class="rni-display">{{ formatSigFigs(maxValue) }}</span>
     </div>
     <div 
       :class="['rni-drs', sliderFiducial ? 'has-fiducial' : '']"
@@ -58,7 +67,27 @@ const props = defineProps<{
   steps?: number;
   log?: boolean;
   fiducial?: number;
+  ariaLabel?: string;
 }>();
+
+const minFocused = ref(false);
+const maxFocused = ref(false);
+
+/* Clamp to the column's own extent and keep the pair ordered, so a typed bound
+   can't invert the range or push the slider off its track. A blank or
+   unparseable entry resets that end to the column extreme. */
+function commit(end: "min" | "max", event: Event) {
+  const raw = (event.target as HTMLInputElement).value;
+  const parsed = raw === "" ? NaN : Number(raw);
+  const fallback = end === "min" ? props.min : props.max;
+  const clamped = Math.min(Math.max(Number.isNaN(parsed) ? fallback : parsed, props.min), props.max);
+
+  if (end === "min") {
+    minValue.value = Math.min(clamped, maxValue.value);
+  } else {
+    maxValue.value = Math.max(clamped, minValue.value);
+  }
+}
 
 const transform = (v: number) => props.log ? Math.log10(v) : v;
 const inverse = (v: number) => props.log ? 10 ** v : v;
@@ -128,34 +157,43 @@ onMounted(() => {
   text-align: center;
 }
 
-.rni-numbers > input {
-  width: min-content;
-  outline: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.rni-numbers > input::hover {
-
-}
-.rni-numbers > input:last-child {
-  text-align: right;
-}
-
 .rni-display {
-  width: min-content;
-  padding-left: 2px;
-  padding-right: 2px;
-}
-
-.rni-display:last-of-type {
+  /* Room for seven characters, the widest formatSigFigs(v, 3) output these
+     columns produce ("524000", "0.00123"). box-sizing is border-box, so the
+     16px of padding and border below has to be added back explicitly -- a bare
+     7ch is the whole field and leaves only about three characters of content.
+     Fixed rather than sized to content so the boxes don't resize mid-drag. */
+  width: calc(7ch + 16px);
+  padding: 2px 7px;
+  border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.3));
+  border-radius: 4px;
+  background: transparent;
+  color: var(--panel-value, inherit);
+  font-size: var(--panel-font-body, 0.8125rem);
+  /* Right-justified with tabular figures so the digits sit on a fixed grid:
+     the ones column stays put as a value gains or loses digits mid-drag,
+     instead of the whole number sliding. */
   text-align: right;
+  font-variant-numeric: tabular-nums;
+
+  &:hover {
+    border-color: var(--panel-accent, rgba(255, 255, 255, 0.6));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--panel-accent, #3D96EE);
+    outline-offset: 1px;
+  }
+
+  // The spinners cramp an already narrow field and mis-step a log range.
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+  appearance: textfield;
 }
 
-
-.range-number-inputs > * {
-}
 
 .rni-drs {
   position: relative;
@@ -189,8 +227,7 @@ onMounted(() => {
 }
 
 double-range-slider {
-  --dri-track-color: #ccc;
-  --dri-track-filled-color: var(--almagal-orange);
+  // Colors come from the panel tokens in ALMAGAL.vue; only geometry here.
   --dri-thumb-width: 14px;
   --dri-thumb-height: 14px;
 }
