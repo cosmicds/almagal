@@ -27,6 +27,24 @@
         @blur="maxFocused = false"
         @change="commit('max', $event)"
       >
+
+      <!-- The hovered source's value, as a callout over its marker on the
+           track. Absolutely positioned so appearing and disappearing on hover
+           doesn't reflow the row. The pointer is a sibling, not a child: the
+           flag clamps to stay inside the row near the ends, but the pointer
+           has to keep aiming at the marker, and a percentage inside the flag
+           would resolve against the flag rather than the row. -->
+      <template v-if="sliderFiducial !== undefined">
+        <span
+          class="rni-fiducial-flag"
+          :style="{ '--pos': sliderFiducial }"
+        >{{ fiducialLabel }}</span>
+        <span
+          class="rni-pointer"
+          :style="{ '--pos': sliderFiducial }"
+          aria-hidden="true"
+        ></span>
+      </template>
     </div>
     <div 
       :class="['rni-drs', sliderFiducial ? 'has-fiducial' : '']"
@@ -112,6 +130,11 @@ const sliderMax = computed(() => transform(props.max));
 const sliderStep = computed(() => (sliderMax.value - sliderMin.value) / (props.steps ?? 100));
 const sliderFiducial = computed(() => props.fiducial ? (transform(props.fiducial) - sliderMin.value)/(sliderMax.value - sliderMin.value) : undefined);
 
+/** The hovered value, rounded the same way the min/max readouts are. */
+const fiducialLabel = computed(() =>
+  props.fiducial === undefined ? "" : formatSigFigs(props.fiducial)
+);
+
 const sliderEl = ref<DoubleRangeSlider | null>(null);
 
 // slider -> model (detail is the [lower, upper] pair, in slider space)
@@ -148,9 +171,79 @@ onMounted(() => {
   margin-inline: 0.5em;
 }
 
+/* Min and max sit at the ends of the row. The row is a positioning context, and
+   holds height for the hover callout, so that appearing on hover doesn't
+   reflow the panel. */
 .rni-numbers {
+  /* One explicit field height shared by the readouts and the callout, so the
+     pointer's top lands exactly on the callout's bottom border.
+
+     In rem, not em, on purpose: an em in a custom property resolves against the
+     font-size of whichever element uses it, and the callout is a step smaller
+     than this row, so the same `1.9em` gave the row 23.72px and the callout
+     22.8px -- a 0.92px gap under the box. rem resolves against the root at both
+     sites, so the two always agree. */
+  --field-height: 1.5rem;
+
+  position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  height: calc(var(--field-height) + 5px);
+}
+
+/* The hovered source's value, over its marker on the track below. */
+.rni-fiducial-flag {
+  --flag-width: calc(7ch + 16px);
+
+  position: absolute;
+  top: 0;
+  width: var(--flag-width);
+  height: var(--field-height);
+  box-sizing: border-box;
+  padding: 2px 7px;
+  border-radius: 4px;
+  /* Flex rather than a plain block: with an explicit height a span won't centre
+     its text vertically on its own. flex-end right-justifies it to match the
+     min/max readouts either side. */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
+  /* Opaque, and above the min/max fields: near the ends of the track this
+     callout overlaps them, and it has to stay readable where it does. */
+  z-index: 2;
+  background: var(--almagal-blue-darkest);
+  border: 2px solid var(--panel-accent2);
+  pointer-events: none;
+
+  /* Follow the marker. The track's travel is inset by half a thumb (7px of 14)
+     at each end, so the flag's centre walks the same path. The clamp keeps a
+     centred flag inside the row at 0 and 1, where it would otherwise hang off
+     the edge and clip. */
+  left: clamp(
+    calc(var(--flag-width) / 2),
+    calc(7px + var(--pos, 0) * (100% - 14px)),
+    calc(100% - var(--flag-width) / 2)
+  );
+  transform: translateX(-50%);
+}
+
+/* The callout's point. Follows the marker without the flag's clamp, so near the
+   ends of the track the flag stays in view while the point still marks the
+   value. The offset never exceeds half a flag, so it stays under its flag. */
+.rni-pointer {
+  position: absolute;
+  bottom: 0;
+  left: calc(7px + var(--pos, 0) * (100% - 14px));
+  margin-left: -5px;
+  width: 0;
+  height: 0;
+  z-index: 2;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--panel-accent2);
+  pointer-events: none;
 }
 
 .sep {
@@ -164,10 +257,15 @@ onMounted(() => {
      7ch is the whole field and leaves only about three characters of content.
      Fixed rather than sized to content so the boxes don't resize mid-drag. */
   width: calc(7ch + 16px);
+  // Matches the hover callout, so the three boxes share a baseline.
+  height: var(--field-height, auto);
   padding: 2px 7px;
   border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.3));
   border-radius: 4px;
-  background: transparent;
+  /* Opaque, not transparent: the hover callout passes over these fields near
+     the ends of the track, and the app's white focus ring (ALMAGAL.vue's
+     universal focus state) would otherwise sit white on white. */
+  background: var(--almagal-blue-darkest);
   color: var(--panel-value, inherit);
   font-size: var(--panel-font-body, 0.8125rem);
   /* Right-justified with tabular figures so the digits sit on a fixed grid:
@@ -220,9 +318,12 @@ onMounted(() => {
   left: calc(var(--fiducial-value) * 100%);
   top: 50%;
   height: 75%;
-  transform: translateY(-50%) translateX(50%);
+  /* -50%, not +50%: the marker is 4px wide, so a positive shift put its centre
+     4px to the right of the value it marks. Negative centres it on the value,
+     which is also what the callout's pointer aims at. */
+  transform: translateY(-50%) translateX(-50%);
   width: auto;
-  border: 2px solid hsl(327, 70%, 90%);
+  border: 2px solid var(--panel-accent2);
   
 }
 

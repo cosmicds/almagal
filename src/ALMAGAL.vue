@@ -302,7 +302,7 @@
         :slider-color="almagalOrange"
         :accent-color="almagalBlue"
         text-color="#e6e6e6"
-        :bg-color="infoSheetBg"
+        :bg-color="almagalBlueDarkest"
         page-color="transparent"
         :stay-open="forceInfoSheetOpen"
         show-close-button
@@ -398,13 +398,10 @@
                     >
                       <div class="filter-slider-and-label">
                         <div class="d-flex justify-between">
-                          <span v-html="filterFieldLabels[field]"></span>&nbsp;
-                          <span
-                            v-if="hoveredSource"
-                            class="fiducial-display"
-                          >
-                            {{ formatSigFigs(hoveredSource[field]) }}
-                          </span>
+                          <!-- The hovered source's value is no longer read out
+                               here: RangeNumberInputs shows it as a callout
+                               over that source's marker on the track. -->
+                          <span v-html="filterFieldLabels[field]"></span>
                         </div>
                         <RangeNumberInputs
                           :model-value="filterSpec.get(field)!"
@@ -747,7 +744,6 @@ import { useSourcesInView } from "./composables/useSourcesInView";
 import { moveToImageset, setFitsLayerSettings } from "./wwt-helpers";
 
 import {
-  formatSigFigs,
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
@@ -863,13 +859,14 @@ const showSplashScreen = ref(queryShowSplash);
 const layersLoaded = ref(false);
 const positionSet = ref(false);
 const almagalBlue = ref("#306C9F");
-const almagalBlueDarker = ref("#002f5c");
+const almagalBlueDarker = ref("#002f5c"); 
 const almagalOrange = ref("#FC9954");
 const almagalOrangeDarker = ref("##c05000");
-/* The info sheet's ground. Deliberately the quietest surface in the drawer so
-   the cards sit above it and neither fights the nebula behind the canvas.
-   Matches --panel-drawer in the stylesheet. */
-const infoSheetBg = ref("#0C1723");
+const almagalBrightBlue = ref("#4a8be0");
+const almagalPeriwinkle = ref("#a4bcff");
+const almagalSmoke = ref("#E8EFF7");
+const almagalSlate = ref("#939da8");
+const almagalBlueDarkest = ref("#0C1723");
 // all panels are open by default.
 const settingsPanels = ref<("filters" | "background" | "comparison")[]>(['filters', 'background', 'comparison']);
 watch(settingsPanels, (newVal) => {
@@ -1318,6 +1315,11 @@ const cssVars = computed(() => {
     "--almagal-orange": almagalOrange.value,
     "--almagal-blue-darker": almagalBlueDarker.value,
     "--almagal-orange-darker": almagalOrangeDarker.value,
+    "--almagal-bright-blue": almagalBrightBlue.value,
+    "--almagal-periwinkle": almagalPeriwinkle.value,
+    "--almagal-smoke": almagalSmoke.value,
+    "--almagal-slate": almagalSlate.value,
+    "--almagal-blue-darkest": almagalBlueDarkest.value,
   };
 });
 
@@ -1888,16 +1890,6 @@ and remember, position:absolute is still a positioned parent, so children can be
   display: block; /* */
 }
 
-.fiducial-display {
-  background-color: #c7d8fd;
-  min-width: 50px;
-  margin-left: auto;
-  text-align: right;
-  color: black;
-  padding-inline: 4px;
-  border-radius: 3px;
-}
-
 // The divider and the clump-type block are not sliders: they run across both
 // columns. Longhands on purpose -- this stylesheet is Less, which compiles the
 // shorthand `grid-column: 1 / -1` to `grid-column: -1` (it reads the slash as
@@ -1912,7 +1904,7 @@ and remember, position:absolute is still a positioned parent, so children can be
 // panel -- so it matches the card border rather than the text.
 .almagal-filterset > hr {
   border: none;
-  border-top: 1px solid var(--panel-border);
+  border-top: 1px solid var(--almagal-smoke);
 }
 
 // style the legend to be centerd
@@ -2125,18 +2117,19 @@ and remember, position:absolute is still a positioned parent, so children can be
    the canvas behind it. Everything below is scoped to .settings-page (or to
    the sheet that holds it) so it cannot leak into the other info-sheet tabs. */
 #app {
-  --panel-drawer: #0C1723;   // drawer ground, behind the cards
-  --panel-card: #142433;     // card ground
-  --panel-border: #26619C; //#1E3C52;   // card borders, dividers, segmented-control seams
-  --panel-track: #26619C;    // slider track, unfilled
-  --panel-accent: #8CA4E8;   // slider fill, chevrons, links
-  --panel-accent2: #F68E13; // card subheaders
-  --panel-thumb: #E8EFF7;    // slider thumbs
+  --panel-drawer: var(--almagal-blue-darkest);   // drawer ground, behind the cards
+  --panel-card: var(--almagal-blue-darker);     // card ground
+  --panel-border: var(--almagal-bright-blue);   // card borders, dividers, segmented-control seams
+  --panel-track: var(--almagal-slate);    // slider track, unfilled
+  --panel-accent: var(--almagal-periwinkle); // slider fill, chevrons, links
+  --panel-accent2: var(--almagal-orange); // card subheaders
+  --panel-thumb: var(--almagal-smoke);    // slider thumbs
   --panel-title: #FFF;    // card titles
-  --panel-label: #E8EFF7;    // control names and subsection labels
+  --panel-label: var(--almagal-smoke);    // control names and subsection labels
   --panel-value: #FFF;    // numeric readouts
-  --panel-muted: #6E8AA8;    // helper text, disabled labels
-  --panel-text: #E8EFF7;     // body text on a card
+  --panel-muted: var(--almagal-slate);    // helper text, disabled labels
+  --panel-text: var(--almagal-smoke);
+  --bhal: #939da8;  
 
   /* A three-step type scale, in rem rather than px or a fluid clamp. rem is
      anchored to the root, so it inherits the reader's browser font-size setting
@@ -2167,8 +2160,6 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 .settings-page .v-expansion-panel {
   background: var(--panel-card);
-  border: 1px solid var(--panel-border);
-  border-radius: 12px;
   overflow: hidden;
 
   // Vuetify's accordion variant squares off and hairlines adjacent panels.
@@ -2220,7 +2211,7 @@ and remember, position:absolute is still a positioned parent, so children can be
 // Numeric readouts: the value it is set to. Tabular figures stop the numbers
 // jittering sideways while a slider is dragged.
 .settings-page .rni-display,
-.settings-page .fiducial-display {
+.settings-page .rni-fiducial-flag {
   color: var(--panel-value);
   font-size: var(--panel-font-small);
   font-variant-numeric: tabular-nums;
