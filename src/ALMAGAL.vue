@@ -427,7 +427,6 @@
                     <ImagesetOpacity
                       v-for="layer in almagalWtml.imagesetLayers"
                       :key="layer.id.toString()"
-                      class="pr-8"
                       :imageset="store.imagesetStateForLayer(layer.id.toString())!"
                     >
                       <template #default="{on}">
@@ -612,36 +611,6 @@
                           text="Next comparison image"
                         />
                       </v-btn>
-                      <v-btn
-                        icon
-                        variant="text"
-                        size="small"
-                        :class="{ 'is-active': !comparisonsVisible }"
-                        :aria-label="comparisonsVisible ? 'Hide comparison images' : 'Show comparison images'"
-                        @click="comparisonsVisible = !comparisonsVisible"
-                      >
-                        <v-icon :icon="comparisonsVisible ? 'mdi-eye-off' : 'mdi-eye'" />
-                        <v-tooltip
-                          activator="parent"
-                          location="bottom"
-                          :text="comparisonsVisible ? 'Hide comparison images' : 'Show comparison images'"
-                        />
-                      </v-btn>
-                      <v-btn
-                        icon
-                        variant="text"
-                        size="small"
-                        :class="{ 'is-active': showAllComparisons }"
-                        :aria-label="showAllComparisons ? 'Show only the selected comparison image' : 'Show all comparison images'"
-                        @click="toggleShowAllComparisons"
-                      >
-                        <v-icon :icon="showAllComparisons ? 'mdi-layers-triple' : 'mdi-layers-triple-outline'" />
-                        <v-tooltip
-                          activator="parent"
-                          location="bottom"
-                          :text="showAllComparisons ? 'Show only the selected comparison image' : 'Show all comparison images'"
-                        />
-                      </v-btn>
                     </div>
                     <p
                       v-if="currentComparisonDescription"
@@ -685,17 +654,13 @@ import {
 import { D2R  } from "@wwtelescope/astro";
 import {
   WWTControl,
-  LayerManager,
-  Place,
-  Imageset,
-  TileCache,
   Coordinates,
   Color,
   SpreadSheetLayer,
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
-import { ScaleTypes, RAUnits, AltTypes, AltUnits, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
-import { addCustomColormaps, COLORMAPS, type Colormaps  } from "./wwt-colormaps/colormaps";
+import { RAUnits, AltUnits, MarkerScales } from "@wwtelescope/engine-types";
+import { addCustomColormaps, type Colormaps  } from "./wwt-colormaps/colormaps";
 addCustomColormaps();
 
 /* local components and composables */
@@ -722,7 +687,6 @@ import TwoLevelExpansionPanelTitle from "./components/TwoLevelExpansionPanelTitl
 import {
   CLUMP_TYPES,
   FITS_LAYER_SETTINGS,  
-  FITS_LAYER_SETTINGS_RESET,
   almagalColumnRanges,
   almagalSourceLayers,
   cancelAlmagalSourceDownload,
@@ -734,7 +698,6 @@ import {
   filterFields,
   filterFunction,
   filterSpec,
-  resetFilters,
   foregroundImage,
   foregroundOpacity,
   infoSheetTab,
@@ -1001,7 +964,7 @@ function updateComparisonLayers() {
 
 watch([comparisonsVisible, comparisonOpacity, showAllComparisons], updateComparisonLayers);
 
-function toggleShowAllComparisons() {
+function _toggleShowAllComparisons() {
   showAllComparisons.value = !showAllComparisons.value;
   if (showAllComparisons.value) {
     // no point stacking them all up if they are see-through
@@ -1031,7 +994,7 @@ function stepComparison(delta: number) {
   goToComparison((from + delta + count) % count);
 }
 
-const showBackgroundPicker = ref(false);
+
 const foregroundImageOptions = [
   { label: 'GLIMPSE 360', value: 'glimpse' },
   { label: 'Herschel SPIRE (color)', value: 'herschel' },
