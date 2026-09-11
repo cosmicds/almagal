@@ -389,7 +389,9 @@
                     class="almagal-filterset"
                   >
                     <hr class="mt-5 mb-3" />
-                    <div class="clump-type-header">Properties</div>
+                    <div class="clump-type-header">
+                      Properties
+                    </div>
                     <!-- mass, lum, lm, tdust, dist_ag, tbol -->
                     <div
                       v-for="field in filterFields"
@@ -421,7 +423,9 @@
               <v-expansion-panel value="imageset-settings" class="mb-2">
                 <v-expansion-panel-title class="ga-2 py-4">
                   <div class="d-flex flex-column flex-1-1">
-                    <h4 class="mb-2">ALMAGAL Images</h4>
+                    <h4 class="mb-2">
+                      ALMAGAL Images
+                    </h4>
                     <ImagesetOpacity
                       v-for="layer in almagalWtml.imagesetLayers"
                       :key="layer.id.toString()"
@@ -477,7 +481,9 @@
               </v-expansion-panel>
               <v-expansion-panel value="background" class="mb-2">
                 <v-expansion-panel-title>
-                    <h4 class="mb-2">Background Surveys</h4>
+                  <h4 class="mb-2">
+                    Background Surveys
+                  </h4>
                 </v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <wwt-3d-switch
@@ -538,7 +544,9 @@
               </v-expansion-panel>
               <v-expansion-panel value="comparison" class="mb-2">
                 <v-expansion-panel-title>
-                    <h4 class="mb-2">Comparison Images</h4>
+                  <h4 class="mb-2">
+                    Comparison Images
+                  </h4>
                 </v-expansion-panel-title>
                 <v-expansion-panel-text>
                   <template v-if="in3dView">
