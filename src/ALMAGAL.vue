@@ -2244,6 +2244,21 @@ and remember, position:absolute is still a positioned parent, so children can be
   --dri-thumb-border-width: 1px;
 }
 
+// RangeNumberInputs: the min/max fields either side of the slider, and the
+// hover callout over the track.
+.settings-page .range-number-inputs {
+  /* Opaque, not transparent: the hover callout passes over the min/max fields
+     near the ends of the track and has to stay readable where it does, and the
+     app's white focus ring (the universal focus state) would otherwise sit
+     white on white. */
+  --rni-field-bg-color: var(--almagal-blue-darkest);
+  --rni-field-border-color: var(--panel-border);
+  --rni-field-border-hover-color: var(--panel-accent);
+  --rni-field-focus-color: var(--panel-accent);
+  // The hovered source: its marker on the track, and the callout's border and point.
+  --rni-fiducial-color: var(--panel-accent2);
+}
+
 .settings-page {
   .v-slider-track__background { background: var(--panel-track); }
   .v-slider-track__fill { background: var(--panel-accent); }

@@ -6,6 +6,7 @@
          value once focused, so editing never starts from a truncated number. -->
     <div class="rni-numbers">
       <input
+        :id="ariaLabel ? `${ariaLabel} minimum` : 'Minimum'"
         class="rni-display"
         type="number"
         :value="minFocused ? minValue : formatSigFigs(minValue)"
@@ -17,6 +18,7 @@
         @change="commit('min', $event)"
       >
       <input
+        :id="ariaLabel ? `${ariaLabel} maximum` : 'Maximum'"
         class="rni-display"
         type="number"
         :value="maxFocused ? maxValue : formatSigFigs(maxValue)"
@@ -164,7 +166,14 @@ onMounted(() => {
 </script>
 
 <style lang="less">
+// Colors are --rni-* custom properties, defaulted here; ALMAGAL.vue sets the panel's.
 .range-number-inputs {
+  --rni-field-bg-color: #1a1a1a;
+  --rni-field-border-color: rgba(255, 255, 255, 0.3);
+  --rni-field-border-hover-color: rgba(255, 255, 255, 0.6);
+  --rni-field-focus-color: #3D96EE;
+  --rni-fiducial-color: orange;
+
   display: grid;
   grid-template-columns: auto;
   grid-template-rows:auto auto;
@@ -210,11 +219,10 @@ onMounted(() => {
   align-items: center;
   justify-content: flex-end;
   text-align: right;
-  /* Opaque, and above the min/max fields: near the ends of the track this
-     callout overlaps them, and it has to stay readable where it does. */
+  // Above the min/max fields: near the ends of the track this callout overlaps them.
   z-index: 2;
-  background: var(--almagal-blue-darkest);
-  border: 2px solid var(--panel-accent2);
+  background: var(--rni-field-bg-color);
+  border: 2px solid var(--rni-fiducial-color);
   pointer-events: none;
 
   /* Follow the marker. The track's travel is inset by half a thumb (7px of 14)
@@ -242,7 +250,7 @@ onMounted(() => {
   z-index: 2;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid var(--panel-accent2);
+  border-top: 5px solid var(--rni-fiducial-color);
   pointer-events: none;
 }
 
@@ -260,14 +268,11 @@ onMounted(() => {
   // Matches the hover callout, so the three boxes share a baseline.
   height: var(--field-height, auto);
   padding: 2px 7px;
-  border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.3));
+  border: 1px solid var(--rni-field-border-color);
   border-radius: 4px;
-  /* Opaque, not transparent: the hover callout passes over these fields near
-     the ends of the track, and the app's white focus ring (ALMAGAL.vue's
-     universal focus state) would otherwise sit white on white. */
-  background: var(--almagal-blue-darkest);
-  color: var(--panel-value, inherit);
-  font-size: var(--panel-font-body, 0.8125rem);
+  background: var(--rni-field-bg-color);
+  color: inherit;
+  font-size: 0.8125rem;
   /* Right-justified with tabular figures so the digits sit on a fixed grid:
      the ones column stays put as a value gains or loses digits mid-drag,
      instead of the whole number sliding. */
@@ -275,11 +280,11 @@ onMounted(() => {
   font-variant-numeric: tabular-nums;
 
   &:hover {
-    border-color: var(--panel-accent, rgba(255, 255, 255, 0.6));
+    border-color: var(--rni-field-border-hover-color);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--panel-accent, #3D96EE);
+    outline: 2px solid var(--rni-field-focus-color);
     outline-offset: 1px;
   }
 
@@ -323,7 +328,7 @@ onMounted(() => {
      which is also what the callout's pointer aims at. */
   transform: translateY(-50%) translateX(-50%);
   width: auto;
-  border: 2px solid var(--panel-accent2);
+  border: 2px solid var(--rni-fiducial-color);
   
 }
 
