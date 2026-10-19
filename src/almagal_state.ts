@@ -143,6 +143,11 @@ export const infoSheetTab = ref<InfoSheetTab>(SETTINGS_TAB);
 export const spreadsheetVisible = ref(true);
 export const showFilters = ref(false);
 
+// whether the spreadsheet is to be shown: true = show, false = hide, null = auto (based on zoom)
+export const displaySpreadsheet = ref<boolean | null>(null);
+
+
+
 /* "none" turns every survey layer off, leaving WWT's own Gaia DR2 sky showing
    through -- the visible-light view, without a survey of our own on top. */
 export type BackgroundSurvey = "glimpse" | "herschel" | "none";

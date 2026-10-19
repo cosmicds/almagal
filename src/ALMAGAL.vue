@@ -118,6 +118,7 @@
                 </div>
 
 
+                <ShowHideAutoToggle v-model="displaySpreadsheet" variant="flat" />
                 <v-tooltip
                   text="View settings"
                   location="bottom"
@@ -418,22 +419,43 @@
                   </fieldset>
                 </v-expansion-panel-text>
               </v-expansion-panel>
-              <v-expansion-panel value="imageset-settings" class="mb-2">
-                <v-expansion-panel-title class="ga-2 py-4">
-                  <div class="d-flex flex-column flex-1-1">
-                    <h4 class="mb-2">
-                      ALMAGAL Images
-                    </h4>
+              <v-expansion-panel value="imageset-settings" class="mb-2" :disabled="!almagalWtml.loaded">
+                <TwoLevelExpansionPanelTitle class="ga-1">
+                  <template #title>
+                    <h4>ALMAGAL Images</h4>
+                  </template>
+                  <template #bottom>
                     <ImagesetOpacity
                       v-for="layer in almagalWtml.imagesetLayers"
                       :key="layer.id.toString()"
-                      class="pr-8"
                       :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                    />
-                  </div>
-                </v-expansion-panel-title>
+                    >
+                      <template #default="{on}">
+                        <v-slider
+                          v-bind="on"
+                          :min="0"
+                          :max="1"
+                          :step="0.01"
+                          hide-details
+                          density="compact"
+                          prepend-icon="mdi-circle-opacity"
+                          aria-label="Comparison image opacity"
+                        />    
+                      </template>
+                    </ImagesetOpacity>
+                  </template>
+                </TwoLevelExpansionPanelTitle>
                 <v-expansion-panel-text>
                   <div class="d-flex flex-column ga-6">
+                    <!-- note - the sliders are logarithmic even if the stretch is not -->
+                    <ImagesetStretch
+                      v-for="layer in almagalWtml.imagesetLayers"
+                      :key="layer.id.toString()"
+                      :imageset="store.imagesetStateForLayer(layer.id.toString())!"
+                      log-stretch-slider
+                      hide-stretch
+                      :crange="{min: -0.001, max: 1}"
+                    />
                     <ImagesetColormap
                       v-for="layer in almagalWtml.imagesetLayers"
                       :key="layer.id.toString()"
@@ -446,43 +468,35 @@
                           :items="colormaps"
                           item-title="desc"
                           item-value="wwt"
+                          label="Colormap"
                           hide-details
                           density="compact"
-                          label="Colormap"
-                          variant="underlined"
+                          variant="outlined"
                         />
                       </template>
                     </ImagesetColormap>
-                    <!-- note - the sliders are logarithmic even if the stretch is not -->
-                    <ImagesetStretch
-                      v-for="layer in almagalWtml.imagesetLayers"
-                      :key="layer.id.toString()"
-                      :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                      log-stretch-slider
-                      :crange="{min: -0.001, max: 1}"
-                    >
-                      <template #stretch="{on, scaletypes}">
-                        <v-select
-                          v-bind="on"
-                          :items="scaletypes"
-                          item-title="desc"
-                          item-value="wwt"
-                          hide-details
-                          density="compact"
-                          label="Stretch"
-                          variant="underlined"
-                        />
-                      </template>
-                    </ImagesetStretch>
                   </div>
                 </v-expansion-panel-text>
               </v-expansion-panel>
               <v-expansion-panel value="background" class="mb-2">
-                <v-expansion-panel-title>
-                  <h4 class="mb-2">
-                    Background Surveys
-                  </h4>
-                </v-expansion-panel-title>
+                <TwoLevelExpansionPanelTitle class="ga-1">
+                  <template #title>
+                    <h4>Background Surveys</h4>
+                  </template>
+                  <template #bottom>
+                    <v-slider
+                      v-model="foregroundOpacity"
+                      :min="0"
+                      :max="1"
+                      :step="0.01"
+                      hide-details
+                      density="compact"
+                      prepend-icon="mdi-circle-opacity"
+                      aria-label="Background survey opacity"
+                      :disabled="in3dView || !foregroundImageLoaded"
+                    />
+                  </template>
+                </TwoLevelExpansionPanelTitle>
                 <v-expansion-panel-text>
                   <wwt-3d-switch
                     class="mb-4"
@@ -517,34 +531,37 @@
                     :items="foregroundImageOptions"
                     item-title="label"
                     item-value="value"
-                    hide-details
                     label="Background survey"
+                    hide-details
                     density="compact"
-                    variant="underlined"
+                    variant="outlined"
                     :disabled="in3dView"
                   />
                   <p class="settings-hint">
                     Opacity of {{ foregroundImageLabel }} (foreground image) over the backgroun GAIA DR2 image.
                   </p>
-                  <v-slider
-                    v-model="foregroundOpacity"
-                    :min="0"
-                    :max="1"
-                    :step="0.01"
-                    hide-details
-                    density="compact"
-                    prepend-icon="mdi-opacity"
-                    aria-label="Background survey opacity"
-                    :disabled="in3dView"
-                  />
                 </v-expansion-panel-text>
               </v-expansion-panel>
               <v-expansion-panel value="comparison" class="mb-2">
-                <v-expansion-panel-title>
-                  <h4 class="mb-2">
-                    Comparison Images
-                  </h4>
-                </v-expansion-panel-title>
+                <TwoLevelExpansionPanelTitle class="ga-1">
+                  <template #title>
+                    <h4>Comparison Images</h4>
+                  </template>
+                  <template #bottom>
+                    <v-slider
+                      v-if="!in3dView && comparisonItems.length > 0"
+                      v-model="comparisonOpacity"
+                      :min="0"
+                      :max="1"
+                      :step="0.01"
+                      hide-details
+                      density="compact"
+                      prepend-icon="mdi-circle-opacity"
+                      aria-label="Comparison image opacity"
+                      :disabled="comparisonIndex === -1 && comparisonsVisible"
+                    />
+                  </template>
+                </TwoLevelExpansionPanelTitle>
                 <v-expansion-panel-text>
                   <template v-if="in3dView">
                     <p class="settings-hint">
@@ -559,8 +576,9 @@
                       item-value="value"
                       hide-details
                       density="compact"
-                      label="Comparison image"
                       variant="outlined"
+                      clearable
+                      label="Comparison image"
                       @update:model-value="goToComparison"
                     />
                     <!-- One segmented control rather than four loose icons.
@@ -569,8 +587,9 @@
                     <div class="settings-row segmented">
                       <v-btn
                         icon
-                        variant="text"
+                        variant="flat"
                         size="small"
+                        :color="almagalBlue"
                         aria-label="Previous comparison image"
                         @click="stepComparison(-1)"
                       >
@@ -583,8 +602,9 @@
                       </v-btn>
                       <v-btn
                         icon
-                        variant="text"
+                        variant="flat"
                         size="small"
+                        :color="almagalBlue"
                         aria-label="Next comparison image"
                         @click="stepComparison(1)"
                       >
@@ -595,47 +615,7 @@
                           text="Next comparison image"
                         />
                       </v-btn>
-                      <v-btn
-                        icon
-                        variant="text"
-                        size="small"
-                        :class="{ 'is-active': !comparisonsVisible }"
-                        :aria-label="comparisonsVisible ? 'Hide comparison images' : 'Show comparison images'"
-                        @click="comparisonsVisible = !comparisonsVisible"
-                      >
-                        <v-icon :icon="comparisonsVisible ? 'mdi-eye-off' : 'mdi-eye'" />
-                        <v-tooltip
-                          activator="parent"
-                          location="bottom"
-                          :text="comparisonsVisible ? 'Hide comparison images' : 'Show comparison images'"
-                        />
-                      </v-btn>
-                      <v-btn
-                        icon
-                        variant="text"
-                        size="small"
-                        :class="{ 'is-active': showAllComparisons }"
-                        :aria-label="showAllComparisons ? 'Show only the selected comparison image' : 'Show all comparison images'"
-                        @click="toggleShowAllComparisons"
-                      >
-                        <v-icon :icon="showAllComparisons ? 'mdi-layers-triple' : 'mdi-layers-triple-outline'" />
-                        <v-tooltip
-                          activator="parent"
-                          location="bottom"
-                          :text="showAllComparisons ? 'Show only the selected comparison image' : 'Show all comparison images'"
-                        />
-                      </v-btn>
                     </div>
-                    <v-slider
-                      v-model="comparisonOpacity"
-                      :min="0"
-                      :max="1"
-                      :step="0.01"
-                      hide-details
-                      density="compact"
-                      prepend-icon="mdi-opacity"
-                      aria-label="Comparison image opacity"
-                    />
                     <p
                       v-if="currentComparisonDescription"
                       class="settings-description"
@@ -678,17 +658,13 @@ import {
 import { D2R  } from "@wwtelescope/astro";
 import {
   WWTControl,
-  LayerManager,
-  Place,
-  Imageset,
-  TileCache,
   Coordinates,
   Color,
   SpreadSheetLayer,
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
-import { ScaleTypes, RAUnits, AltTypes, AltUnits, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
-import { addCustomColormaps, COLORMAPS, type Colormaps  } from "./wwt-colormaps/colormaps";
+import { RAUnits, AltUnits, MarkerScales } from "@wwtelescope/engine-types";
+import { addCustomColormaps, type Colormaps  } from "./wwt-colormaps/colormaps";
 addCustomColormaps();
 
 /* local components and composables */
@@ -710,11 +686,11 @@ import ImagesetOpacity from "./components/imageset_settings/ImagesetOpacity.vue"
 import ImagesetColormap from "./components/imageset_settings/ImagesetColormap.vue";
 import ImagesetStretch from "./components/imageset_settings/ImagesetStretch.vue";
 import AlmagalInfoPage from "./components/AlmagalInfoPage.vue";
+import TwoLevelExpansionPanelTitle from "./components/TwoLevelExpansionPanelTitle.vue";
 /* Catalog, filters and view flags shared with the tour; see almagal_state.ts */
 import {
   CLUMP_TYPES,
   FITS_LAYER_SETTINGS,  
-  FITS_LAYER_SETTINGS_RESET,
   almagalColumnRanges,
   almagalSourceLayers,
   cancelAlmagalSourceDownload,
@@ -726,7 +702,6 @@ import {
   filterFields,
   filterFunction,
   filterSpec,
-  resetFilters,
   foregroundImage,
   foregroundOpacity,
   infoSheetTab,
@@ -735,6 +710,7 @@ import {
   showFilters,
   showInfoSheet,
   spreadsheetVisible,
+  displaySpreadsheet,
   ALMAGAL_TAB,
   SETTINGS_TAB,
   SOURCE_INFORMATION_TAB,
@@ -752,6 +728,7 @@ import {
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
+import ShowHideAutoToggle from "./components/ShowHideAutoToggle.vue";
 import { useSpreadsheetLayer } from "./composables/useSpreadsheetLayer";
 import { drawPointList } from "./wwt-hacks";
 
@@ -873,7 +850,7 @@ const almagalSmoke = ref("#E8EFF7");
 const almagalSlate = ref("#939da8");
 const almagalBlueDarkest = ref("#0C1723");
 // all panels are open by default.
-const settingsPanels = ref<("filters" | "background" | "comparison")[]>(['filters', 'background', 'comparison']);
+const settingsPanels = ref<("filters" | "background" | "comparison")[]>([]);
 watch(settingsPanels, (newVal) => {
   console.log("settingsPanels changed:", newVal);
 });
@@ -914,10 +891,16 @@ watch(spreadsheetVisible, (visible) => {
   almagalSpreadsheetLayer.setVisible(visible);
 });
 
-watch(zoomDeg, (zoom: number) => {
-  spreadsheetVisible.value = zoom > 0.5;
+const tooCloseForSpreadsheet = computed(() => zoomDeg.value < 0.5);
+
+watch(tooCloseForSpreadsheet, (tooClose: boolean) => {
+  if (displaySpreadsheet.value !== null) { return; }
+  spreadsheetVisible.value = !tooClose;
 });
 
+watch(displaySpreadsheet, (display) => {
+  spreadsheetVisible.value = display ?? !tooCloseForSpreadsheet.value;
+});
 
 /* Load WTMLS for different background layers.
    Don't forget to add them to `foregroundImageOptions` and the `foregroundImage` watcher!
@@ -931,6 +914,15 @@ const herschel = useWtmlLoader('./herschel_spire_rgb.wtml', {autoload: false, on
   out.layer?.set_enabled(false);
 }});
 
+const foregroundImageLoaded = computed(() => {
+  if (foregroundImage.value === 'glimpse') {
+    return glimpse.loaded;
+  } else if (foregroundImage.value === 'herschel') {
+    return herschel.loaded;
+  } else {
+    return true; // "none" is always loaded
+  }
+});
 /* WWT study images falling within 5' of an ALMAGAL source.
    Only one is ever enabled: the collection piles many images onto the same few
    star-forming complexes (fourteen of Carina alone), so showing them all at once
@@ -984,7 +976,7 @@ function updateComparisonLayers() {
 
 watch([comparisonsVisible, comparisonOpacity, showAllComparisons], updateComparisonLayers);
 
-function toggleShowAllComparisons() {
+function _toggleShowAllComparisons() {
   showAllComparisons.value = !showAllComparisons.value;
   if (showAllComparisons.value) {
     // no point stacking them all up if they are see-through
@@ -993,7 +985,13 @@ function toggleShowAllComparisons() {
   updateComparisonLayers();
 }
 
-function goToComparison(index: number) {
+function goToComparison(index: number | null) {
+  if (index === null) {
+    comparisonIndex.value = -1;
+    comparisonsVisible.value = false;
+    updateComparisonLayers();
+    return;
+  }
   const layer = comparisons.imagesetLayers[index];
   if (!layer) return;
   comparisonIndex.value = index;
@@ -1014,7 +1012,7 @@ function stepComparison(delta: number) {
   goToComparison((from + delta + count) % count);
 }
 
-const showBackgroundPicker = ref(false);
+
 const foregroundImageOptions = [
   { label: 'GLIMPSE 360', value: 'glimpse' },
   { label: 'Herschel SPIRE (color)', value: 'herschel' },
@@ -1269,7 +1267,7 @@ const filterFieldLabels: Record<FilterField, string> = {
   tbol: "Bol. Temp. (K)",
 };
 
-const  filterFieldUnits: Record<FilterField, string> = {
+const  _filterFieldUnits: Record<FilterField, string> = {
   mass: "M<sub>⊙</sub>",
   lum: "L<sub>⊙</sub>",
   lm: "L<sub>⊙</sub>/M<sub>⊙</sub>",
@@ -1287,7 +1285,7 @@ watch(filterSpec, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 watch(clumpTypeFilter, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 
 
-watch(selectedAlmagalSource, (newSource, oldSource) => {
+watch(selectedAlmagalSource, (newSource) => {
   if (newSource && !in3dView.value) {
     store.gotoRADecZoom({
       raRad: newSource.ra * D2R,
@@ -2297,22 +2295,22 @@ and remember, position:absolute is still a positioned parent, so children can be
 // A segmented container, so the four icon buttons read as one control.
 .settings-page .settings-row.segmented {
   display: inline-flex;
-  gap: 0;
-  border: 1px solid var(--panel-border);
+  gap: 1rem;
+  // border: 1px solid var(--panel-border);
   border-radius: 4px;
   overflow: hidden;
   margin-block: 12px;
 
   .v-btn {
     border-radius: 0;
-    color: var(--panel-accent);
+    // color: var(--panel-accent);
 
-    & + .v-btn { border-left: 1px solid var(--panel-border); }
+    // & + .v-btn { border-left: 1px solid var(--panel-border); }
 
     // Hidden state has to be legible at a glance, so it gets its own color
     // rather than reading as just another idle icon.
     &.is-active {
-      background: var(--panel-border);
+      // background: var(--panel-border);
       color: var(--panel-title);
     }
   }
