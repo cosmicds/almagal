@@ -18,20 +18,19 @@ import {
   showInfoSheet,
   sourceStretchOverrides,
   spreadsheetVisible,
-  SETTINGS_TAB,
   type BackgroundSurvey,
   type FilterField,
   type InfoSheetTab,
 } from "../almagal_state";
 
-export function flyTo(raDeg: number, decDeg: number, zoomDeg: number) {
+export function flyTo(raDeg: number, decDeg: number, zoomDeg: number, instant = false) {
   const store = engineStore();
   store.gotoRADecZoom({
     raRad: raDeg * D2R,
     decRad: decDeg * D2R,
     zoomDeg,
     rollRad: store.rollRad,
-    instant: false,
+    instant,
   });
 }
 
@@ -55,7 +54,7 @@ export function filterCatalog(field: FilterField, min: number | null, max: numbe
 }
 
 /** Fly to an ALMAGAL clump, open its panel and fetch its ALMA image. */
-export function goToSource(aid: string, vmin: number, vmax: number) {
+export function goToSource(aid: string, vmin: number, vmax: number, instant = true) {
   const source = almagalSourceList.value.find(s => s.aid === aid);
   if (!source) {
     console.warn(`tour: no ALMAGAL source named ${aid}`);
@@ -65,7 +64,7 @@ export function goToSource(aid: string, vmin: number, vmax: number) {
   selectedAlmagalSource.value = source;
   // selecting flies there but deliberately leaves the zoom alone, so set it
   // after that move has been issued. The images are about 36 arcsec across.
-  nextTick(() => flyTo(source.ra, source.dec, 0.09));
+  nextTick(() => flyTo(source.ra, source.dec, 0.09, instant));
   downloadAlmagalSource(source.iid);
 }
 
@@ -101,8 +100,10 @@ function setInfoSheet(tab: InfoSheetTab | null) {
 
 /** Put the app into the starting state for a step. Steps are 1-indexed. */
 export function setupTourStep(n: number) {
+  // no step wants the info sheet; ALMAGAL.vue places the control panel itself
+  setInfoSheet(null);
+
   if (n === 1 || n === 2) { // Massive Stars
-    setInfoSheet(null);
     selectedAlmagalSource.value = null;
     showFilters.value = false;
     showBackground("glimpse");
@@ -115,7 +116,6 @@ export function setupTourStep(n: number) {
   }
 
   if (n === 3 || n === 4) { // Massive Star Formation
-    setInfoSheet(null);
     showImagesets(orion());
     selectedAlmagalSource.value = null;
     showFilters.value = false;
@@ -128,7 +128,6 @@ export function setupTourStep(n: number) {
 
   if (n === 5 || n === 6) { // What is the ALMAGAL Survey?
     // 6 discusses filters
-    setInfoSheet(null);
     showImagesets(orion());
     selectedAlmagalSource.value = null;
     resetFilters();
@@ -140,7 +139,6 @@ export function setupTourStep(n: number) {
   }
 
   if (n === 7 || n === 8) { // Information on the data
-    setInfoSheet(SETTINGS_TAB);
     showImagesets(orion());
     resetFilters();
     spreadsheetVisible.value = true;

@@ -11,7 +11,6 @@
           <td>
             <v-btn
               size="small"
-              variant="outlined"
               @click="filterCatalog('mass', 2000, null)"
             >
               High mass
@@ -23,7 +22,6 @@
           <td>
             <v-btn
               size="small"
-              variant="outlined"
               @click="filterCatalog('mass', null, 500)"
             >
               Low mass
@@ -35,7 +33,6 @@
           <td>
             <v-btn
               size="small"
-              variant="text"
               @click="resetFilters()"
             >
               Clear

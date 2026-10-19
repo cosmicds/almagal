@@ -1,6 +1,6 @@
 import type { Colormaps } from "./wwt-colormaps/colormaps";
 import { engineStore } from "@wwtelescope/engine-pinia";
-import type { ImageSetLayer } from "@wwtelescope/engine";
+import { LayerManager, type ImageSetLayer } from "@wwtelescope/engine";
 import { ScaleTypes } from "@wwtelescope/engine-types";
 import { D2R } from "@wwtelescope/astro";
 
@@ -256,3 +256,18 @@ export async function loadHips(url: string, name: string) {
   return iset;
 }
 
+/** The engine only builds its layer maps (including "Sky") once moons.txt has
+    been fetched, which can land after waitForReady resolves. Layers added before
+    then are silently dropped, and the late initLayers() would clear them anyway. */
+export function waitForLayerMaps(): Promise<void> {
+  return new Promise(resolve => {
+    const check = () => {
+      if (LayerManager.get_allMaps()["Sky"]) {
+        resolve();
+      } else {
+        setTimeout(check, 50);
+      }
+    };
+    check();
+  });
+}

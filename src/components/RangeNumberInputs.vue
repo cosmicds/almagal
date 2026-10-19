@@ -1,6 +1,6 @@
 <!-- min/max number inputs + a <double-range-slider>, all bound to one {min,max} model -->
 <template>
-  <div class="range-number-inputs">
+  <div :class="['range-number-inputs', disabled ? 'is-disabled' : '']">
     <!-- Typing a bound beats dragging to it on a log range spanning orders of
          magnitude. The field shows the rounded value while idle and the full
          value once focused, so editing never starts from a truncated number. -->
@@ -13,6 +13,7 @@
         :min="min"
         :max="max"
         :aria-label="ariaLabel ? `${ariaLabel} minimum` : 'Minimum'"
+        :disabled="disabled"
         @focus="minFocused = true"
         @blur="minFocused = false"
         @change="commit('min', $event)"
@@ -25,6 +26,7 @@
         :min="min"
         :max="max"
         :aria-label="ariaLabel ? `${ariaLabel} maximum` : 'Maximum'"
+        :disabled="disabled"
         @focus="maxFocused = true"
         @blur="maxFocused = false"
         @change="commit('max', $event)"
@@ -57,6 +59,7 @@
         :min="0"
         :max="steps"
         :step="1"
+        :disabled="disabled"
         @input="onSliderInput"
       />
       <span
@@ -88,6 +91,7 @@ const props = defineProps<{
   log?: boolean;
   fiducial?: number;
   ariaLabel?: string;
+  disabled?: boolean;
 }>();
 
 const minFocused = ref(false);
@@ -132,8 +136,8 @@ const sliderMax = computed(() => transform(props.max));
 
 const steps = computed(() => props.steps ?? 100);
 function toIndex(v: number): number {
-  // math.round just cleans up floating point errors at the ends, the index must be an int.
-  return Math.round(transform(v) - sliderMin.value) / (sliderMax.value - sliderMin.value) * steps.value;
+  // we need to round the floating point index to an int
+  return Math.round((transform(v) - sliderMin.value) / (sliderMax.value - sliderMin.value) * steps.value);
 }
 function fromIndex(i: number): number {
   if (i <= 0) return props.min;
@@ -306,6 +310,20 @@ onMounted(() => {
     margin: 0;
   }
   appearance: textfield;
+}
+
+/* Flat and gray when disabled. The slider grays itself out on its own
+   (double-range-slider's built-in disabled colors default to #777); this
+   just matches the number fields to it. */
+.range-number-inputs.is-disabled .rni-display {
+  background: #2a2a2a;
+  border-color: #444;
+  color: #777;
+  cursor: not-allowed;
+
+  &:hover {
+    border-color: #444;
+  }
 }
 
 

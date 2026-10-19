@@ -39,7 +39,7 @@ export default typescriptEslint.config(
         },
         {
           selector: ["variable"],
-          modifiers: ["global", "const"],
+          modifiers: ["const"],
           format: ["camelCase", "UPPER_CASE"],
           leadingUnderscore: "allow"
         },

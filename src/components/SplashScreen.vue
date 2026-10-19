@@ -50,6 +50,7 @@
             variant="flat"
             elevation="10"
             rounded="2"
+            :disabled="!loaded"
             @click="tourOption"
             @keyup.enter="tourOption"
           >
@@ -63,6 +64,7 @@
             variant="flat"
             elevation="10"
             rounded="2"
+            :disabled="!loaded"
             @click="exploreOption"
             @keyup.enter="exploreOption"
           >
@@ -158,17 +160,6 @@ function exploreOption() {
 
 <style scoped lang="less">
 
-@font-face {
-  font-family: "Highway Gothic Narrow";
-  src: url("../assets/HighwayGothicNarrow.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Segoe UI Semibold";
-  src: url("../assets/Segoe UI Semibold.ttf") format("truetype");
-  font-weight: 600;
-}
-
 #splash-overlay {
   align-items: center;
   justify-content: center;
@@ -260,7 +251,9 @@ function exploreOption() {
     gap: 2rem;
     font-size: var(--size);
     color: white;
-    font-family: "Segoe UI Semibold";
+    /* With `font-display: swap` this fallback is what the title is drawn in for
+       the first moment, so name one rather than landing on the serif default. */
+    font-family: "Segoe UI Semibold", sans-serif;
     
     > img {
       height: calc(var(--size) * 1.2);
@@ -405,6 +398,15 @@ function exploreOption() {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.splash-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.6em;
+  opacity: 0.8;
 }
 
 </style>

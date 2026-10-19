@@ -1,8 +1,11 @@
 <template>
-  <TourStep title="Two of the 1013">
+  <TourStep title="Three of the 1013">
     <p>
-      ALMA sees a similar amount of emission in each of these two clumps, but arranged very
-      differently. The ALMAGAL team found that as clumps evolve there is moderate trend towards more complex stuctures. 
+      Dr. Wallace studied the structure of the clumps in ALMAGAL and was able to 
+      related their structure to their evolutionary state. 
+      
+      She found that clumps with less structure (more "isolated") tended to be colder and seemed to be younger (evolutionarily speaking)
+      thank clumps with more structure. 
     </p>
 
     <table class="tour-actions-table">
@@ -11,88 +14,58 @@
           <td>
             <v-btn
               size="small"
-              variant="outlined"
-              @click="goToSource('AG028.5671-0.2329', 0.0002, 0.004)"
+              @click="goToSource('AG335.5905+0.1853', 0.00015, 0.0012)"
             >
-              Regular
+              Isolated
             </v-btn>
           </td>
           <td>
-            One compact, roughly round patch of emission. About 8000 M<sub>&#9737;</sub> of dust at 9 K,
-            barely lit: L/M = 0.05.
+            AG335.5905+0.1853 &mdash; an isolated source. L/M = 0.10.
           </td>
         </tr>
         <tr>
           <td>
             <v-btn
               size="small"
-              variant="outlined"
-              @click="goToSource('AG288.9609+0.2643', 0.00015, 0.002)"
+              @click="goToSource('AG337.1764-0.0321', 0.0002, 0.015)"
             >
-              Complex
+              Simple
             </v-btn>
           </td>
           <td>
-            A more complex structure. About 500 M<sub>&#9737;</sub> , 34 times more
-            luminous: L/M = 26. Note the bright source behind it.
+            AG337.1764-0.0321 &mdash; a source with some structure. L/M = 3.0.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <v-btn
+              size="small"
+              @click="goToSource('AG316.7996-0.0559', 0.00045, 0.012)"
+            >
+              Rich
+            </v-btn>
+          </td>
+          <td>
+            AG316.7996-0.0559 &mdash; a source with a lot of structure. L/M = 11.4.
           </td>
         </tr>
       </tbody>
     </table>
 
-
-    <table class="tour-actions-table">
-      <tbody>
-        <tr>
-          <td>
-            <v-btn
-              size="small"
-              variant="outlined"
-              @click="filterCatalog('lm', null, 1)"
-            >
-              L/M &lt; 1
-            </v-btn>
-          </td>
-          <td>Objects likely in the earlier stages of star formation</td>
-        </tr>
-        <tr>
-          <td>
-            <v-btn
-              size="small"
-              variant="outlined"
-              @click="filterCatalog('lm', 1, 10)"
-            >
-              1&ndash;10
-            </v-btn>
-          </td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            <v-btn
-              size="small"
-              variant="outlined"
-              @click="filterCatalog('lm', 10, null)"
-            >
-              L/M &gt; 10
-            </v-btn>
-          </td>
-          <td>The likely most evolved objects</td>
-        </tr>
-        <tr>
-          <td>
-            <v-btn
-              size="small"
-              variant="text"
-              @click="resetFilters()"
-            >
-              All
-            </v-btn>
-          </td>
-          <td>Clear the filter</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="tour-btn-row">
+      <v-btn size="small" @click="filterCatalog('lm', null, 1)">
+        L/M &lt; 1
+      </v-btn>
+      <v-btn size="small" @click="filterCatalog('lm', 1, 10)">
+        1&ndash;10
+      </v-btn>
+      <v-btn size="small" @click="filterCatalog('lm', 10, null)">
+        L/M &gt; 10
+      </v-btn>
+      <v-btn size="small" @click="resetFilters()">
+        All
+      </v-btn>
+    </div>
   </TourStep>
 </template>
 
@@ -102,3 +75,12 @@ import { resetFilters } from "../../almagal_state";
 // the vmin/vmax are measured off each clump's archive FITS; see TOUR_NOTES.md
 import { filterCatalog, goToSource } from "../tourActions";
 </script>
+
+<style>
+.tour-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 0.75em;
+}
+</style>

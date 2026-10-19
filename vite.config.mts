@@ -43,6 +43,13 @@ export default defineConfig({
     ],
   },
   define: { 'process.env': {} },
+  // The two source catalogs are ~1.1 MB of JSON imported at module scope, so they
+  // are parsed before the app can mount. Emitting them as `JSON.parse("...")`
+  // rather than a JS object literal is markedly faster for the engine to chew
+  // through.
+  json: {
+    stringify: true,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('src', import.meta.url)),

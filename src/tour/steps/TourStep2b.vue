@@ -8,26 +8,14 @@
     <table class="tour-actions-table">
       <tbody>
         <tr>
-          <td>
-            <v-btn
-              size="small"
-              variant="outlined"
-              @click="showBackground('none')"
-            >
-              Visible light
-            </v-btn>
+          <td class="tour-action-name">
+            Visible light
           </td>
           <td>Foreground stars, and dark lanes where dust blots out everything behind it.</td>
         </tr>
         <tr>
-          <td>
-            <v-btn
-              size="small"
-              variant="outlined"
-              @click="showBackground('herschel')"
-            >
-              Far-infrared
-            </v-btn>
+          <td class="tour-action-name">
+            Far-infrared
           </td>
           <td>
             The same dust, glowing. This is the <i>Herschel</i> Hi-GAL survey that ALMAGAL&rsquo;s
@@ -41,5 +29,4 @@
 
 <script setup lang="ts">
 import TourStep from "../TourStep.vue";
-import { showBackground } from "../tourActions";
 </script>

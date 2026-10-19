@@ -28,7 +28,7 @@ export class CircleShader {
   static lineColorLoc = 0;
 
   static init(renderContext: RenderContext) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+     
     // @ts-expect-error `gl` exists on `RenderContext`
     const gl: WebGLRenderingContextBase = renderContext.gl;
 

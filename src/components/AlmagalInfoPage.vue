@@ -52,17 +52,6 @@ import almagalImage from '@/assets/almagal-header.png';
 
 <style>
 
-@font-face {
-  font-family: "Highway Gothic Narrow";
-  src: url("../assets/HighwayGothicNarrow.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Segoe UI Semibold";
-  src: url("../assets/Segoe UI Semibold.ttf") format("truetype");
-  font-weight: 600;
-}
-
 .ag-info {
   font-size: 1rem;
   display: flex;

@@ -56,16 +56,22 @@ import { TOUR_STEPS } from "./steps";
 import { setupTourStep } from "./tourActions";
 import TourBreadcrumbs from "./TourBreadcrumbs.vue";
 
+const emit = defineEmits<(e: "step", n: number) => void>();
+
 // 1-indexed, to match the step numbers shown and `setupTourStep`
 const step = ref(1);
 
-watch(step, (n) => setupTourStep(n), { immediate: true });
+watch(step, (n) => {
+  setupTourStep(n);
+  emit("step", n);
+}, { immediate: true });
 </script>
 
 <style scoped lang="less">
 .tour-player {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 /* TourBreadcrumbs fills its own buttons in accent colour; these are bare
@@ -73,5 +79,14 @@ watch(step, (n) => setupTourStep(n), { immediate: true });
 .tour-text-controls .tour-nav-button {
   border: none;
   background-color: transparent;
+}
+
+// The step scrolls so the breadcrumbs stay put. Beats Vuetify's own
+// `.v-window { overflow: hidden }`, which clipped it instead.
+.tour-window {
+  flex-grow: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

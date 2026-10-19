@@ -19,6 +19,11 @@ it reveals.
 - **ALMAGAL II** — *ALMA data processing and pipeline*, arXiv:
   <https://arxiv.org/abs/2503.05559>, A&A:
   <https://www.aanda.org/articles/aa/full_html/2025/04/aa52703-24/aa52703-24.html>
+- **ALMAGAL VII** — J. Wallace et al., *ALMAGAL. VII. Cataloging Hierarchical
+  Continuum Structure from Cores to Clumps across the Galactic Disk*, ApJ 998
+  (2026). arXiv: <https://arxiv.org/abs/2510.12892>
+  (HTML: <https://arxiv.org/html/2510.12892v3>). **Step 3's Isolated/Simple/Rich
+  trio is Fig. 1 of this paper**, not ALMAGAL I -- see below.
 
 ## Exact quotes (ALMAGAL I, arXiv:2503.05555v1)
 
@@ -28,8 +33,10 @@ HTML version.
 > The L/M for the two fields in Fig. 14 is ∼0.05 for AG028.5671-0.2329 and ∼26
 > for AG288.9609+0.2643, respectively.
 
-— Sect. 4.2.2. **This is the pair tour step 3 uses.** AG028.5671-0.2329 is the
-top panel, AG288.9609+0.2643 the bottom.
+— Sect. 4.2.2. **Step 3 no longer uses this pair** (see "Step 3 sources"
+below for what replaced it, and why); kept here since the L/M framing quoted
+further down still backs the step's L/M filter buttons. AG028.5671-0.2329 is
+the top panel in Fig. 14, AG288.9609+0.2643 the bottom.
 
 Fig. 14 is a **morphology** comparison, not an evolutionary-stage one. The
 quantity it reports is
@@ -42,8 +49,9 @@ irregular:
 
 > Q5σhull ... drops to 0.5 for the more complex structure field (bottom)
 
-— Sect. 4.2.2. And the two properties are linked, which is why step 3 can put
-the pair and the L/M filters on the same page:
+— Sect. 4.2.2. The two properties are linked, which was the original reason
+step 3 put a morphology pair and the L/M filters on the same page; the pair is
+gone but the L/M buttons stayed:
 
 > The relationship of this parameter with the clump's evolutionary stage in
 > Fig. 16 shows a broadly decreasing trend with L/M, indicating that the emission
@@ -121,28 +129,26 @@ from the scientists' own text.
 
 ## Step 3 sources
 
-Both from our catalog (`src/assets/almagal_sources.json` +
-`almagal_clump_props_WWT.json`):
+Fig. 1 caption (Wallace et al. 2026, arXiv:2510.12892v3): "Three ALMAGAL
+targets are selected as examples to depict typical morphology in the Isolated
+(top), Simple (middle), and Rich (bottom) clump categories." Panel AG names
+read off the figure itself, not off the HTML text (an earlier pass at this
+that read the AG names out of an automated summary of the HTML got three
+*different*, wrong identifiers -- always check figure labels against the
+actual figure image, not a text extraction).
 
-| | AG028.5671-0.2329 | AG288.9609+0.2643 |
-|---|---|---|
-| internal id | 126991 | 658676 |
-| L/M (L⊙/M⊙) | 0.05 | 26.289 |
-| mass (M⊙) | 8179.7 | 527.5 |
-| luminosity (L⊙) | 405.9 | 13867.7 |
-| dust temp (K) | 9.0 | 20.3 |
-| distance (pc) | 4840 | 6260 |
-| morphology | isolated | isolated |
+All three from our catalog (`src/assets/almagal_sources.json` +
+`almagal_clump_props_WWT.json`), and our own TYPE column agrees with the
+paper's category for every one of them:
 
-The step text's "16 times less massive, but 34 times more luminous" is
-8179.7/527.5 = 15.5 and 13867.7/405.9 = 34.2.
-
-Careful with the word "morphology" here: both are *isolated* in the catalog's
-TYPE column (the empty→isolated→simple→rich classification the scientists'
-step 4 text describes), which is a different measure from the Q5σhull hull
-filling factor Fig. 14 contrasts. The pair differs in Q5σhull (≈0.85 vs ≈0.5)
-and in L/M (0.05 vs 26), not in TYPE. If we ever want a TYPE contrast, the
-catalog has 191 empty and 77 rich clumps.
+| | AG335.5905+0.1853 | AG337.1764-0.0321 | AG316.7996-0.0559 |
+|---|---|---|---|
+| Fig. 1 category | Isolated (top) | Simple (middle) | Rich (bottom) |
+| internal id | 821718 | 830494 | 744714 |
+| catalog TYPE | isolated | simple | rich |
+| L/M (L⊙/M⊙) | 0.096 | 2.966 | 11.442 |
+| mass (M⊙) | 479.2 | 1415.9 | 766.9 |
+| dust temp (K) | 10.3 | 16.8 | 28.4 |
 
 ## Per-source FITS stretch
 
@@ -151,21 +157,21 @@ Measured off the archive images in
 (all values Jy/beam; noise is the RMS of the negative pixels, which are
 signal-free):
 
-| | 126991 | 658676 |
-|---|---|---|
-| peak | 1.58e-2 | 2.02e-3 |
-| rms | 2.05e-4 | 1.54e-4 |
-| peak/rms | 77 | 13 |
-| p99.9 | 1.50e-3 | 5.93e-4 |
-| **tour vmin** | 2.0e-4 (1σ) | 1.5e-4 (1σ) |
-| **tour vmax** | 4.0e-3 | 2.0e-3 |
+| | 821718 | 830494 | 744714 |
+|---|---|---|---|
+| peak | 1.55e-3 | 2.32e-2 | 1.81e-2 |
+| rms | 1.44e-4 | 2.31e-4 | 4.68e-4 |
+| peak/rms | 11 | 100 | 39 |
+| p99.9 | 6.59e-4 | 7.80e-3 | 6.85e-3 |
+| **tour vmin** | 1.5e-4 (1σ) | 2.0e-4 (~1σ) | 4.5e-4 (~1σ) |
+| **tour vmax** | 1.2e-3 | 1.5e-2 | 1.2e-2 |
 
-The app's shared default is vmin 0, vmax 0.015 — that is fine for 126991 but
-sits 7× above the *peak* of 658676, so the evolved clump renders as an empty
-field with the default cut. Hence the per-source override plumbing
-(`sourceStretchOverrides` in `src/almagal_state.ts`). vmin at 1σ kills the noise speckle
-without eating the extended emission; both were checked by rendering the FITS
-offline under the same log stretch WWT applies.
+vmin at 1σ, vmax at roughly 2x p99.9 and clear of the peak, matching the
+existing pair's convention. Unlike that pair, **these three were only checked
+against the numbers above, not by eye** -- the earlier pair's vmin/vmax were
+confirmed by rendering the FITS offline under the same log stretch WWT
+applies; that visual pass has not been done for these three yet. Worth doing
+before calling the cuts final.
 
 ## Other numbers used by the tour
 

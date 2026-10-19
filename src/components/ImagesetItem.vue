@@ -183,14 +183,14 @@ const uiColorMaps: UiColorMaps[] = [
   { wwt: "inferno", desc: "Inferno" },
   { wwt: "magma", desc: "Magma" },
   { wwt: "cividis", desc: "Cividis" },
-  { wwt: "rdylbu", desc: "Thermal (Red-Yellow-Blue)" },
-  { wwt: "gray", desc: "Black-to-White" },
-  { wwt: "greys", desc: "White-to-Black" },
-  { wwt: "purples", desc: "White-to-Purple" },
-  { wwt: "blues", desc: "White-to-Blue" },
-  { wwt: "greens", desc: "White-to-Green" },
-  { wwt: "oranges", desc: "White-to-Orange" },
-  { wwt: "reds", desc: "White-to-Red" },
+  // { wwt: "rdylbu", desc: "Thermal (Red-Yellow-Blue)" },
+  // { wwt: "gray", desc: "Black-to-White" },
+  // { wwt: "greys", desc: "White-to-Black" },
+  // { wwt: "purples", desc: "White-to-Purple" },
+  // { wwt: "blues", desc: "White-to-Blue" },
+  // { wwt: "greens", desc: "White-to-Green" },
+  // { wwt: "oranges", desc: "White-to-Orange" },
+  // { wwt: "reds", desc: "White-to-Red" },
   { wwt: "rdbu", desc: "Red-to-Blue" },
 ];
 
@@ -381,7 +381,7 @@ function handleGoto() {
 
     let zoomDeg = store.zoomDeg;
     const wcsimg = imgset.get_wcsImage();
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+     
     const FOV_FACTOR = 1.7;
 
     if (imgset.get_projection() == ProjectionType.skyImage) {
