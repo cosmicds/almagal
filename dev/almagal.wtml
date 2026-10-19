@@ -35,8 +35,8 @@
         Rotation="-1.1653552352882175e-11"
         Sparse="True"
         StockSet="False"
-        TileLevels="14"
-        Url="https://raw.githubusercontent.com/johnarban/data_repo/refs/heads/main/almagal/almagal_toast/{1}/{3}/{3}_{2}.fits"
+        TileLevels="16"
+        Url="https://data1.wwtassets.org/packages/2026/02_almagal/{1}/{3}/{3}_{2}.fits"
         WidthFactor="2">
         <ThumbnailUrl />
       </ImageSet>
