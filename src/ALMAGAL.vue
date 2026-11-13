@@ -2041,23 +2041,58 @@ and remember, position:absolute is still a positioned parent, so children can be
   max-width: 60ch;
 }
 
-// stands in for the v-icon in the About button, so match an icon's footprint
-.almagal-logo-icon {
-  display: block;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-image: url("/almagal-header.png");
-  background-size: cover;
-  background-position: center;
-}
-
 #control-side-bar {
+  --sbu: 0.4rem;
+  --side-bar-tile: calc(var(--sbu) * 5.5);
+
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 0.5rem;
+  padding: var(--sbu);
   background-color: rgb(var(--v-theme-surface));
+
+  // separate tiles rather than one joined strip
+  .v-btn-group {
+    gap: calc(var(--sbu) * 1.15);
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  // v-btn pins its height (and min-width) to fixed values; let the
+  // stacked icon + label size it instead
+  .v-btn {
+    height: auto;
+    min-width: 0;
+    padding-block: var(--sbu);
+    padding-inline: 0;
+    border-radius: calc(var(--sbu) / 2);
+    font-size: calc(var(--sbu) * 2);
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .v-btn__content > div {
+    gap: calc(var(--sbu));
+  }
+
+  // the icon sits on its own tile, above the label
+  .v-icon {
+    width: var(--side-bar-tile);
+    height: var(--side-bar-tile);
+    font-size: calc(var(--side-bar-tile) - var(--sbu)*2);
+    border-radius: calc(var(--sbu));
+    background-color: rgba(var(--v-theme-on-surface), 0.1);
+  }
+  
+  // stands in for the v-icon in the About button, so match its tile
+  .almagal-logo-icon {
+    display: block;
+    width: var(--side-bar-tile);
+    height: var(--side-bar-tile);
+    border-radius: 50%;
+    background-image: url("/almagal-header.png");
+    background-size: cover;
+    background-position: center;
+  }
 }
 
 </style>
