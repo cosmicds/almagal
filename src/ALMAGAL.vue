@@ -5,13 +5,13 @@
     :class="[smallSize ? 'app-is-small' : '', isLandscape ? 'app-is-landscape' : '', sidePanel ? 'app-side-panel' : '']"
   >
     <div
+      v-show="!showTour"
       id="control-side-bar"
     >
       <v-btn-group
-        direction="vertical"
+        :direction="sidePanel ? 'vertical' : 'horizontal'"
       >
         <v-tooltip
-          v-if="!showTour"
           text="View settings"
           location="bottom"
           density="comfortable"
@@ -22,7 +22,7 @@
               aria-label="Comparison image settings"
               @click="openSettings"
             >
-              <div class="d-flex flex-column align-center">
+              <div class="side-bar-btn-content">
                 <v-icon>mdi-tune-vertical</v-icon>
                 <div>Settings</div>
               </div>
@@ -32,7 +32,6 @@
 
 
         <v-tooltip
-          v-if="!showTour"
           text="User guide"
           location="bottom"
         >
@@ -42,7 +41,7 @@
               aria-label="Open the user guide"
               @click="openUserGuide"
             >
-              <div class="d-flex flex-column align-center">
+              <div class="side-bar-btn-content">
                 <v-icon>mdi-help</v-icon>
                 <div>Help</div>
               </div>
@@ -52,7 +51,6 @@
 
 
         <v-tooltip
-          v-if="!showTour"
           text="About ALMAGAL"
           location="bottom"
         >
@@ -62,7 +60,7 @@
               aria-label="About ALMAGAL"
               @click="openAboutAlmagal"
             >
-              <div class="d-flex flex-column align-center">
+              <div class="side-bar-btn-content">
                 <span class="almagal-logo-icon" />
                 <div>About</div>
               </div>
@@ -72,7 +70,6 @@
 
 
         <v-tooltip
-          v-if="!showTour"
           text="tour"
           location="bottom"
         >
@@ -82,7 +79,7 @@
               aria-label="Start the tour"
               @click="showTour = !showTour"
             >
-              <div class="d-flex flex-column align-center">
+              <div class="side-bar-btn-content">
                 <v-icon>mdi-transit-connection-variant</v-icon>
                 <div>Tour</div>
               </div>
@@ -103,7 +100,7 @@
               :aria-label="`Switch to ${scienceMode ? 'explore' : 'public'} mode`"
               @click="scienceMode = !scienceMode"
             >
-              <div class="d-flex flex-column align-center">
+              <div class="side-bar-btn-content">
                 <v-icon>{{ scienceMode ? 'mdi-school' : 'mdi-account-group' }}</v-icon>
                 <div>{{ scienceMode ? 'Science' : 'Public' }}</div>
               </div>
@@ -2070,8 +2067,12 @@ and remember, position:absolute is still a positioned parent, so children can be
     letter-spacing: normal;
   }
 
-  .v-btn__content > div {
-    gap: calc(var(--sbu));
+  // icon stacked over its label
+  .side-bar-btn-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sbu);
   }
 
   // the icon sits on its own tile, above the label
@@ -2092,6 +2093,31 @@ and remember, position:absolute is still a positioned parent, so children can be
     background-image: url("/almagal-header.png");
     background-size: cover;
     background-position: center;
+  }
+}
+
+// No side panel means the tour drawer sits under the view (small screens),
+// so the bar turns into a row along the very bottom: view (1), tour (2), bar (3).
+#app:not(.app-side-panel) #control-side-bar {
+  --sbu: 0.35rem;  // a bit smaller, to save height
+
+  order: 3;
+  flex-direction: row;
+
+  .v-btn-group {
+    flex: 1 1 auto;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  // share the width evenly
+  .v-btn {
+    flex: 1 1 0;
+  }
+
+  // icon beside its label, to keep the row short
+  .side-bar-btn-content {
+    flex-direction: row;
   }
 }
 
