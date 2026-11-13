@@ -103,7 +103,7 @@ export function setupTourStep(n: number) {
   // no step wants the info sheet; ALMAGAL.vue places the control panel itself
   setInfoSheet(null);
 
-  if (n === 1 || n === 2) { // Massive Stars
+  if (n === 5 || n === 6) { // Massive Stars
     selectedAlmagalSource.value = null;
     showFilters.value = false;
     showBackground("glimpse");
@@ -115,7 +115,7 @@ export function setupTourStep(n: number) {
     return;
   }
 
-  if (n === 3 || n === 4) { // Massive Star Formation
+  if (n === 7 || n === 8) { // Massive Star Formation
     showImagesets(orion());
     selectedAlmagalSource.value = null;
     showFilters.value = false;
@@ -126,8 +126,8 @@ export function setupTourStep(n: number) {
     return;
   }
 
-  if (n === 5 || n === 6) { // What is the ALMAGAL Survey?
-    // 6 discusses filters
+  if ((n >= 1 && n <= 3) || n === 9 || n === 10) { // J1-J3, What is the ALMAGAL Survey?
+    // 10 discusses filters
     showImagesets(orion());
     selectedAlmagalSource.value = null;
     resetFilters();
@@ -138,7 +138,7 @@ export function setupTourStep(n: number) {
     return;
   }
 
-  if (n === 7 || n === 8) { // Information on the data
+  if (n === 4 || n === 11 || n === 12) { // J4, Information on the data
     showImagesets(orion());
     resetFilters();
     spreadsheetVisible.value = true;
