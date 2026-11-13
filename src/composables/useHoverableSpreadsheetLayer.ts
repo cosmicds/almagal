@@ -20,6 +20,7 @@ export interface HoverableSpreadsheetLayerOptions<T extends RaDecPair> extends S
   pixelThreshold?: number;
   onHover?: (row: T | null, index: number) => void;
   onClick?: (row: T | null, index: number) => void;
+  onDoubleClick?: (row: T | null, index: number) => void;
   emitNull?: boolean
 }
 
@@ -49,9 +50,15 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     let minDist = Infinity;
     let closestIndex = -1;
 
+     
+    // @ts-expect-error This works
+    const layer = spreadsheet.layer.value; const table = layer.get__table(); const tableRows = table.rows; const header = table.header;
+
     // brute-force search through rows
-    rows.forEach((row, i) => {
-      const dist = distance(targetRaRad, targetDecRad, row.ra * D2R, row.dec * D2R);
+    tableRows.forEach((row, i) => {
+      const ra = +row[layer?.get_lngColumn() ?? 0];
+      const dec = +row[layer?.get_latColumn() ?? 1];
+      const dist = distance(targetRaRad, targetDecRad, ra * D2R, dec * D2R);
       if (dist < minDist) {
         minDist = dist;
         closestIndex = i;
@@ -67,8 +74,9 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     const pixelDist = Math.sqrt((pt.x - screenPoint.x) ** 2 + (pt.y - screenPoint.y) ** 2);
     if (pixelDist >= pixelThreshold) return null;
 
-    // respect the spreadsheet's current filter, if one has been set
-    if (spreadsheet.filterMask[closestIndex] === false) return null;
+     
+    // @ts-expect-error This works
+    if (!layer._filter(tableRows[closestIndex], header)) return null;
 
     return { row: closest, index: closestIndex };
   }
@@ -79,7 +87,7 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
 
     const pt: ScreenPoint = { x: event.offsetX, y: event.offsetY };
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+     
     // @ts-expect-error `positions` does exit
     const positions: Vector3d[] = layer.positions;
 
@@ -144,8 +152,10 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
   function onPointerDown(_event: PointerEvent) { /* i don't think we need this */ }
 
   function onPointerUp(_event: PointerEvent) { /* i don't think we need this */ }
+  
 
-  function onPointerClick(event: PointerEvent) {
+  function doSingleClickAction(event: PointerEvent) {
+    console.log("Spreadsheet clicked at:", event.offsetX, event.offsetY);
     if (!options.onClick) return;
     const rowFinder = activeRowFinder();
     if (!rowFinder) return;
@@ -154,6 +164,37 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
       options.onClick(result?.row ?? null, result?.index ?? -1);
     }
   }
+  
+  function doDoubleClickAction(event: PointerEvent) {
+    console.log("Spreadsheet double-clicked at:", event.offsetX, event.offsetY);
+    if (!options.onDoubleClick) return;
+    const rowFinder = activeRowFinder();
+    if (!rowFinder) return;
+    const result = rowFinder(event);
+    if (result || emitNull) {
+      options.onDoubleClick(result?.row ?? null, result?.index ?? -1);
+    }
+  }
+  
+  // https://css-tricks.com/snippets/javascript/bind-different-events-to-click-and-double-click/
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  // there is no way to know the system double-click delay without measureing it
+  // so really this is just a wait to check for a double click. 
+  const DOUBLE_CLICK_DELAY = 500; 
+  let prevent = false;
+  
+  function onPointerClick(event: PointerEvent) {
+    timer = setTimeout(function() {
+      if (!prevent) doSingleClickAction(event);
+      prevent = false;
+    }, DOUBLE_CLICK_DELAY);
+  }
+  function onPointerDoubleClick(event: PointerEvent) {
+    clearTimeout(timer);
+    prevent = true;
+    doDoubleClickAction(event);
+  }
+  
 
   return {
     ...spreadsheet,
@@ -161,5 +202,6 @@ export function useHoverableSpreadsheetLayer<T extends RaDecPair>(
     onPointerDown,
     onPointerUp,
     onPointerClick,
+    onPointerDoubleClick
   };
 }

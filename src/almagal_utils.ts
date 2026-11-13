@@ -55,6 +55,11 @@ export interface ALMAGalSource {
     dec:         number;
     has_photo:  boolean;
     photo_url:  string;
+    /* added for compatability with the almagalSourceList which has these
+     * we will get rid of these eventually i think
+     */
+    type: string;
+    included: boolean;
 }
 
 export enum DistFlag {
@@ -104,6 +109,11 @@ export const almagalSources = getAlmagalSources();
 
 export function getAlmagalSourceById(iid: string): ALMAGalSource | undefined {
   return getAlmagalSources().find(source => source.iid === iid);
+}
+
+/** Look a source up by its ALMAGAL name (`aid`), e.g. "AG342.7054+0.1251". */
+export function getAlmagalSourceByName(aid: string): ALMAGalSource | undefined {
+  return getAlmagalSources().find(source => source.aid === aid);
 }
 
 export const formatSigFigs = (v: number, sigFigs = 3) =>

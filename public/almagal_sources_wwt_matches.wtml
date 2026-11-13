@@ -1,0 +1,792 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True" Group="Explorer" Name="WWT places matching almagal_sources.json (5 arcmin)" Searchable="True">
+  <Place Angle="0" AngularSize="0" Constellation="VEL" DataSetType="Sky" Dec="-57.0346083547" Magnitude="0" Name="IRAS 10082-5647" Opacity="100" RA="10.1667274592" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-potw1144a.jpg" ZoomLevel="0.111967719978598">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0279919299946496" BaseTileLevel="0" BottomsUp="False" CenterX="152.500911888" CenterY="-57.0346083547" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="IRAS 10082-5647" Projection="Tan" QuadTreeMap="" Rotation="201.120000000001" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-potw1144aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|potw1144a" Xcorepipe_ids="hst|potw1144a" Xcxstatus="queue:hubble">
+        <Credits>ESA/Hubble &amp; NASA ; The  pearly wisps surrounding the central star IRAS 10082-5647 in this  Hubble image certainly draw the eye towards the heavens....</Credits>
+        <CreditsUrl>https://esahubble.org/images/potw1144a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-potw1144a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.685" Magnitude="0" Name="Eta Carinae" Opacity="100" RA="10.751" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-359.jpg" ZoomLevel="0.197121460456608">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.049280365114152" BaseTileLevel="0" BottomsUp="False" CenterX="161.265" CenterY="-59.685" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Eta Carinae" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-359L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|359" Xcxstatus="in:66070803dc7be96c90c533fd">
+        <Credits>X-ray: NASA/CXC/GSFC/M.Corcoran; This composite image of Eta Carinae from NASA's Chandra X-ray Observatory and Hubble Space Telescope shows the remnants of a mas...</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2007/etacar/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-359.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="1" Classification="Galaxy" Constellation="CAR" DataSetType="Sky" Dec="-59.685" Magnitude="0" Name="Eta Carinae" Opacity="100" RA="10.751" Rotation="0" ZoomLevel="1">
+    <ForegroundImageSet>
+      <ImageSet BandPass="XRay" BaseDegreesPerTile="0.050007609079808" BaseTileLevel="0" BottomsUp="False" CenterX="161.265" CenterY="-59.685" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Eta Carinae" OffsetX="-0.000826102260931672" OffsetY="0.000267318367767374" Projection="Tan" QuadTreeMap="0123" Rotation="0" Sparse="True" StockSet="False" TileLevels="4" Url="http://r{S:3}.ortho.tiles.virtualearth.net/tiles/wsa0000000113{Q}?g=131" WidthFactor="2" Xcxstatus="in:6539489db493728d11b82ec3">
+        <Credits>NASA/CXC/GSFC/M.Corcoran et al.</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2007/etacar/more.html#img1</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=3920979722</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6847142" Magnitude="0" Name="HCG 31" Opacity="100" RA="10.7510055733333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-opo1008a.jpg" ZoomLevel="0.0900266843476221">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0225066710869055" BaseTileLevel="0" BottomsUp="False" CenterX="161.2650836" CenterY="-59.6847142" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="HCG 31" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-opo1008aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|opo1008a" Xcorepipe_ids="hst|opo1008a" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA, S. Gallagher (The Uni; These four dwarf galaxies waited billions of years to come together, setting off a fireworks show as thousands of new star clust...</Credits>
+        <CreditsUrl>https://esahubble.org/images/opo1008a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-opo1008a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="1" Classification="Star" Constellation="CAR" DataSetType="Sky" Dec="-59.6847222222222" Magnitude="0" Name="Eta Carinae: A Star On the Brink of Destruction" Opacity="100" RA="10.7511111111111" Rotation="0" ZoomLevel="0.281666666666667">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0282051613017553" BaseTileLevel="0" BottomsUp="False" CenterX="161.2650836" CenterY="-59.6847142" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Eta Carinae: A Star On the Brink of Destruction" Projection="Tan" QuadTreeMap="0123" Rotation="173.44015848717" Sparse="True" StockSet="False" TileLevels="3" Url="http://r{S:3}.ortho.tiles.virtualearth.net/tiles/wsa0000000213{Q}?g=138" WidthFactor="2" Xastropix_ids="stsci|1994-09a" Xcxstatus="queue:hubble">
+        <Credits>Credit: J. Hester/Arizona state University NASA.</Credits>
+        <CreditsUrl>http://hubblesite.org/contents/news-releases/1994/news-1994-09.html</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=477678583</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.684528" Magnitude="0" Name="Eta Carinae" Opacity="100" RA="10.7510338" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eta.jpg" ZoomLevel="1.28307003392">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.32076750848" BaseTileLevel="0" BottomsUp="False" CenterX="161.265507" CenterY="-59.684528" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Eta Carinae" Projection="Tan" QuadTreeMap="" Rotation="0.95177631739" Sparse="True" StockSet="False" TileLevels="5" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-etaL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eta" Xcxstatus="queue:eso">
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eta.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6843723" Magnitude="0" Name="Eta Carinae" Opacity="100" RA="10.7511437733333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-578.jpg" ZoomLevel="0.160027746304">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.040006936576" BaseTileLevel="0" BottomsUp="False" CenterX="161.2671566" CenterY="-59.6843723" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Eta Carinae" Projection="Tan" QuadTreeMap="" Rotation="-0.06" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-578L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|578" Xcxstatus="in:66f44184955f03d76f65978c">
+        <Credits>NASA/CXC/GSFC/K.Hamaguchi, et al.</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2014/etacar/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-578.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6837534" Magnitude="0" Name="Eta Carinae" Opacity="100" RA="10.75114296" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-263.jpg" ZoomLevel="0.212707281188571">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0531768202971429" BaseTileLevel="0" BottomsUp="False" CenterX="161.2671444" CenterY="-59.6837534" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Eta Carinae" Projection="Tan" QuadTreeMap="" Rotation="0.2" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-263L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|263" Xcxstatus="in:6596ca6f293f0a5746370297">
+        <Credits>NASA/CXC/SAO; The Chandra X-ray image shows the complex nature of the region around Eta Carinae, a massive supergiant star that is 7,500 light...</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/1999/0099/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-263.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="NOR" DataSetType="Sky" Dec="-53.9990796204306" Magnitude="0" Name="Coyote Head Nebula" Opacity="100" RA="15.9652567110368" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig14-009.jpg" ZoomLevel="2.73066666663936">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.68266666665984" BaseTileLevel="0" BottomsUp="False" CenterX="239.478850665553" CenterY="-53.9990796204306" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Coyote Head Nebula" Projection="Tan" QuadTreeMap="" Rotation="-40.32" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig14-009L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig14-009" Xcxstatus="in:64bb0fdcd87c275bcc5875b5">
+        <Credits>NASA/JPL-Caltech; When searching for the nicest nebulas in the sky it's nice when your friends help you out. This striking star formation region, ...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig14-009-coyote-head-nebula-does-not-approve</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig14-009.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0905a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2009-02-12T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.58409423300125" Magnitude="0" Name="The Carina Nebula *" Opacity="100" RA="10.742153338396296" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0905a/thumb.jpg" ZoomLevel="5.6254304871719985">
+    <Description>Colour-composite image of the Carina Nebula, revealing exquisite details in the stars and dust of the region. Several well known astronomical objects can be seen in this wide field image : to the bottom left of the image is one of the most impressive binary stars in the Universe, Eta Carinae, with the famous Keyhole Nebula just adjacent to the star. The collection of very bright, young stars above and to the right of Eta Carinae is the open star cluster Trumpler 14. A second open star cluster, Collinder 228 is also seen in the image, just below Eta Carinae. The Carina Nebula also bears the NGC 3372 designation. On this image, North is up and East is to the left. The field of view is 0.55 x 0.55 degrees, covering a 72 x 72 light-year region at the distance of the nebula. This image is available as a mounted image in the ESOshop.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.0838413815782941" BaseTileLevel="0" BottomsUp="False" CenterX="161.265131" CenterY="-59.684619" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Carina Nebula *" OffsetX="0.06692324504632854" OffsetY="0.10067480984420481" Projection="Tan" QuadTreeMap="" Rotation="-0.18549279756117404" Sparse="True" StockSet="False" TileLevels="6" Url="http://data1.wwtassets.org/feeds/eso/eso0905a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0905a" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0905a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0905a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0947b&quot;, &quot;publishedUTCISO8601&quot;: &quot;2009-12-03T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.582760586508975" Magnitude="0" Name="Trumpler 14 in the Carina Nebula" Opacity="100" RA="10.742044886717563" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0947b/thumb.jpg" ZoomLevel="5.62185799615278">
+    <Description>This image of the Carina Nebula shows the position of the Trumpler 14 cluster of stars.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.083153076281344" BaseTileLevel="0" BottomsUp="False" CenterX="161.130738635" CenterY="-59.5828266854" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Trumpler 14 in the Carina Nebula" OffsetX="3.305520862675e-05" OffsetY="6.61104172535e-05" Projection="Tan" QuadTreeMap="" Rotation="-0.020000000000000018" Sparse="True" StockSet="False" TileLevels="6" Url="http://data1.wwtassets.org/feeds/eso/eso0947b/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0947b" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0947b/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0947b/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;potw2003a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2020-01-20T06:00:00+00:00&quot;}" Constellation="VEL" DataSetType="Sky" Dec="-51.98625074759932" Magnitude="0" Name="Caught “Pink-Handed”" Opacity="100" RA="9.408341113282896" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/potw2003a/thumb.jpg" ZoomLevel="1.230147150424668">
+    <Description>The Milky Way contains many regions of starbirth — areas where new stars are springing to life within collapsing clumps of gas and dust. One such region, named Gum 26, is shown here as imaged by the FORS instrument on ESO’s Very Large Telescope in Chile. Gum 26 is located roughly 20,000 light-years away in the southern constellation of Vela (The Sails). It is something known as an HII region or  emission nebula, where the intense ultraviolet radiation streaming from newly-formed stars ionises the surrounding hydrogen gas, causing it to emit a faint pinkish glow. By catching new stars “pink-handed” in this manner, astronomers can learn more about the conditions under which stars arise, and study how they influence their cosmic environment.  This image was created as part of the ESO Cosmic Gems programme, an outreach initiative to produce images of interesting, intriguing or visually attractive objects using ESO telescopes, for the purposes of education and public outreach. The programme makes use of telescope time that cannot be used for science observations. All data collected may also be suitable for scientific purposes, and are made available to astronomers through ESO’s science archive.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.14343452461056" BaseTileLevel="0" BottomsUp="False" CenterX="141.12514513" CenterY="-51.9862682567" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Caught “Pink-Handed”" OffsetX="1.75090972425e-05" OffsetY="1.75090972425e-05" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/eso/potw2003a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|potw2003a" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/potw2003a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/potw2003a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-61.2606135" Magnitude="0" Name="NGC 3603" Opacity="100" RA="11.2518720466667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-opo1022a.jpg" ZoomLevel="0.182614851584">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.045653712896" BaseTileLevel="0" BottomsUp="False" CenterX="168.7780807" CenterY="-61.2606135" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3603" Projection="Tan" QuadTreeMap="" Rotation="31.82" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-opo1022aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|opo1022a" Xcorepipe_ids="hst|opo1022a" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA, R. O'Connell (Univers; Like a 4th of July fireworks display, a young, glittering collection of stars looks like an aerial burst. The cluster is surroun...</Credits>
+        <CreditsUrl>https://esahubble.org/images/opo1022a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-opo1022a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso9946b&quot;, &quot;publishedUTCISO8601&quot;: &quot;1999-10-13T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-61.259662072945716" Magnitude="0" Name="Central star cluster in NGC3603" Opacity="100" RA="11.251953806546288" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso9946b/thumb.jpg" ZoomLevel="0.10769677979846581">
+    <Description>The central cluster is the densest concentration of massive stars known in the Milky Way. The field shown is about 2.5 x 2.5 light-years 2. It hosts more than 50 hot O-type stars. The brightest star in the field is the red supergiant IRS4 ; it is located about 80 arcsec NE of the center. About 18 arcsec N of the center are the ring nebula and the bipolar outflows around the blue supergiant Sher25. The photo also shows three proplyd-like objects ; they are similar to those seen in Orion Nebula, but 20-30 times more extended. About 1 arcmin SSE of the central cluster are seen the brightest members of the deeply embedded proto cluster IRS9 .</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0209940039051264" BaseTileLevel="0" BottomsUp="False" CenterX="168.77932837" CenterY="-61.2596723465" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Central star cluster in NGC3603" OffsetX="1.02509784693e-05" OffsetY="1.02509784693e-05" Projection="Tan" QuadTreeMap="" Rotation="0.12631292359667443" Sparse="True" StockSet="False" TileLevels="2" Url="http://data1.wwtassets.org/feeds/eso/eso9946b/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso9946b" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso9946b/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso9946b/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.8096720352476" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7513396137819" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig11-006.jpg" ZoomLevel="5.45496093433399">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.3637402335835" BaseTileLevel="0" BottomsUp="False" CenterX="161.270094206729" CenterY="-59.8096720352476" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-359.37" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig11-006L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig11-006" Xcxstatus="in:64b74490a15b29de42b305bb">
+        <Credits>NASA/JPL-Caltech/M. Povich (STSc; Eta Carinae is one of the most massive and brightest stars in the Milky Way. Compared to our own Sun, it is about 100 times as m...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig11-006-new-view-of-the-great-nebula-in-carina</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig11-006.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-61.2606540248" Magnitude="0" Name="NGC 3603" Opacity="100" RA="11.2520335206667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1009a.jpg" ZoomLevel="0.025972811284439">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.00649320282110976" BaseTileLevel="0" BottomsUp="False" CenterX="168.78050281" CenterY="-61.2606540248" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3603" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="2" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-heic1009aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|heic1009a" Xcorepipe_ids="hst|heic1009a" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA and Wolfgang Brandner ; The core of the star cluster in NGC 3603 is shown in great detail in an image from the Wide Field Planetary Camera 2 (WFPC2) cam...</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic1009a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1009a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.7627621142" Magnitude="0" Name="Westerlund 2" Opacity="100" RA="10.4064953514667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509e.jpg" ZoomLevel="0.0848211761954816">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0212052940488704" BaseTileLevel="0" BottomsUp="False" CenterX="156.097430272" CenterY="-57.7627621142" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Westerlund 2" Projection="Tan" QuadTreeMap="" Rotation="-60.2600000000001" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-heic1509eL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|heic1509e" Xcorepipe_ids="hst|heic1509e" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA, the Hubble Heritage T; This image shows an example of the pillars that surround the star cluster Westerlund 2. These pillars are composed of dense gas ...</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic1509e/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509e.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso9946a&quot;, &quot;publishedUTCISO8601&quot;: &quot;1999-10-13T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-61.259795642951154" Magnitude="0" Name="The galactic starburst region NGC 3603 *" Opacity="100" RA="11.252094813920753" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso9946a/thumb.jpg" ZoomLevel="0.5730113857477918">
+    <Description>These images of the NGC 3603 region were obtained in three near-IR filter bands (Js, H and Ks) with the ISAAC instrument at the ANTU telescope at the VLT at Paranal. NGC 3603 is located in the Carina spiral arm of the Milky Way galaxy at a distance of about 20,000 light-years (6-7 kpc). It is the only massive, galactic &amp;quot;HII-region&amp;quot; (so denoted by astronomers because part of its hydrogen is ionized) in which a central cluster of strongly UV-radiating stars of types O and B that ionize the nebula can be studied at visual and near-infrared wavelengths. This is because the line-of-sight is reasonably free of dust in this direction; the dimming in near-infrared radiation due to intervening matter between the nebula and us is only about a factor of 2 (compared to 80 in visible light). The total mass of the hot O and B stars in NGC 3603 is over 2,000 solar masses. Together, the more than fifty heavy and bright O stars in NGC 3603 have about 100 times the ionizing power of the well-known Trapezium cluster in the Orion Nebula. In fact, the star cluster in NGC 3603 is in many respects very similar to the core of the large, ionizing cluster in the approximately eight times more distant Tarantula Nebula in the Large Magellanic Cloud. An important conclusion of studying this region is that there are lots of sub-solar mass stars in NGC 3603. Contrary to several theoretical predictions, these low-mass stars do form in violent starbursts. The overall age of stars in the contraction phase that are located in the innermost region of NGC 3603 was found to be  300 000 to 1 000 000 years. The counts clearly show that this cluster is well populated in sub-solar mass stars. This image is available as a mounted image in the ESOshop.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0830098830045184" BaseTileLevel="0" BottomsUp="False" CenterX="168.786306794" CenterY="-61.2699791769" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The galactic starburst region NGC 3603 *" OffsetX="0.002348271649065271" OffsetY="0.010183544704563915" Projection="Tan" QuadTreeMap="" Rotation="-0.00240140923000004" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/eso/eso9946a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso9946a" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso9946a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso9946a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0137d&quot;, &quot;publishedUTCISO8601&quot;: &quot;2001-12-03T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-61.26071013529613" Magnitude="0" Name="The star-forming region around NGC 3603" Opacity="100" RA="11.252135731814096" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0137d/thumb.jpg" ZoomLevel="0.5650188438599999">
+    <Description>The sky area shown in the NAOS-CONICA high-resolution image is indicated on an earlier image of a much larger area, obtained in 1999 with the ISAAC multi-mode instrument on VLT ANTU (ESO Press Release eso9946)</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0841594368" BaseTileLevel="0" BottomsUp="False" CenterX="168.788166" CenterY="-61.271524" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The star-forming region around NGC 3603" OffsetX="0.0029678904849972615" OffsetY="0.01080813921636083" Projection="Tan" QuadTreeMap="" Rotation="0.1082376931" Sparse="True" StockSet="False" TileLevels="2" Url="http://data1.wwtassets.org/feeds/eso/eso0137d/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0137d" Xcxstatus="in:656f3927f864172823764b41">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0137d/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0137d/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-61.2713" Magnitude="0" Name="NGC 3603" Opacity="100" RA="11.2524666666667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Wise-WISE2010-004b.jpg" ZoomLevel="12.2880001068122">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="3.07200002670305" BaseTileLevel="0" BottomsUp="False" CenterX="168.787" CenterY="-61.2713" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3603" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Wise-WISE2010-004bL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="wise|WISE2010-004b" Xcxstatus="in:649e45d81e6961df10c19578">
+        <Credits>NASA/JPL-Caltech/UCLA; This dramatic image of a nebula containing young, massive stars was captured by NASA's Wide-Field Infrared Survey Explorer, or W...</Credits>
+        <CreditsUrl>http://wise.astro.ucla.edu</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Wise-WISE2010-004b.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0317a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2003-06-16T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-61.26038173833077" Magnitude="0" Name="The galactic starburst region NGC 3603 (annotated)" Opacity="100" RA="11.252170580629102" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0317a/thumb.jpg" ZoomLevel="0.5697684101099999">
+    <Description>The region around NGC 3603, a cluster of young, hot O and B-type stars still partly embedded in its natal cloud of gas and dust. A small group of nascent, very massive stars has been found to the south of the cluster centre — here indicated as &amp;quot;IRS9&amp;quot;. The image was obtained with the ISAAC multi-mode instrument at the 8.2-m VLT ANTU telescope at Paranal. The orientation and the scale at the distance of NGC 3603 (22,000 light-years) are indicated.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.10823137105619678" BaseTileLevel="0" BottomsUp="False" CenterX="168.788166" CenterY="-61.271524" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The galactic starburst region NGC 3603 (annotated)" OffsetX="0.0026871175518294044" OffsetY="0.011144325245607685" Projection="Tan" QuadTreeMap="" Rotation="-0.04645816545511524" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/eso/eso0317a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0317a" Xcxstatus="in:65d8c474affb32cbf1d96a4b">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0317a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0317a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-61.2613669" Magnitude="0" Name="NGC 3603" Opacity="100" RA="11.25224992" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-148.jpg" ZoomLevel="0.52123451392">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.13030862848" BaseTileLevel="0" BottomsUp="False" CenterX="168.7837488" CenterY="-61.2613669" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3603" Projection="Tan" QuadTreeMap="" Rotation="0.76" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-148L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|148" Xcxstatus="in:654e41485dff7c3291e3a993">
+        <Credits>NASA/GSFC/M.Corcoran et al.; Chandra has resolved the multitude of individual X-ray sources in one of our galaxy's most active star-forming regions. This gia...</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2001/1123/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-148.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0837a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2008-10-21T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-57.76784473218854" Magnitude="0" Name="The Gum 29 nebula" Opacity="100" RA="10.403552258938879" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0837a/thumb.jpg" ZoomLevel="5.598862027584">
+    <Description>This image shows the amazing intricacies of the vast stellar nursery Gum 29. At its centre lies the cluster of young stars Westerlund 2. One object at the bottom of the cluster is in fact a system of two of most massive stars known to astronomers.  The image is based on data obtained with the Wide Field Imager (WFI) camera attached to the 2.2-m Max-Planck/ESO telescope through four different filters (B, V, R, and H-alpha).</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.0865421479784079" BaseTileLevel="0" BottomsUp="False" CenterX="156.060953" CenterY="-57.782754" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Gum 29 nebula" OffsetX="0.004171765260712783" OffsetY="0.014886442277693722" Projection="Tan" QuadTreeMap="" Rotation="0.31318855513388594" Sparse="True" StockSet="False" TileLevels="6" Url="http://data1.wwtassets.org/feeds/eso/eso0837a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0837a" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0837a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0837a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-61.2623428519" Magnitude="0" Name="NGC 3603" Opacity="100" RA="11.252416459" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1009c.jpg" ZoomLevel="0.227816760139776">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.056954190034944" BaseTileLevel="0" BottomsUp="False" CenterX="168.786246885" CenterY="-61.2623428519" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3603" Projection="Tan" QuadTreeMap="" Rotation="-61.4999999999999" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-heic1009cL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|heic1009c" Xcorepipe_ids="hst|heic1009c" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA and the Hubble Heritag; This view of the rich star formation region NGC 3603 and its massive compact central star cluster was taken with the Advanced Ca...</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic1009c/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1009c.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.76353613526" Magnitude="0" Name="Westerlund 2" Opacity="100" RA="10.401653154108" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-640a.jpg" ZoomLevel="0.564910870374609">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.141227717593652" BaseTileLevel="0" BottomsUp="False" CenterX="156.02479731162" CenterY="-57.76353613526" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Westerlund 2" Projection="Tan" QuadTreeMap="" Rotation="-8.548129828" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-640aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|640a" Xcxstatus="in:672d1e250d1c7ef132a3907f">
+        <Credits>NASA/CXC/SAO; The Chandra Data Archive is a sophisticated digital system that ultimately contains all of the data obtained by the telescope, c...</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2016/archives/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-640a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.699805" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.751149853" Rotation="0" ZoomLevel="9">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.60733994347112" BaseTileLevel="0" BottomsUp="False" CenterX="161.2672478" CenterY="-59.699805" DataSetType="Sky" ElevationModel="False" FileType="png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="0123" Rotation="-0.241196264606417" Sparse="True" StockSet="False" TileLevels="5" Url="http://r{S:0}.ortho.tiles.virtualearth.net/tiles/wsa0000000200{Q}?g=138" WidthFactor="2" Xcxstatus="in:64276319975014bc743f17ba">
+        <Credits>Credit: N. Smith (University of California, Berkeley) and NOAO/AURA/NSF</Credits>
+        <CreditsUrl>http://hubblesite.org/newscenter/archive/releases/2007/16/image/l/</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=1768019217</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;gemini0901b&quot;, &quot;publishedUTCISO8601&quot;: &quot;2009-04-01T20:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-61.31398207325718" Magnitude="0" Name="NGC 3582 - The Heart of a Stellar Nursery" Opacity="100" RA="11.198522987342923" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/gemini0901b/thumb.jpg" ZoomLevel="0.84770364">
+    <Description>At the heart of a star-forming region called RCW 57, this image shows the complex interaction of interstellar gas and dark dust clouds among newly formed stars. The glowing gas is energized by ultraviolet radiation from the young stars. The intricate wispy structures in the cloud are formed by radiation from the young stars and the explosions of nearby, very massive stars that have exceptionally short lives compared to stars like our sun. A study by M. Maercker in 2006 revealed that the region is overly abundant with massive star formation with over 33 star-forming regions in the extended area at the end stages of formation. This region of the sky is only visible from observers in the southern hemisphere and is a popular showpiece for small telescopes and binoculars in the far-southern constellation of Carina. The Gemini image was obtained with the Gemini Multi-Object Spectrograph at the Gemini South telescope using two pointings to make a mosaic image that has a field of view of 9.0 x 5.0 arcsminutes. The exposures were taken through three narrowband filters: [OIII] (blue), [SII] (green) and H-alpha (red).</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.1662976" BaseTileLevel="0" BottomsUp="False" CenterX="168.0726564" CenterY="-61.30072846" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3582 - The Heart of a Stellar Nursery" OffsetX="0.04552547074712" OffsetY="-0.013235094936" Projection="Tan" QuadTreeMap="" Rotation="-0.0652120021947407" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/noirlab/gemini0901b/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="noirlab|gemini0901b" Xcxstatus="in:6427624e975014bc743f160f">
+        <Credits>International Gemini Observatory</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/gemini0901b/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/gemini0901b/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0.9471072653441663" Classification="Unidentified" Constellation="CAR" DataSetType="Sky" Dec="-57.76" Magnitude="0" Name="Westerlund 2 — Hubble’s 25th anniversary image" Opacity="100" RA="10.402" Rotation="0" Thumbnail="http://data1.wwtassets.org/packages/2020/07_hubble30/heic1509a/thumb.jpg" ZoomLevel="0.9471072653441663">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.22763942217154476" BaseTileLevel="0" BottomsUp="False" CenterX="156.027101218" CenterY="-57.763449935" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Westerlund 2 — Hubble’s 25th anniversary image" OffsetX="1.3894007700899949e-05" OffsetY="1.3894007700899949e-05" Projection="Tan" QuadTreeMap="0123" Rotation="-8.780000000000298" Sparse="True" StockSet="False" TileLevels="6" Url="http://data1.wwtassets.org/packages/2020/07_hubble30/heic1509a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="esahubble|heic1509a" Xcorepipe_ids="hst|heic1509a" Xcxstatus="in:6548efda5dff7c3291e39e15">
+        <Credits>NASA, ESA, the Hubble Heritage Team (STScI/AURA), A. Nota (ESA/STScI), and the Westerlund 2 Science Team The original observations of Westerlund 2 were obtained by the science team: Antonella Nota (ESA/STScI), Elena Sabbi (STScI), Eva Grebel and Peter Zeidler (Astronomisches Rechen-Institut Heidelberg), Monica Tosi (INAF, Osservatorio Astronomico di Bologna), Alceste Bonanos (National Observatory of Athens, Astronomical Institute), Carol Christian (STScI/AURA) and Selma de Mink (University of Amsterdam). Follow-up observations were made by the Hubble Heritage team: Zoltan Levay (STScI), Max Mutchler, Jennifer Mack, Lisa Frattare, Shelly Meyett, Mario Livio, Carol Christian (STScI/AURA), and Keith Noll (NASA/GSFC).</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic1509a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/packages/2020/07_hubble30/heic1509a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;noaoann07017a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2007-04-27T18:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.59650472839565" Magnitude="0" Name="NGC 3372" Opacity="100" RA="10.741333627872812" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/noaoann07017a/thumb.jpg" ZoomLevel="2.0257541749449377">
+    <Description>Hubble&amp;#x27;s view of the Carina Nebula shows star birth in a new level of detail. The fantasy-like landscape of the nebula is sculpted by the action of outflowing winds and scorching ultraviolet radiation from the monster stars that inhabit this inferno. In the process, these stars are shredding the surrounding material that is the last vestige of the giant cloud from which the stars were born. The immense nebula is an estimated 7,500 light-years away in the southern constellation Carina the Keel (of the old southern constellation Argo Navis, the ship of Jason and the Argonauts, from Greek mythology). This image is a mosaic of the Carina Nebula assembled from 48 frames taken with Hubble Space Telescope&amp;#x27;s Advanced Camera for Surveys. The Hubble images were taken in the light of ionized hydrogen. Colour information was added with data taken at the Cerro Tololo Inter-American Observatory in Chile. Red corresponds to sulfur, green to hydrogen, and blue to oxygen emission.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.4544259890151424" BaseTileLevel="0" BottomsUp="False" CenterX="161.120000825" CenterY="-59.5965242562" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3372" OffsetX="1.38679806218e-05" OffsetY="1.38679806218e-05" Projection="Tan" QuadTreeMap="" Rotation="50.32000000000004" Sparse="True" StockSet="False" TileLevels="7" Url="http://data1.wwtassets.org/feeds/noirlab/noaoann07017a/L{1}X{2}Y{3}.png" WidthFactor="2" Xcxstatus="in:642762f9975014bc743f1779">
+        <Credits>Hubble Image: NASA, ESA, N. Smith (University of California, Berkeley), and The Hubble Heritage Team (STScI/AURA);CTIO Image: N. Smith (University of California, Berkeley) and NOAO/AURA/NSF</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/noaoann07017a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/noaoann07017a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-61.303251216" Magnitude="0" Name="NGC 3576" Opacity="100" RA="11.1980957592" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso0817b.jpg" ZoomLevel="0.338553543049216">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.084638385762304" BaseTileLevel="0" BottomsUp="False" CenterX="167.971436388" CenterY="-61.303251216" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3576" Projection="Tan" QuadTreeMap="" Rotation="90.1753875446116" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso0817bL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso0817b" Xcxstatus="queue:eso">
+        <Credits>ESO; Located 9,000 light-years away, NGC 3576 is a gigantic region of glowing gas about 100 light-years across, where stars are curre...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/eso0817b/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso0817b.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.7594068753" Magnitude="0" Name="Westerlund 2" Opacity="100" RA="10.4014901770667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509c.jpg" ZoomLevel="0.142001936355328">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.035500484088832" BaseTileLevel="0" BottomsUp="False" CenterX="156.022352656" CenterY="-57.7594068753" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Westerlund 2" Projection="Tan" QuadTreeMap="" Rotation="27.68" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-heic1509cL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|heic1509c" Xcorepipe_ids="hst|heic1509c" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA, the Hubble Heritage T; This image shows the sparkling centerpiece of Hubble's 25th anniversary tribute. Westerlund 2 is a giant cluster of about 3000 s...</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic1509c/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509c.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-61.3085175" Magnitude="0" Name="NGC 3576" Opacity="100" RA="11.1976725333333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-333.jpg" ZoomLevel="1.54399440896">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.38599860224" BaseTileLevel="0" BottomsUp="False" CenterX="167.965088" CenterY="-61.3085175" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3576" Projection="Tan" QuadTreeMap="" Rotation="-42.83916393643" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-333L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|333" Xcxstatus="in:65d8c46daffb32cbf1d96a3d">
+        <Credits>NASA/CXC/Penn State/L.Townsley e; Chandra's image of NGC 3576 (lower-energy X-rays in red, higher-energy X-rays in blue) reveals a cluster of point-like X-ray sou...</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2006/ngc3576/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-333.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="AQL" DataSetType="Sky" Dec="-3.60790989" Magnitude="0" Name="Milky Way" Opacity="100" RA="18.733889988" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig14-010.jpg" ZoomLevel="33.3803013860435">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="8.34507534651088" BaseTileLevel="0" BottomsUp="False" CenterX="281.00834982" CenterY="-3.60790989" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Milky Way" Projection="Tan" QuadTreeMap="" Rotation="-62.81" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig14-010L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig14-010" Xcxstatus="in:64b7432ca15b29de42b3056b">
+        <Credits>Spitzer Space Telescope; Astronomers have found cosmic clumps so dark, dense and dusty that they throw the deepest shadows ever recorded. The clumps were...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig14-010-mapping-the-densest-dusty-cloud-cores</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig14-010.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="AQL" DataSetType="Sky" Dec="-3.60790989" Magnitude="0" Name="Milky Way" Opacity="100" RA="18.733889988" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig14-010b.jpg" ZoomLevel="29.5348906663713">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="7.38372266659283" BaseTileLevel="0" BottomsUp="False" CenterX="281.00834982" CenterY="-3.60790989" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Milky Way" Projection="Tan" QuadTreeMap="" Rotation="-62.81" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig14-010bL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig14-010b" Xcxstatus="in:64b7446fa15b29de42b30575">
+        <Credits>Spitzer Space Telescope; Astronomers have found cosmic clumps so dark, dense and dusty that they throw the deepest shadows ever recorded. The clumps were...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig14-010b-dark-clouds-on-the-milky-ways-horizon</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig14-010b.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.75975051291" Magnitude="0" Name="Westerlund 2" Opacity="100" RA="10.3991255020367" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-384.jpg" ZoomLevel="1.09428342784">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.27357085696" BaseTileLevel="0" BottomsUp="False" CenterX="155.98688253055" CenterY="-57.75975051291" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Westerlund 2" Projection="Tan" QuadTreeMap="" Rotation="-0.03171903315" Sparse="True" StockSet="False" TileLevels="5" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-384L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|384" Xcxstatus="in:661fef51befbe21fbdf49b73">
+        <Credits>NASA/CXC/Univ. de Liège/Y. Naze; This Chandra X-ray Observatory image shows Westerlund 2, a young star cluster with an estimated age of about one or two million ...</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2008/wd2/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-384.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso1005a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2010-02-03T12:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-61.239232308169996" Magnitude="0" Name="Stellar nursery NGC 3603*" Opacity="100" RA="11.252300871327874" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso1005a/thumb.jpg" ZoomLevel="1.5362560182239995">
+    <Description>NGC 3603 is a starburst region : a cosmic factory where stars form frantically from the nebula’s extended clouds of gas and dust. Located 22,000 light-years away from the Sun, it is the closest region of this kind known in our galaxy, providing astronomers with a local test bed for studying the intense star formation processes, very common in other galaxies, but hard to observe in detail because of their large distance. The newly released image, obtained with the FORS instrument attached to one of the four 8.2-metre VLT Unit Telescopes at Cerro Paranal, Chile, is a three-colour combination of exposures acquired through visible and near-infrared (V, R, I) filters. This image portrays a wider field around the stellar cluster and reveals the rich texture of the surrounding clouds of gas and dust. The field of view is 7 arcminutes wide.   This image is available as a mounted image in the ESOshop.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.28720308223999996" BaseTileLevel="0" BottomsUp="False" CenterX="168.788166" CenterY="-61.271524" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Stellar nursery NGC 3603*" OffsetX="0.0017475600499020625" OffsetY="0.032292192144178916" Projection="Tan" QuadTreeMap="" Rotation="-0.017850264870000004" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/eso/eso1005a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso1005a" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1005a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso1005a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;potw2113a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2021-03-29T06:00:00+00:00&quot;}" Constellation="PUP" DataSetType="Sky" Dec="-18.53654351885154" Magnitude="0" Name="A starry superbubble" Opacity="100" RA="7.501095658168003" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/potw2113a/thumb.jpg" ZoomLevel="1.2566523820886113">
+    <Description>This gently glowing area of sky is actually a hot bubble of hydrogen gas — named Sh 2-305 — that has been bombarded by intense radiation from nearby stars. Such gas clouds are known as emission nebulae, or HII regions (pronounced “H-two”). The radiation in question is in the ultraviolet part of the spectrum and is thought to emanate from at least two O-type stars, and likely several others. This stellar class is the brightest and hottest that we know of — such stars can be up to 90 times as massive as the Sun, and an incredible one million times as bright. Together with five neighbouring bubbles, Sh 2-305 belongs to a giant complex of dense clouds of dust and gas and, on a larger scale, an enormous ring called the GS234-02 star-forming supershell (located in the Perseus arm of the Milky Way, in the constellation of Puppis).  This image was obtained under the ESO Cosmic Gems programme, an outreach initiative to produce images of interesting, intriguing or visually attractive objects using ESO telescopes, for the purposes of education and public outreach. The programme makes use of telescope time that cannot be used for science observations. All data collected may also be suitable for scientific purposes, and are made available to astronomers through ESO’s science archive.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.1433614125733888" BaseTileLevel="0" BottomsUp="False" CenterX="112.516471788" CenterY="-18.5365785192" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="A starry superbubble" OffsetX="3.500034486655e-05" OffsetY="3.500034486655e-05" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="3" Url="http://data1.wwtassets.org/feeds/eso/potw2113a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|potw2113a" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/potw2113a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/potw2113a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.8247155086" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7544207758667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1828a.jpg" ZoomLevel="6.20671594206331">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.55167898551583" BaseTileLevel="0" BottomsUp="False" CenterX="161.316311638" CenterY="-59.8247155086" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="0.1" Sparse="True" StockSet="False" TileLevels="6" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1828aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1828a" Xcxstatus="queue:eso">
+        <Credits>ESO/J. Emerson/M. Irwin/J. Lewis; This spectacular image of the Carina nebula reveals the dynamic cloud of interstellar matter and thinly spread gas and dust as n...</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1828a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1828a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="NOR" DataSetType="Sky" Dec="-48.7091607988" Magnitude="0" Name="SDC 335.579-0.292" Opacity="100" RA="16.5170634468" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1331a.jpg" ZoomLevel="0.342266824228864">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.085566706057216" BaseTileLevel="0" BottomsUp="False" CenterX="247.755951702" CenterY="-48.7091607988" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="SDC 335.579-0.292" Projection="Tan" QuadTreeMap="" Rotation="21.93227650299" Sparse="True" StockSet="False" TileLevels="2" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1331aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1331a" Xcxstatus="queue:eso">
+        <Credits>ALMA (ESO/NRAJ/NRAO)/NASA/Spitze; Observations of the dark cloud SDC 335.579-0.292 using the Atacama Large Millimeter/submillimeter array (ALMA) have given astron...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/eso1331a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1331a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0837b&quot;, &quot;publishedUTCISO8601&quot;: &quot;2008-10-21T00:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-57.76706701989881" Magnitude="0" Name="The Gum 29 nebula" Opacity="100" RA="10.399576509340255" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0837b/thumb.jpg" ZoomLevel="0.74695633311">
+    <Description>Marked in the image is a double stellar system. The two stars have masses of 82 and 83 times that of our Sun and rotate around each other in approximately 3.7 days. They are amongst the most massive stars known to astronomers.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.13572589568" BaseTileLevel="0" BottomsUp="False" CenterX="156.060968" CenterY="-57.782894" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Gum 29 nebula" OffsetX="0.035847969648435035" OffsetY="0.015940647505772402" Projection="Tan" QuadTreeMap="" Rotation="-0.21002209981999997" Sparse="True" StockSet="False" TileLevels="3" Url="http://data1.wwtassets.org/feeds/eso/eso0837b/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0837b" Xcxstatus="queue:eso">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0837b/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0837b/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.7524971" Magnitude="0" Name="NGC 3247" Opacity="100" RA="10.3992327266667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-ssc2004-08a1.jpg" ZoomLevel="2.72785408">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.68196352" BaseTileLevel="0" BottomsUp="False" CenterX="155.9884909" CenterY="-57.7524971" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3247" Projection="Tan" QuadTreeMap="" Rotation="32.4" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-ssc2004-08a1L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|ssc2004-08a1" Xcxstatus="in:64b74493a15b29de42b305c3">
+        <Credits>NASA/JPL-Caltech/E. Churchwell (; One of the most prolific birthing grounds in our Milky Way galaxy, a nebula called RCW 49, is exposed in superb detail for the f...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/ssc2004-08a1-star-formation-in-rcw-49</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-ssc2004-08a1.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.7524971" Magnitude="0" Name="NGC 3247" Opacity="100" RA="10.3992327266667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig08-018.jpg" ZoomLevel="2.72785408">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.68196352" BaseTileLevel="0" BottomsUp="False" CenterX="155.9884909" CenterY="-57.7524971" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="NGC 3247" Projection="Tan" QuadTreeMap="" Rotation="32.32" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig08-018L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig08-018" Xcxstatus="in:64b7448ea15b29de42b305b7">
+        <Credits>NASA/JPL-Caltech/E. Churchwell (; This image of prolific star-forming region RCW 49 exposes breathtaking detail of this dark and dusty region, which is home to mo...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig08-018-2-channel-rcw-49</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig08-018.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.69553483878201" Magnitude="0" Name="Westerlund 2" Opacity="100" RA="10.400709639613666" Rotation="0" Thumbnail="http://data1.wwtassets.org/packages/2023/08_jwst/westerlund2-bk/thumb.jpg" ZoomLevel="0.3113757223826241">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.034888036121302424" BaseTileLevel="0" BottomsUp="False" CenterX="156.010644594205" CenterY="-57.695534838782" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Westerlund 2" OffsetX="8.51758694367735e-06" Projection="Tan" QuadTreeMap="" Rotation="136.720827871176" Sparse="False" StockSet="False" TileLevels="3" Url="http://data1.wwtassets.org/packages/2023/08_jwst/westerlund2-bk/{1}/{3}/{3}_{2}.png" WidthFactor="2" Xcxstatus="in:65f7d42daffb32cbf1d9964d">
+        <Credits>NASA/ESA/CSA/Brittany Kundert</Credits>
+        <CreditsUrl>https://twitter.com/specificwave</CreditsUrl>
+        <Description>The NASA/ESA/CSA James Webb Space Telescope (JWST) observed part of the nebulous region surrounding Westerlund 2, a young star cluster in the Milky Way.
+
+Dense pillars of gas and dust, as seen in this image, point towards the central star cluster. These nebulous areas are thought to house stellar birth! What appears to be steam coming off of the central pillar is material streaming away from the nebula as it is being eroded by stellar radiation from nearby stars. This intense radiation eats away at gas and dust, shaping these pillars and the surrounding region.
+
+Using infrared light, JWST can peer behind some of this gas and dust to reveal evidence of stellar formation, such as protostellar jets! The James Webb Space Telescope will revolutionize our understanding of stellar birth as it continues to study the life of stars.
+
+These observations are from Proposal 2640 as part of the General Observer (GO) Program.
+
+Image processed by Brittany Kundert.</Description>
+        <ThumbnailUrl>http://data1.wwtassets.org/packages/2023/08_jwst/westerlund2-bk/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.7892783091" Magnitude="0" Name="Westerlund 2" Opacity="100" RA="10.3996384004667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509f.jpg" ZoomLevel="0.0706517399768269">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0176629349942067" BaseTileLevel="0" BottomsUp="False" CenterX="155.994576007" CenterY="-57.7892783091" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Westerlund 2" Projection="Tan" QuadTreeMap="" Rotation="7.72" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-heic1509fL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|heic1509f" Xcorepipe_ids="hst|heic1509f" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA, the Hubble Heritage T; The red dots scattered throughout the cosmic landscape captured in this NASA/ESA Hubble Space Telescope image are a rich populat...</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic1509f/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509f.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.7809334" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7534448533333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-483.jpg" ZoomLevel="7.7107265536">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.9276816384" BaseTileLevel="0" BottomsUp="False" CenterX="161.3016728" CenterY="-59.7809334" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-0.01" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-483L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|483" Xcxstatus="in:66c4a0e501d08292018533c9">
+        <Credits>NASA/CXC/PSU/L.Townsley et al.</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2011/carina/more.html#img1c</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-483.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="3.36333333333333" Classification="Nebula" Constellation="CAR" DataSetType="Sky" Dec="-59.6" Magnitude="0" Name="Star birth in the extreme" Opacity="100" RA="10.74" Rotation="0" ZoomLevel="3.36333333333333">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.45442598901514364" BaseTileLevel="0" BottomsUp="False" CenterX="161.11976851015592" CenterY="-59.59562623532823" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Star birth in the extreme" OffsetX="1.3867980621800038e-05" OffsetY="1.3867980621800038e-05" Projection="Tan" QuadTreeMap="0123" Rotation="50.320000000000306" Sparse="True" StockSet="False" TileLevels="7" Url="http://data1.wwtassets.org/packages/2020/07_hubble30/heic0707a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="esahubble|heic0707a" Xcorepipe_ids="hst|heic0707a" Xcxstatus="in:6537c3d6b493728d11b82ba2">
+        <Credits>NASA, ESA, N. Smith (University of California, Berkeley), and The Hubble Heritage Team (STScI/AURA)</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic0707a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/packages/2020/07_hubble30/heic0707a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-57.738510185" Magnitude="0" Name="Gum 29" Opacity="100" RA="10.4049253729333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509d.jpg" ZoomLevel="0.0940470353190912">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0235117588297728" BaseTileLevel="0" BottomsUp="False" CenterX="156.073880594" CenterY="-57.738510185" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Gum 29" Projection="Tan" QuadTreeMap="" Rotation="-3.8" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-heic1509dL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|heic1509d" Xcorepipe_ids="hst|heic1509d" Xcxstatus="queue:hubble">
+        <Credits>NASA, ESA, the Hubble Heritage T; This image shows the star-forming region Gum 29 which surrounds star cluster Westerlund 2. This is a section of the new NASA/ESA...</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic1509d/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic1509d.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-17.930519525398" Magnitude="0" Name="W33" Opacity="100" RA="18.237153525185" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig15-002.jpg" ZoomLevel="1.39901953208576">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.34975488302144" BaseTileLevel="0" BottomsUp="False" CenterX="273.557302877775" CenterY="-17.930519525398" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="W33" Projection="Tan" QuadTreeMap="" Rotation="-61.46" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig15-002L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig15-002" Xcxstatus="in:64b74472a15b29de42b3057b">
+        <Credits>NASA/JPL-Caltech; Volunteers using the web-based Milky Way Project brought star-forming features nicknamed "yellowballs" to the attention of resea...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig15-002-finding-yellowballs-in-our-milky-way</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig15-002.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0.6745162199536747" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;gemini1306a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2013-08-06T00:00:00+00:00&quot;}" Constellation="SGR" DataSetType="Sky" Dec="-16.137665932401173" Magnitude="0" Name="Swan Nebula (M17)" Opacity="100" RA="18.342551230260284" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/gemini1306a/thumb.jpg" ZoomLevel="0.6745162199536747">
+    <Description>This FLAMINGOS-2 near-infrared image details part of the magnificent Swan Nebula (M17), where ultraviolet radiation streaming from young hot stars sculpts a dense region of dust and gas into myriad fanciful forms. M17 lies some 5,200 light-years distant in the constellation Sagittarius and is one of the most massive and luminous star-forming region&amp;#x27;s in our Galaxy. It is also one of the most studied.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.1017522737190912" BaseTileLevel="0" BottomsUp="False" CenterX="275.1381122673474" CenterY="-16.1378670103079" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Swan Nebula (M17)" OffsetX="4.96837274019e-05" OffsetY="4.96837274019e-05" Projection="Tan" QuadTreeMap="" Rotation="179.9200000000002" Sparse="True" StockSet="False" TileLevels="3" Url="http://data1.wwtassets.org/feeds/noirlab/gemini1306a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="noirlab|gemini1306a" Xcxstatus="in:64276253975014bc743f1618">
+        <Credits>International Gemini Observatory/AURA</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/gemini1306a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/gemini1306a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="AQL" DataSetType="Sky" Dec="-2.66395731734549" Magnitude="0" Name="Milky Way" Opacity="100" RA="18.770411526474" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig12-003.jpg" ZoomLevel="5.46133333327872">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.36533333331968" BaseTileLevel="0" BottomsUp="False" CenterX="281.55617289711" CenterY="-2.66395731734549" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Milky Way" Projection="Tan" QuadTreeMap="" Rotation="-62.81" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig12-003L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig12-003" Xcxstatus="in:64b7432ba15b29de42b30569">
+        <Credits>NASA/JPL-Caltech/Univ. of Wiscon; If astronomy had its own Academy Awards, then this part of the Milky Way would have been the Favorite Nebula pick for 2011. Comp...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig12-003-an-audience-favorite-nebula</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig12-003.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;noao-02210&quot;, &quot;publishedUTCISO8601&quot;: &quot;2020-06-30T21:34:03.352640+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.71614622408022" Magnitude="0" Name="The Eta Carinae nebula, NGC 3372" Opacity="100" RA="10.749653988685022" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/noao-02210/thumb.jpg" ZoomLevel="9.319536">
+    <Description>The Eta Carinae nebula, NGC3372, as seen from CTIO.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.9251199999999997" BaseTileLevel="0" BottomsUp="False" CenterX="161.2215847" CenterY="-59.49815611" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Eta Carinae nebula, NGC 3372" OffsetX="-0.04696336784999999" OffsetY="-0.21319629156999995" Projection="Tan" QuadTreeMap="" Rotation="9.446171570387413" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/noirlab/noao-02210/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="noirlab|noao-02210" Xcxstatus="in:6427626f975014bc743f1654">
+        <Credits>NOIRLab/NSF/AURA</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/noao-02210/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/noao-02210/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="NOR" DataSetType="Sky" Dec="-51.7124824843" Magnitude="0" Name="Apep" Opacity="100" RA="16.0140231036" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1838a.jpg" ZoomLevel="0.0244365304505139">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.00610913261262848" BaseTileLevel="0" BottomsUp="False" CenterX="240.210346554" CenterY="-51.7124824843" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Apep" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1838aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1838a" Xcxstatus="queue:eso">
+        <Credits>ESO/Callingham et al.; The VISIR instrument on ESO’s VLT captured this stunning image of a newly-discovered massive binary star system. Nicknamed Apep ...</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1838a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1838a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.0856860901959" Magnitude="0" Name="Omega Nebula" Opacity="100" RA="18.3409952105246" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig10-010a.jpg" ZoomLevel="5.461327872">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.365331968" BaseTileLevel="0" BottomsUp="False" CenterX="275.114928157869" CenterY="-16.0856860901959" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Omega Nebula" Projection="Tan" QuadTreeMap="" Rotation="-61.873238304" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig10-010aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig10-010a" Xcxstatus="in:64b7432aa15b29de42b30565">
+        <Credits>NASA/JPL-Caltech/; This visible-light view of the sky highlights the bright M17 nebula, as well as the glowing hot gas filling the "bubble" to its ...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig10-010a-visible-light-view-of-the-m17-nebula</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig10-010a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.0856860901959" Magnitude="0" Name="Omega Nebula" Opacity="100" RA="18.3409952105246" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig10-009a.jpg" ZoomLevel="5.461327872">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.365331968" BaseTileLevel="0" BottomsUp="False" CenterX="275.114928157869" CenterY="-16.0856860901959" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Omega Nebula" Projection="Tan" QuadTreeMap="" Rotation="-61.873238304" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig10-009aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig10-009a" Xcxstatus="in:64b74329a15b29de42b30563">
+        <Credits>NASA/JPL-Caltech/M. Povich (Penn; A dragon-shaped cloud of dust seems to fly out from a bright explosion in this infrared light image from the Spitzer Space Teles...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig10-009a-the-evolution-of-star-formation-around-the-m17-nebula</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig10-009a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.0856860901959" Magnitude="0" Name="Omega Nebula" Opacity="100" RA="18.3409952105246" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-ssc2008-21a1.jpg" ZoomLevel="5.46100260763794">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.36525065190948" BaseTileLevel="0" BottomsUp="False" CenterX="275.114928157869" CenterY="-16.0856860901959" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Omega Nebula" Projection="Tan" QuadTreeMap="" Rotation="-61.873238304" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-ssc2008-21a1L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|ssc2008-21a1" Xcxstatus="in:64b7447ca15b29de42b30591">
+        <Credits>NASA/JPL-Caltech/Univ. of Wisc.; NASA's Spitzer Space Telescope has captured a new, infrared view of the choppy star-making cloud called M17, also known as the O...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/ssc2008-21a1-m17-celestial-sea-of-stars</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-ssc2008-21a1.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;noao-02175&quot;, &quot;publishedUTCISO8601&quot;: &quot;2020-06-30T21:34:03+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.69753903794027" Magnitude="0" Name="The Eta Carinae nebula, NGC 3372" Opacity="100" RA="10.746542060124675" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/noao-02175/thumb.jpg" ZoomLevel="6.4872">
+    <Description>The central portion of the Eta Carinae Nebula, NGC 3372, also known as the Keyhole Nebula, in the constellation of Carina. This gaseous bright nebula surrounds the peculiar variable star Eta Carinae, with overlying clouds of dark material. The nebula is 9000 light-years from Earth. Cerro Tololo 4-meter Blanco telescope, 1976: north is at the top.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.08544" BaseTileLevel="0" BottomsUp="False" CenterX="161.6158952" CenterY="-59.63822496" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Eta Carinae nebula, NGC 3372" OffsetX="0.19672781722399998" OffsetY="-0.09657842425999999" Projection="Tan" QuadTreeMap="" Rotation="10.264427539999998" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/noirlab/noao-02175/L{1}X{2}Y{3}.png" WidthFactor="2" Xcxstatus="in:64276267975014bc743f1642">
+        <Credits>NOIRLab/NSF/AURA</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/noao-02175/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/noao-02175/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0030a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2000-09-14T00:00:00+00:00&quot;}" Constellation="SGR" DataSetType="Sky" Dec="-16.198515473991502" Magnitude="0" Name="Peering into a star factory" Opacity="100" RA="18.34043210142113" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0030a/thumb.jpg" ZoomLevel="0.8179781777999999">
+    <Description>This is a near-infrared, colour-coded composite image of a sky field in the south-western part of the galactic star-forming region Messier 17. In this image, young and heavily obscured stars are recognized by their red colour. Bluer objects are either foreground stars or well-developed massive stars whose intense light ionizes the hydrogen in this region. The diffuse light that is visible nearly everywhere in the photo is due to emission from hydrogen atoms that have (re-)combined from protons and electrons. The dark areas are due to obscuration of the light from background objects by large amounts of dust — this effect also causes many of those stars to appear quite red. A cluster of young stars in the upper-left part of the photo, so deeply embedded in the nebula that it is invisible in optical light, is well visible in this infrared image. Technical information : The exposures were made through three filtres, J (at wavelength 1.25 µm; exposure time 5 min; here rendered as blue), H (1.65 µm; 5 min; green) and Ks (2.2 µm; 5 min; red); an additional 15 min was spent on separate sky frames. The seeing was 0.5 - 0.6 arcsec. The objects in the uppermost left corner area appear somewhat elongated because of a colour-dependent aberration introduced at the edge by the large-field optics. The sky field shown measures approx. 5 x 5 arcmin 2 (corresponding to about 3% of the full moon). North is up and East is left.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0843973212086331" BaseTileLevel="0" BottomsUp="False" CenterX="275.108213" CenterY="-16.17704" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Peering into a star factory" OffsetX="0.001626573789392209" OffsetY="-0.021478248210909403" Projection="Tan" QuadTreeMap="" Rotation="0.09648566662490922" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/eso/eso0030a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0030a" Xcxstatus="in:654b8bc55dff7c3291e3a568">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0030a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0030a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.14205" Magnitude="0" Name="Messier 17" Opacity="100" RA="18.3440226666667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-potw1044a.jpg" ZoomLevel="0.6734299136">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.1683574784" BaseTileLevel="0" BottomsUp="False" CenterX="275.16034" CenterY="-16.14205" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Messier 17" Projection="Tan" QuadTreeMap="" Rotation="-179.97846015481" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-potw1044aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|potw1044a" Xcxstatus="queue:eso">
+        <Credits>ESO/R. Chini; Astronomers using data from ESO's Very Large Telescope (VLT), at the Paranal Observatory in Chile, have made an impressive compo...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/potw1044a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-potw1044a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="1" Classification="Nebula" Constellation="SGR" DataSetType="Sky" Dec="-16.1566666666667" Magnitude="0" Name="Omega Nebula;Swan Nebula;M17;Messier 17" Opacity="100" RA="18.3427777777778" Rotation="0" ZoomLevel="4.22833333333333">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.113842002764594" BaseTileLevel="0" BottomsUp="False" CenterX="275.142504706497" CenterY="-16.1565827" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Omega Nebula;Swan Nebula;M17;Messier 17" Projection="Tan" QuadTreeMap="0123" Rotation="-93.0146349876386" Sparse="True" StockSet="False" TileLevels="5" Url="http://r{S:0}.ortho.tiles.virtualearth.net/tiles/wsa0000003330{Q}?g=138" WidthFactor="2" Xastropix_ids="stsci|2002-11g" Xcxstatus="in:65dccffeaffb32cbf1d96fbe">
+        <Credits>Credit: NASA, H. Ford (JHU), G. Illingworth (UCSC/LO), M.Clampin (STScI), G. Hartig (STScI), the ACS Science Team, and ESA  The ACS Science Team:  H. Ford, G. Illingworth, M. Clampin, G. Hartig, T. Allen, K. Anderson, F. Bartko, N. Benitez, J. Blakeslee, R. Bouwens, T. Broadhurst, R. Brown, C. Burrows, D. Campbell, E. Cheng, N. Cross, P. Feldman, M. Franx, D. Golimowski, C. Gronwall, R. Kimble, J. Krist, M. Lesser, D. Magee, A. Martel, W. J. McCann, G. Meurer, G. Miley, M. Postman, P. Rosati, M. Sirianni, W. Sparks, P. Sullivan, H. Tran, Z. Tsvetanov, R. White, and R. Woodruff.</Credits>
+        <CreditsUrl>http://hubblesite.org/contents/news-releases/2002/news-2002-11.html</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=1646351688</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.665583877" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7447788243333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1839b.jpg" ZoomLevel="0.79004266138583">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.197510665346458" BaseTileLevel="0" BottomsUp="False" CenterX="161.171682365" CenterY="-59.665583877" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="179.82" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1839bL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1839b" Xcxstatus="queue:eso">
+        <Credits>SPECULOOS Team/E. Jehin/ESO; This first light image from the Europa telescope at the SPECULOOS Southern Observatory (SSO) shows the heart of the Carina Nebul...</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1839b/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1839b.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;noao-02174&quot;, &quot;publishedUTCISO8601&quot;: &quot;2020-06-30T21:34:03+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.642452288499435" Magnitude="0" Name="The Eta Carinae nebula, NGC 3372" Opacity="100" RA="10.74671410020898" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/noao-02174/thumb.jpg" ZoomLevel="3.6940014000000003">
+    <Description>The central portion of the Eta Carinae Nebula, NGC 3372, also known as the Keyhole Nebula, in the constellation of Carina. This gaseous bright nebula surrounds the peculiar variable star Eta Carinae, with overlying clouds of dark material. The nebula is 9000 light-years from Earth. Cerro Tololo 4-meter Blanco telescope, 1976: north is at the top.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.749568" BaseTileLevel="0" BottomsUp="False" CenterX="161.3725992" CenterY="-59.69848767" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Eta Carinae nebula, NGC 3372" OffsetX="0.09544889414060001" OffsetY="0.03954082809869999" Projection="Tan" QuadTreeMap="" Rotation="10.324113132727" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/noirlab/noao-02174/L{1}X{2}Y{3}.png" WidthFactor="2" Xcxstatus="in:64276266975014bc743f1641">
+        <Credits>NOIRLab/NSF/AURA</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/noao-02174/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/noao-02174/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;noao-02192&quot;, &quot;publishedUTCISO8601&quot;: &quot;2020-06-30T21:34:03+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.642452288499435" Magnitude="0" Name="The Eta Carinae nebula, NGC 3372" Opacity="100" RA="10.74671410020898" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/noao-02192/thumb.jpg" ZoomLevel="3.6940014000000003">
+    <Description>The Eta Carinae nebula, NGC3372, also known as the Keyhole Nebula, as seen by the Curtis Schmidt telescope at the Cerro Tololo Interamerican Observatory in 1975. We also have an interesting narrow-band emission line image of this nebula. This gaseous bright nebula surrounds the peculiar variable star Eta Carinae, with overlying clouds of dark material, at a distance from Earth of about 9000 light-years. North is at the top.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.749568" BaseTileLevel="0" BottomsUp="False" CenterX="161.3725992" CenterY="-59.69848767" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Eta Carinae nebula, NGC 3372" OffsetX="0.09544889414060001" OffsetY="0.03954082809869999" Projection="Tan" QuadTreeMap="" Rotation="10.324113132727" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/noirlab/noao-02192/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="noirlab|noao-02192" Xcxstatus="in:6427626d975014bc743f1650">
+        <Credits>NOIRLab/NSF/AURA</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/noao-02192/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/noao-02192/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.177118" Magnitude="0" Name="Messier 17" Opacity="100" RA="18.3405401333333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1201a.jpg" ZoomLevel="0.57605707776">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.14401426944" BaseTileLevel="0" BottomsUp="False" CenterX="275.108102" CenterY="-16.177118" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Messier 17" Projection="Tan" QuadTreeMap="" Rotation="30.0415377409" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1201aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1201a" Xcxstatus="queue:eso">
+        <Credits>ESO;  This image of the Omega Nebula (Messier 17), captured by ESO's Very Large Telescope (VLT), is one of the sharpest of this objec...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/eso1201a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1201a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6393267999" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7411751224" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-potw1127a.jpg" ZoomLevel="0.11409512313856">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.02852378078464" BaseTileLevel="0" BottomsUp="False" CenterX="161.117626836" CenterY="-59.6393267999" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-141.98" Sparse="True" StockSet="False" TileLevels="2" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-potw1127aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|potw1127a" Xcorepipe_ids="hst|potw1127a" Xcxstatus="queue:hubble">
+        <Credits>ESA/Hubble &amp; NASA ; Looking like an elegant abstract art piece painted by talented hands, this picture is actually a NASA/ESA Hubble Space Telescope...</Credits>
+        <CreditsUrl>https://esahubble.org/images/potw1127a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-potw1127a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="3.36333333333333" Classification="Nebula" Constellation="CAR" DataSetType="Sky" Dec="-59.6480555555556" Magnitude="0" Name="Light and Shadow in the Carina Nebula (NGC 3372)" Opacity="100" RA="10.7453" Rotation="0" ZoomLevel="0.4">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.116951513885838" BaseTileLevel="0" BottomsUp="False" CenterX="161.178898367045" CenterY="-59.6484568272354" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Light and Shadow in the Carina Nebula (NGC 3372)" Projection="Tan" QuadTreeMap="0123" Rotation="177.823624213756" Sparse="True" StockSet="False" TileLevels="3" Url="http://r{S:2}.ortho.tiles.virtualearth.net/tiles/wsa0000002132{Q}?g=138" WidthFactor="2" Xastropix_ids="stsci|2000-06a" Xcxstatus="queue:hubble">
+        <Credits>Image Credit: NASA, The Hubble Heritage Team (AURA/STScI)</Credits>
+        <CreditsUrl>http://hubblesite.org/contents/news-releases/2000/news-2000-06.html</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=1353700001</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.5636383252" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7351814187333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1208db.jpg" ZoomLevel="1.08302432947298">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.270756082368246" BaseTileLevel="0" BottomsUp="False" CenterX="161.027721281" CenterY="-59.5636383252" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="0.0709343371030642" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1208dbL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1208db" Xcxstatus="queue:eso">
+        <Credits>ESO/T. Preibisch; Colour-composite image of the Carina Nebula, revealing exquisite details in the stars and dust of the region. Several well known...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/eso1208db/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1208db.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso1208a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2012-02-08T12:00:00+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.563623514169315" Magnitude="0" Name="ESO’s VLT reveals the Carina Nebula's hidden secrets" Opacity="100" RA="10.735179474405657" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso1208a/thumb.jpg" ZoomLevel="2.69361318369718">
+    <Description>This broad image of the Carina Nebula, a region of massive star formation in the southern skies, was taken in infrared light using the HAWK-I camera on ESO’s Very Large Telescope. Many previously hidden features, scattered across a spectacular celestial landscape of gas, dust and young stars, have emerged. #L</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.48472800764559354" BaseTileLevel="0" BottomsUp="False" CenterX="161.027721281" CenterY="-59.5636383252" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="ESO’s VLT reveals the Carina Nebula's hidden secrets" OffsetX="1.4792724842699998e-05" OffsetY="1.4792724842699998e-05" Projection="Tan" QuadTreeMap="" Rotation="0.07093433710306417" Sparse="True" StockSet="False" TileLevels="6" Url="http://data1.wwtassets.org/feeds/eso/eso1208a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso1208a" Xcxstatus="queue:eso">
+        <Credits>ESO/T. Preibisch</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1208a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso1208a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.5636418433" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7351571645333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1208dc.jpg" ZoomLevel="1.08248301703332">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.27062075425833" BaseTileLevel="0" BottomsUp="False" CenterX="161.027357468" CenterY="-59.5636418433" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="0.124735544162672" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1208dcL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1208dc" Xcxstatus="queue:eso">
+        <Credits>ESO; Colour-composite image of the Carina Nebula, revealing exquisite details in the stars and dust of the region. Several well known...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/eso1208dc/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1208dc.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0416a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2004-05-12T00:00:00+00:00&quot;}" Constellation="SGR" DataSetType="Sky" Dec="-16.173646290450552" Magnitude="0" Name="Stellar cluster and star-forming region M 17" Opacity="100" RA="18.34133521269871" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0416a/thumb.jpg" ZoomLevel="1.0363211525999998">
+    <Description>Three-colour composite of the sky region of M 17, a H II region excited by a cluster of young, hot stars. A large silhouette disc has been found to the south-west of the cluster centre. The present image was obtained with the ISAAC near-infrared instrument at the 8.2-m VLT ANTU telescope at Paranal.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.11247407104" BaseTileLevel="0" BottomsUp="False" CenterX="275.108067" CenterY="-16.17704" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Stellar cluster and star-forming region M 17" OffsetX="-0.01148913924095479" OffsetY="0.0033888030330688225" Projection="Tan" QuadTreeMap="" Rotation="-0.02280422246" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/eso/eso0416a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0416a" Xcxstatus="in:65dccff7affb32cbf1d96fae">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0416a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0416a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso0416b&quot;, &quot;publishedUTCISO8601&quot;: &quot;2004-05-12T00:00:00+00:00&quot;}" Constellation="SGR" DataSetType="Sky" Dec="-16.173231608328916" Magnitude="0" Name="Stellar cluster and star-forming region M 17 (annotated)" Opacity="100" RA="18.341341366473404" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso0416b/thumb.jpg" ZoomLevel="1.024198324896">
+    <Description>Three-colour composite of the sky region of M 17, a H II region excited by a cluster of young, hot stars. A large silhouette disc has been found to the south-west of the cluster centre. The present image was obtained with the ISAAC near-infrared instrument at the 8.2-m VLT ANTU telescope at Paranal. The orientation and the scale at the distance of M 17 (7,000 light-years) are indicated, and the main regions are identified.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.13318844416" BaseTileLevel="0" BottomsUp="False" CenterX="275.196102" CenterY="-16.172013" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Stellar cluster and star-forming region M 17 (annotated)" OffsetX="0.0729758762952796" OffsetY="-0.0011471073745517861" Projection="Tan" QuadTreeMap="" Rotation="-0.06672023219" Sparse="True" StockSet="False" TileLevels="2" Url="http://data1.wwtassets.org/feeds/eso/eso0416b/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso0416b" Xcxstatus="in:65dccff8affb32cbf1d96fb0">
+        <Credits>ESO</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso0416b/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso0416b/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CEN" DataSetType="Sky" Dec="-61.7014223" Magnitude="0" Name="RCW 79" Opacity="100" RA="13.67980222" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig05-001a.jpg" ZoomLevel="2.742157312">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.685539328" BaseTileLevel="0" BottomsUp="False" CenterX="205.1970333" CenterY="-61.7014223" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="RCW 79" Projection="Tan" QuadTreeMap="" Rotation="-11" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Spitzer-sig05-001aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="spitzer|sig05-001a" Xcxstatus="in:64b74498a15b29de42b305cd">
+        <Credits>NASA/JPL-Caltech/E. Churchwell (; RCW 79 is seen in the southern Milky Way, 17,200 light-years from Earth in the constellation Centaurus. The bubble is 70-light y...</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/sig05-001a-the-infrared-view-of-rcw-79</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Spitzer-sig05-001a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.179623886343308" Magnitude="0" Name="M17 - SOFIA Reveals how the Swan Nebula Hatched" Opacity="100" RA="18.341912943167664" Rotation="0" Thumbnail="http://data1.wwtassets.org/packages/2021/02_sofia/m17_sofia/thumb.jpg" ZoomLevel="2.566697204034056">
+    <Description>Composite image of the Swan Nebula. SOFIA detected the blue areas (20 microns) near the center, revealing gas as it&amp;#x27;s heated by massive stars located at the center and the green areas (37 microns) that trace dust as it&amp;#x27;s warmed both by massive stars and nearby newborn stars. The nine never-before-seen protostars were found primarily in the southern areas. The red areas near the edge represent cold dust that was detected by the Herschel Space Telescope (70 microns), while the white star field was detected by the Spitzer Space Telescope (3.6 microns). The space telescopes could not observe the blue and green regions in such detail because the detectors were saturated. SOFIA&amp;#x27;s view reveals evidence that parts of the nebula formed separately to create the swan-like shape seen today.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.34106719831443577" BaseTileLevel="0" BottomsUp="False" CenterX="275.128694147515" CenterY="-16.1796238863433" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="M17 - SOFIA Reveals how the Swan Nebula Hatched" Projection="Tan" QuadTreeMap="" Rotation="-2.8875871040697496" Sparse="False" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/packages/2021/02_sofia/m17_sofia/{1}/{3}/{3}_{2}.png" WidthFactor="2" Xcxstatus="in:647a7aded4a2d5e2c5f3e71f">
+        <Credits>NASA/SOFIA/De Buizer/Radomski/Lim; NASA/JPL-Caltech; ESA/Herschel</Credits>
+        <CreditsUrl>https://www.nasa.gov/feature/sofia-reveals-how-the-swan-nebula-hatched</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/packages/2021/02_sofia/m17_sofia/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.175021224" Magnitude="0" Name="M17" Opacity="100" RA="18.3417702429453" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-93.jpg" ZoomLevel="1.90080483328">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.47520120832" BaseTileLevel="0" BottomsUp="False" CenterX="275.12655364418" CenterY="-16.175021224" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="M17" Projection="Tan" QuadTreeMap="" Rotation="1.16680172177" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Chandra-93L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="chandra|93" Xcxstatus="in:6745e469ed25b6eaa0b17898">
+        <Credits>NASA/CXC/PSU/L.Townsley et al.</Credits>
+        <CreditsUrl>https://chandra.harvard.edu/photo/2003/m17/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Chandra-93.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="1.252514230024704" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;noao-03315&quot;, &quot;publishedUTCISO8601&quot;: &quot;2020-06-30T21:34:06+00:00&quot;}" Constellation="SGR" DataSetType="Sky" Dec="-16.17582941131354" Magnitude="0" Name="The Omega Nebula, M17 (NGC 6618)" Opacity="100" RA="18.341998482550324" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/noao-03315/thumb.jpg" ZoomLevel="1.252514230024704">
+    <Description>The Simultaneous Quad Infrared Imaging detector (SQIID) has returned to Kitt Peak with enhanced capabilities. This composite SQIlD multi-wavelength IR image of M17 (NGC6618), a region of massive star formation known variously as the Omega Nebula, the Swan Nebula, and the Horseshoe Nebula, was created by K. M. Merrill to illustrate the potential of the new PAH channel. This filter is centered on the location of a dust emission feature at 3.28 microns which shows up in many star formation regions, and which is normally attributed to polycyclic aromatic hydrocarbons (PAH). The dust is in emission due to the ultra-violet radiation of newly formed hot, luminous stars. The 540-second composite J- and K-band exposures were taken at the KPNO 2.1-meter telescope on 11 May 2000. The PAH data are archival data from the Cryogenic Optical Bench (COB) instrument. This image can be compared to optical images from the KPNO 0.9-meter, the KPNO Mayall 4-meter, and the KPNO Schmidt telescopes, and an emission line image from the KPNO Schmidt, revealing physical conditions in the nebula.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.196472820396032" BaseTileLevel="0" BottomsUp="False" CenterX="275.13037367455394" CenterY="-16.177205638016957" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Omega Nebula, M17 (NGC 6618)" OffsetX="0.000191867988668" OffsetY="0.000191867988668" Projection="Tan" QuadTreeMap="" Rotation="-0.8000000000000004" Sparse="True" StockSet="False" TileLevels="2" Url="http://data1.wwtassets.org/feeds/noirlab/noao-03315/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="noirlab|noao-03315" Xcxstatus="in:64276287975014bc743f1686">
+        <Credits>K.M. Merrill, NOIRLab/NSF/AURA</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/noao-03315/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/noao-03315/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6522735568" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7421090417333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1639d.jpg" ZoomLevel="0.2276699021824">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0569174755456" BaseTileLevel="0" BottomsUp="False" CenterX="161.131635626" CenterY="-59.6522735568" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-179.98" Sparse="True" StockSet="False" TileLevels="2" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1639dL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1639d" Xcxstatus="queue:eso">
+        <Credits>ESO/A. McLeod; This image was taken by the MUSE instrument, mounted on ESO’s Very Large Telescope and shows the region R37 within the Carina Ne...</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1639d/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1639d.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6123251898" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7344598049333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic0707g.jpg" ZoomLevel="5.27596694143795">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.31899173535949" BaseTileLevel="0" BottomsUp="False" CenterX="161.016897074" CenterY="-59.6123251898" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-90.76" Sparse="True" StockSet="False" TileLevels="3" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-heic0707gL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|heic0707g" Xcorepipe_ids="hst|heic0707g" Xcxstatus="queue:hubble">
+        <Credits>N. Smith and NOAO/AURA/NSF; This image shows a ground-based view of the giant star-forming region in the southern sky known as the Carina Nebula, combining ...</Credits>
+        <CreditsUrl>https://esahubble.org/images/heic0707g/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-heic0707g.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;noirlab&quot;, &quot;itemid&quot;: &quot;noao0136a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2020-06-30T21:34:02+00:00&quot;}" Constellation="CAR" DataSetType="Sky" Dec="-59.612084730559346" Magnitude="0" Name="Carina Nebula (NGC 3372)" Opacity="100" RA="10.734398558936656" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/noirlab/noao0136a/thumb.jpg" ZoomLevel="22.504708799999996">
+    <Description>This image shows a giant star-forming region in the southern sky known as the Carina Nebula (NGC3372), combining the light from 3 different filters tracing emission from oxygen (blue), hydrogen (green), and sulfur (red). The color is also representative of the temperature in the ionized gas: blue is relatively hot and red is cooler. The Carina Nebula is a good example of how very massive stars rip apart the molecular clouds that give birth to them. The bright star near the center of the image is Eta Carinae, which is one of the most massive and luminous stars known. This picture is a composite of several exposures made with the Curtis Schmidt telescope at the Cerro Tololo Interamerican Observatory. We also have a broad-band optical image, approximately true color, made photographically with the Curtis Schmidt.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="2.6378239999999997" BaseTileLevel="0" BottomsUp="False" CenterX="161.332597" CenterY="-60.47667269" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula (NGC 3372)" OffsetX="0.14497761095159997" OffsetY="0.8669514714279999" Projection="Tan" QuadTreeMap="" Rotation="-1.0062460440000003" Sparse="True" StockSet="False" TileLevels="4" Url="http://data1.wwtassets.org/feeds/noirlab/noao0136a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="noirlab|noao0136a" Xcxstatus="in:642762e6975014bc743f1751">
+        <Credits>Nathan Smith, University of Minnesota/NOIRLab/NSF/AURA</Credits>
+        <CreditsUrl>https://noirlab.edu/public/images/noao0136a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/noirlab/noao0136a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.8244880881" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7779108809333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1828b.jpg" ZoomLevel="6.21871751430799">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.554679378577" BaseTileLevel="0" BottomsUp="False" CenterX="161.668663214" CenterY="-59.8244880881" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-0.22" Sparse="True" StockSet="False" TileLevels="6" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1828bL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1828b" Xcxstatus="queue:eso">
+        <Credits>ESO/J. Emerson/M. Irwin/J. Lewis; This wider coverage area reveals even more stars from the crowded neighbourhood surrounding the Carina nebula. Captured by VISTA...</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1828b/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1828b.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6165754366" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7343121068" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-opo0331c.jpg" ZoomLevel="13.646554388521">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="3.41163859713024" BaseTileLevel="0" BottomsUp="False" CenterX="161.014681602" CenterY="-59.6165754366" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-0.74" Sparse="True" StockSet="False" TileLevels="2" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-opo0331cL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|opo0331c" Xcorepipe_ids="hst|opo0331c" Xcxstatus="queue:hubble">
+        <Credits>N. Smith, University of Minnesot; This image shows the Carina Nebula (NGC 3372), combining the light from 3 different filters tracing emission from oxygen (blue),...</Credits>
+        <CreditsUrl>https://esahubble.org/images/opo0331c/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-opo0331c.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.6414152808" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7369640892" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-etamosaicnm2.jpg" ZoomLevel="1.7965956288512">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.4491489072128" BaseTileLevel="0" BottomsUp="False" CenterX="161.054461338" CenterY="-59.6414152808" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="43.9999999999999" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-etamosaicnm2L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|etamosaicnm2" Xcxstatus="queue:eso">
+        <Credits>ESO/IDA/Danish 1.5 m/R.Gendler, ; The Carina Nebula is a large bright nebula that surrounds several clusters of stars. It contains two of the most massive and lum...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/etamosaicnm2/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-etamosaicnm2.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Annotation="{&quot;channel&quot;: &quot;eso&quot;, &quot;itemid&quot;: &quot;eso2320a&quot;, &quot;publishedUTCISO8601&quot;: &quot;2023-12-21T14:00:00+00:00&quot;}" Constellation="CEN" DataSetType="Sky" Dec="-63.175138757239694" Magnitude="0" Name="The Running Chicken Nebula" Opacity="100" RA="11.58666855727729" Rotation="0" Thumbnail="http://data1.wwtassets.org/feeds/eso/eso2320a/thumb.jpg" ZoomLevel="22.43784561390995">
+    <Description>The Running Chicken Nebula comprises several clouds, all of which we can see in this vast image from the VLT Survey Telescope (VST), hosted at ESO’s Paranal site. This 1.5-billion pixel image spans an area in the sky of about 25 full Moons. The clouds shown in wispy pink plumes are full of gas and dust, illuminated by the young and hot stars within them.</Description>
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="3.895308237183386" BaseTileLevel="0" BottomsUp="False" CenterX="173.800094229" CenterY="-63.1751684702" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="The Running Chicken Nebula" OffsetX="5.94376867246e-05" OffsetY="2.97188433623e-05" Projection="Tan" QuadTreeMap="" Rotation="-0.011370379878429001" Sparse="True" StockSet="False" TileLevels="8" Url="http://data1.wwtassets.org/feeds/eso/eso2320a/L{1}X{2}Y{3}.png" WidthFactor="2" Xastropix_ids="eso|eso2320a" Xcxstatus="in:65860314293f0a574636f246">
+        <Credits>ESO/VPHAS+ team. Acknowledgement: CASU</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso2320a/</CreditsUrl>
+        <ThumbnailUrl>http://data1.wwtassets.org/feeds/eso/eso2320a/thumb.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SGR" DataSetType="Sky" Dec="-16.172153" Magnitude="0" Name="Messier 17" Opacity="100" RA="18.3464165333333" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-omega-nebula.jpg" ZoomLevel="4.15698190336">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="1.03924547584" BaseTileLevel="0" BottomsUp="False" CenterX="275.196248" CenterY="-16.172153" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Messier 17" Projection="Tan" QuadTreeMap="" Rotation="1.35191010476" Sparse="True" StockSet="False" TileLevels="5" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-omega-nebulaL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|omega-nebula" Xcxstatus="queue:eso">
+        <Credits>ESO; The Omega Nebula, also known as the Swan Nebula, Messier 17 (M17), or NGC 6618, as imaged by the ESO 3.6-metre telescope on La S...</Credits>
+        <CreditsUrl>http://www.eso.org/public/images/omega-nebula/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-omega-nebula.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="CAR" DataSetType="Sky" Dec="-59.5597746461" Magnitude="0" Name="Carina Nebula" Opacity="100" RA="10.7324495556" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1639g.jpg" ZoomLevel="0.227675274900275">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0569188187250688" BaseTileLevel="0" BottomsUp="False" CenterX="160.986743334" CenterY="-59.5597746461" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Carina Nebula" Projection="Tan" QuadTreeMap="" Rotation="-180" Sparse="True" StockSet="False" TileLevels="2" Url="http://wwtfiles.blob.core.windows.net/vamp/ESO-eso1639gL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="eso|eso1639g" Xcxstatus="queue:eso">
+        <Credits>ESO/A. McLeod; The prominent dark patches, in the central region and to the right of the image are a so called Bok globule: these are isolated ...</Credits>
+        <CreditsUrl>https://www.eso.org/public/images/eso1639g/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-ESO-eso1639g.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="SER2" DataSetType="Sky" Dec="-13.7164828417" Magnitude="0" Name="Messier 16" Opacity="100" RA="18.3074994606667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-potw1033a.jpg" ZoomLevel="0.227120286561075">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.0567800716402688" BaseTileLevel="0" BottomsUp="False" CenterX="274.61249191" CenterY="-13.7164828417" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Messier 16" Projection="Tan" QuadTreeMap="" Rotation="99.0200000000004" Sparse="True" StockSet="False" TileLevels="4" Url="http://wwtfiles.blob.core.windows.net/vamp/Hubble-potw1033aL{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="esahubble|potw1033a" Xcorepipe_ids="hst|potw1033a" Xcxstatus="queue:hubble">
+        <Credits>ESA/Hubble &amp; NASA; The star cluster is very bright and was discovered in the mid-eighteenth century. The nebula, however, is much more elusive and ...</Credits>
+        <CreditsUrl>https://esahubble.org/images/potw1033a/</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Hubble-potw1033a.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>

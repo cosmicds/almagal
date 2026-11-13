@@ -2,8 +2,60 @@
   <v-app
     id="app"
     :style="cssVars"
-    :class="[smallSize ? 'app-is-small' : '', isLandscape ? 'app-is-landscape' : '']"
+    :class="[smallSize ? 'app-is-small' : '', isLandscape ? 'app-is-landscape' : '', sidePanel ? 'app-side-panel' : '']"
   >
+    <!-- ahead of #main-content in the markup so the tab order follows the
+         visual one; `order` moves a flex item without moving it for the keyboard.
+
+         'push' and 'bottom' want the drawer right here, as a flex sibling of
+         #main-content. 'float' does not: it sits over the view's lower-left
+         corner, which used to mean padding #bottom-content past a width the
+         overlay could not see. Teleporting it into the overlay's own bottom row
+         instead makes it a real flex item there, so the control bar flows
+         beside it. `defer` waits for that target to render; `disabled` leaves
+         the drawer in place for the other two layouts. One call either way. -->
+    <Teleport
+      defer
+      to="#tour-float-slot"
+      :disabled="tourDrawerLayout !== 'float'"
+    >
+      <SideDrawer
+        id="tour-drawer"
+        :open="showTour"
+        :layout="tourDrawerLayout"
+        location="bottom left"
+        :side-drawer-width="tourDrawerWidth"
+        float-max-height="100vh"
+      >
+        <!-- two sheets; the container lays them out -->
+        <div class="tour-stack">
+          <div class="tour-sheet">
+            <v-btn
+              class="tour-sheet-close"
+              density="compact"
+              variant="text"
+              icon="mdi-close"
+              aria-label="Close the tour"
+              @click="showTour = false"
+            />
+            <TourPlayer @step="tourStep = $event" />
+          </div>
+          <!-- the tour talks about the filters and the image controls are relevant -->
+          <div v-if="controlsInTourSheet" class="controls-sheet">
+            <ControlPanel
+              :almagal-wtml="almagalWtml"
+              :hide-almagal-images="tourStep !== 6"
+              :disable-filters="disabledFilters"
+              hide-disabled
+              hide-clump-type
+              hide-background-surveys
+              hide-comparison-images
+            />
+          </div>
+        </div>
+      </SideDrawer>
+    </Teleport>
+
     <div
       id="main-content"
     >
@@ -12,6 +64,7 @@
         :wwt-namespace="wwtNamespace"
         @pointermove="almagalSpreadsheetLayer.onPointerMove"
         @click="almagalSpreadsheetLayer.onPointerClick"
+        @dblclick.stop="almagalSpreadsheetLayer.onPointerDoubleClick"
       ></WorldWideTelescope>
       <wwt-loader v-model="isLoading" />
 
@@ -19,9 +72,11 @@
       <!-- This contains the splash screen content -->
       <SplashScreen
         v-model="showSplashScreen"
-        :accent-color="accentColor"
-        :highlight-color="accentColor2"
+        :accent-color="almagalBlue"
+        :highlight-color="almagalOrange"
         :loaded="!isLoading"
+        @tour="startTour"
+        @explore="startExploring"
       />
 
 
@@ -32,193 +87,210 @@
       >
         <div id="top-content">
           <!-- old left-buttons / right-buttons layout preserved below -->
-          <div id="left-buttons">
-            <div class="hovered-source-info">
-              <span v-if="hoveredSource">Currently hovering: {{ hoveredSource.aid }}</span>
-              <span v-else-if="selectedAlmagalSource">Last selected: {{ selectedAlmagalSource.aid }}</span>
-              <span v-else>Currently hovering: none</span>
-              <v-btn
-                v-if="hoveredSource || selectedAlmagalSource"
-                style="pointer-events: auto;"
-                class="ml-2"
-                density="compact"
-                icon="mdi-information-slab-circle-outline"
-                @click="showInfoSheet = !showInfoSheet"
-              >
-              </v-btn>
-            </div>
+          <div
+            id="left-buttons"
+          >
             <div 
               class="source-controls"
               :class="{
                 'flex-column': showFilters,
               }"
             >
-              <v-tooltip 
-                text="Filter sources"
-                :location="showFilters ? 'right' : 'bottom'"
-              >
-                <template #activator="p">
-                  <v-btn
-                    :icon="showFilters ? 'mdi-close' : 'mdi-filter'"
-                    v-bind="p.props"
-                    size="small"
-                    color="surface-variant"
-                    @click="showFilters = !showFilters"
-                  />
-                </template>
-              </v-tooltip>
-              <fieldset
-                v-if="showFilters"
-                class="almagal-filterset"
-              >
-                <!-- mass, lum, lm, tdust, dist_ag, tbol -->
+              <div class="d-flex flex-column align-start ga-2">
                 <div
-                  v-for="field in filterFields"
-                  :key="field"
-                  class="filter-slider"
+                  v-if="!in3dView"
+                  class="d-flex align-center ga-2"
                 >
-                  <label>
-                    <span v-html="filterFieldLabels[field]"></span>&nbsp;
-                    <span
-                      v-if="hoveredSource"
-                      class="fiducial-display"
-                    >
-                      {{formatSigFigs(hoveredSource[field]) }}
-                    </span>
-                    <RangeNumberInputs
-                      :model-value="filterSpec.get(field)!"
-                      :min="almagalColumnRanges[field].min"
-                      :max="almagalColumnRanges[field].max"
-                      :fiducial="hoveredSource ? hoveredSource[field] : undefined"
-                      :steps="500"
-                      log
-                      @update:model-value="(val) => filterSpec.set(field, val)"
-                    />
-                  </label>
-                </div>
-                <hr class="mt-3" />
-                <div class="clump-type-filter">
-                  <span>Clump type</span>
-                  <div class="clump-type-options">
-                    <label
-                      v-for="type in CLUMP_TYPES"
-                      :key="type"
-                      class="clump-type-option"
-                    >
-                      <input
-                        v-model="clumpTypeFilter"
-                        type="checkbox"
-                        :value="type"
+                  <v-tooltip
+                    v-if="!showTour"
+                    text="Search for source"
+                    location="bottom"
+                  >
+                    <template #activator="p">
+                      <v-btn
+                        v-bind="p.props"
+                        :icon="showSearch ? 'mdi-close' : 'mdi-magnify'"
+                        size="small"
+                        color="surface-variant"
+                        @click="showSearch = !showSearch"
                       />
-                      {{ type }}
-                    </label>
-                  </div>
+                    </template>
+                  </v-tooltip>
+                  <template v-if="showSearch">
+                    <v-autocomplete
+                      v-if="almagalSourceList"
+                      v-model="selectedAlmagalSource"
+                      class="almagal-v-select on-canvas"
+                      :items="almagalSourceList"
+                      item-title="iid"
+                      item-value="iid"
+                      :custom-filter="filterAlmagalSource"
+                      return-object
+                      hide-details
+                      label="ALMAGAL Source"
+                      :loading="pendingSourceIids.length > 0"
+                      density="compact"
+                      @update:model-value="onSourceSearchSelect"
+                    />
+                  </template>
                 </div>
-              </fieldset>
-              <div
-                v-if="!in3dView"
-                class="d-flex align-center mt-1 ga-2"
-              >
+
+
+                
                 <v-tooltip
-                  v-if="!showSearch"
-                  text="Search for source"
+                  v-if="!showTour"
+                  text="View settings"
                   location="bottom"
                 >
-                  <template #activator="{ props: tooltipProps }">
+                  <template #activator="p">
                     <v-btn
-                      v-bind="tooltipProps"
-                      prepend-icon="mdi-magnify"
-                      class="blur-button"
-                      variant="outlined"
-                      @click="showSearch = true"
-                    >
-                      Search for source
-                    </v-btn>
+                      v-bind="p.props"
+                      icon="mdi-tune-vertical"
+                      size="small"
+                      color="surface-variant"
+                      aria-label="Comparison image settings"
+                      @click="openSettings"
+                    />
                   </template>
                 </v-tooltip>
-                <template v-else>
-                  <v-autocomplete
-                    v-if="almagalSourceList"
-                    v-model="selectedAlmagalSource"
-                    class="almagal-v-select"
-                    :items="almagalSourceList"
-                    item-title="iid"
-                    item-value="iid"
-                    return-object
-                    hide-details
-                    label="ALMAGAL Source"
-                    :loading="pendingSourceIids.length > 0"
-                    autofocus
-                  />
-                  <v-btn
-                    icon="mdi-close"
-                    size="small"
-                    variant="outlined"
-                    class="blur-button"
-                    @click="showSearch = false"
-                  />
-                </template>
+
+                <v-tooltip
+                  v-if="!showTour"
+                  text="User guide"
+                  location="bottom"
+                >
+                  <template #activator="p">
+                    <v-btn
+                      v-bind="p.props"
+                      icon="mdi-help"
+                      size="small"
+                      color="surface-variant"
+                      aria-label="Open the user guide"
+                      @click="openUserGuide"
+                    />
+                  </template>
+                </v-tooltip>
+                <v-tooltip
+                  v-if="!showTour"
+                  text="About ALMAGAL"
+                  location="bottom"
+                >
+                  <template #activator="p">
+                    <v-btn
+                      v-bind="p.props"
+                      class="almagal-logo-v-btn"
+                      icon
+                      size="small"
+                      color="surface-variant"
+                      aria-label="About ALMAGAL"
+                      @click="openAboutAlmagal"
+                    />
+                  </template>
+                </v-tooltip>
+                <v-tooltip
+                  v-if="!showTour"
+                  text="tour"
+                  location="bottom"
+                >
+                  <template #activator="p">
+                    <v-btn
+                      v-bind="p.props"
+                      icon="mdi-transit-connection-variant"
+                      size="small"
+                      color="surface-variant"
+                      aria-label="Start the tour"
+                      @click="showTour = !showTour"
+                    />
+                  </template>
+                </v-tooltip>
+                <v-tooltip
+                  v-if="startedInScienceMode"
+                  :text="`Switch to ${scienceMode ? 'public' : 'science'} mode`"
+                  location="bottom"
+                >
+                  <template #activator="p">
+                    <v-btn
+                      v-bind="p.props"
+                      :icon="`${scienceMode ? 'mdi-school' : 'mdi-account-group'}`"
+                      size="small"
+                      :color="`${scienceMode ? almagalOrange : 'surface-variant'}`"
+                      :aria-label="`Switch to ${scienceMode ? 'explore' : 'public'} mode`"
+                      @click="scienceMode = !scienceMode"
+                    />
+                  </template>
+                </v-tooltip>
               </div>
             </div>
           </div>
           <div id="right-buttons">
-            <button
-              class="learn-more-card"
-              @click="showAlmaGalInfo = true"
+            <!-- zoom control -->
+            <div
+              v-if="!in3dView && !showTour"
+              class="zoom-control pointer-events-auto"
             >
-              <span class="learn-more-text">
-                Learn More About ALMAGAL
-              </span>
-              <img
-                src="https://battersby-physics.media.uconn.edu/wp-content/uploads/sites/2230/2020/09/ALMAGAL_Logo1_SM.jpg"
-                alt="ALMAGAL logo"
-                class="learn-more-logo"
+              <v-btn
+                class="zoom-increase"
+                density="compact"
+                variant="text"
+                icon="mdi-plus-box"
+                color="surface-variant"
+                aria-label="Zoom in"
+                @click="zoomIn"
+                @keyup.enter="zoomIn"
               />
-            </button>
+              <div class="zoom-slider">
+                <v-slider
+                  :model-value="zoomSliderValue"
+                  :max="0"
+                  :min="1"
+                  :step="-0.001"
+                  thumb-label="hover"
+                  hide-details
+                  density="compact"
+                  direction="vertical"
+                  aria-label="Zoom level"
+                  @update:model-value="onZoomSlider"
+                />
+              </div>
+              <v-btn
+                class="zoom-decrease"
+                density="compact"
+                variant="text"
+                icon="mdi-minus-box"
+                color="surface-variant"
+                aria-label="Zoom out"
+                @click="zoomOut"
+                @keyup.enter="zoomOut"
+              />
+            </div>
+            
             <div class="d-flex flex-row flex-wrap ga-4 pa-2 bunch-o-buttons">
             </div>
-            <div
-              v-if="!in3dView"
-            >
-              <div
-                v-for="layer in almagalWtml.imagesetLayers"
 
-                :key="layer.id.toString()"
-                class="layer-list__item elevation-2 my-2"
+            <!-- TODO: remove this once we have the full 17 level tile-set -->
+            <template v-if="false">
+              <v-btn
+                v-if="showAllInView && !in3dView"
+                class="blur-button"
+                variant="outlined"
+                @click="showAllSourcesInView"
               >
-                <ImagesetItem
-                  style="color: black"
-                  :imageset="store.imagesetStateForLayer(layer.id.toString())!"
-                  instant
-                  :crange="{min: -0.001, max: 1}"
-                  log-stretch-slider
-                  @reset="() => setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS_RESET)"
-                >
-                  <template #name>
-                    Image Settings
-                  </template>
-                </ImagesetItem>
-              </div>
-            </div>
-            <v-btn
-              v-if="showAllInView && !in3dView"
-              class="blur-button"
-              variant="outlined"
-              @click="showAllSourcesInView"
-            >
-              Get {{ sourcesInView.count }} source{{ sourcesInView.count > 1 ? 's' : '' }} in view
-            </v-btn>
-            <div 
-              v-else 
-              class="blur-background  py-2 px-4 rounded"
-              style="max-width: 220px;"
-            >
-              Zoom in to download full images
-            </div>
+                Get {{ sourcesInView.count }} source{{ sourcesInView.count > 1 ? 's' : '' }} in view
+              </v-btn>
+              <!-- <div
+                v-else
+                class="blur-background  py-2 px-4 rounded"
+                style="max-width: 220px;"
+              >
+                Zoom in to download full images
+              </div> -->
+            </template>
+            <!-- 
             <div
-              v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0) && !in3dView"
+              v-if="(almagalSourceLayers.size > 0 || pendingSourceIids.length > 0 || selectedAlmagalSource) && !in3dView && !showTour"
               class="layer-list"
             >
+
               <div
                 v-for="layer in [...almagalSourceLayers.values()]"
                 :key="layer.id.toString()"
@@ -237,21 +309,26 @@
                   no-open
                 />
               </div>
-              <div
+              <DownloadAlmagal
                 v-for="iid in pendingSourceIids"
                 :key="iid"
-                class="layer-list__item"
-              >
-                <div class="pending-source-label">
-                  {{ getAlmagalSourceById(iid)?.aid ?? iid }}
-                </div>
-                <v-progress-linear
-                  indeterminate
-                  color="orange"
-                  height="3"
-                />
-              </div>
+                :iid="iid"
+                pending
+                @download="downloadAlmagalSource"
+                @cancel="cancelAlmagalSourceDownload"
+              />
+
+              <DownloadAlmagal
+                v-if="selectedAlmagalSource
+                  && !pendingSourceIids.includes(selectedAlmagalSource.iid)
+                  && !almagalSourceLayers.has(selectedAlmagalSource.iid)"
+                :iid="selectedAlmagalSource.iid"
+                :pending="false"
+                @download="downloadAlmagalSource"
+                @cancel="cancelAlmagalSourceDownload"
+              />
             </div>
+            -->
           </div>
         </div>
 
@@ -259,43 +336,80 @@
         <!-- This block contains the elements (e.g. the project icons) displayed along the bottom of the screen -->
 
         <div id="bottom-content">
-          <div class="control-bar">
-            <wwt-3d-switch
-              v-model="in3dView"
-              @3d="setup3DView"
-            >
-              <template #default="{ in3d, onClick}">
+          <div class="bottom-main">
+            <!-- Where the floating tour lands (see the Teleport above). Empty
+                 and zero-width for the other two layouts. -->
+            <div id="tour-float-slot"></div>
+            <div class="control-bar">
+              <!-- the tour borrows this spot for its own buttons -->
+              <div v-if="showTour" class="tour-actions">
+                <template v-if="tourStep === 2">
+                  <v-btn
+                    v-bind="tourBtnProps"
+                    :active="activeOrionImageset === ORION.hubble"
+                    :color="activeOrionImageset === ORION.hubble ? almagalOrange : tourBtnProps.color"
+                    @click="showOrionImageset(ORION.hubble)"
+                  >
+                    Hubble (visible)
+                  </v-btn>
+                  <v-btn
+                    v-bind="tourBtnProps"
+                    :active="activeOrionImageset === ORION.spitzer"
+                    :color="activeOrionImageset === ORION.spitzer ? almagalOrange : tourBtnProps.color"
+                    @click="showOrionImageset(ORION.spitzer)"
+                  >
+                    Spitzer (hot dust)
+                  </v-btn>
+                  <v-btn
+                    v-bind="tourBtnProps"
+                    :active="activeOrionImageset === ORION.wise"
+                    :color="activeOrionImageset === ORION.wise ? almagalOrange : tourBtnProps.color"
+                    @click="showOrionImageset(ORION.wise)"
+                  >
+                    WISE (warm dust)
+                  </v-btn>
+                  <v-btn
+                    v-bind="tourBtnProps"
+                    prepend-icon="mdi-target"
+                    @click="goToImageset(orion(), ORION.hubble, { zoom: 3, instant: false })"
+                  >
+                    Recentre
+                  </v-btn>
+                </template>
+                <template v-else-if="tourStep === 4">
+                  <v-btn
+                    v-bind="tourBtnProps"
+                    :active="foregroundImage === 'none'"
+                    :color="foregroundImage === 'none' ? almagalOrange : tourBtnProps.color"
+                    @click="showBackground('none')"
+                  >
+                    Visible light
+                  </v-btn>
+                  <v-btn
+                    v-bind="tourBtnProps"
+                    :active="foregroundImage === 'herschel'"
+                    :color="foregroundImage === 'herschel' ? almagalOrange : tourBtnProps.color"
+                    @click="showBackground('herschel')"
+                  >
+                    Far-infrared
+                  </v-btn>
+                </template>
+              </div>
+              <div v-else class="hovered-source-info">
+                <span v-if="hoveredSource">Currently hovering: {{ hoveredSource.aid }}</span>
+                <span v-else-if="selectedAlmagalSource">Last selected: {{ selectedAlmagalSource.aid }}</span>
+                <span v-else>Currently hovering: none</span>
                 <v-btn
-                  variant="outlined"
-                  class="blur-button"
-                  @click="onClick"
+                  v-if="hoveredSource || selectedAlmagalSource"
+                  style="pointer-events: auto;"
+                  class="ml-2"
+                  density="compact"
+                  icon="mdi-information-slab-circle-outline"
+                  @click="openSourceInfo"
                 >
-                  {{ in3d ? "Switch to 2D" : "Switch to 3D" }}
                 </v-btn>
-              </template>
-            </wwt-3d-switch>
-            <v-select
-              v-if="!in3dView"
-              v-model="foregroundImage"
-              :items="foregroundImageOptions"
-              item-title="label"
-              item-value="value"
-              hide-details
-              density="compact"
-              style="pointer-events: auto; max-width: 220px;"
-              class="blur-button"
-              label="Background survey"
-              variant="outlined"
-              bg-color="#00000062"
-            />
-            <v-btn
-              class="blur-button"
-              variant="outlined"
-              :prepend-icon="spreadsheetVisible ? 'mdi-eye-off' : 'mdi-eye'"
-              @click="spreadsheetVisible = !spreadsheetVisible"
-            >
-              {{ spreadsheetVisible ? 'Hide Catalog' : 'Show Catalog' }}
-            </v-btn>
+              </div>
+            </div>
           </div>
           <div
             id="body-logos"
@@ -320,38 +434,79 @@
     <WebGlTest
       @webgl2-disabled="webglDisabled = true"
     />
-    <component
-      :is="false ? 'v-navigation-drawer' : 'v-bottom-sheet'"
+    <!--
+      NEW: a plain div is a flex sibling of #main-content inside
+      .v-application__wrap, so opening it pushes/shrinks the WWT view rather
+      than covering it. #main-content has `order: 2`, which puts this panel on
+      the left in the row layout, and below the view when the app is small.
+    -->
+    <div
+      v-show="!showSplashScreen"
       id="side-drawer"
-      v-model="showInfoSheet"
-      :class="[false ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
+      :class="[sidePanel ? 'info-side' : 'info-bottom', showInfoSheet ? 'side-drawer-open' : 'side-drawer-closed']"
     >
+      <!-- 
+      The Information sheet now will create tabs based on the content of the sheet
+       -->
       <InformationSheet
         v-model="showInfoSheet"
-        :tab-color="accentColor"
+        v-model:tab="infoSheetTab"
+        tab-color="white"
+        :slider-color="almagalOrange"
+        :accent-color="almagalBlue"
         text-color="#e6e6e6"
-        :tab-title="showAlmaGalInfo ? 'ALMAGAL' : 'Information'"
-        @close="showAlmaGalInfo=false"
+        :bg-color="almagalBlueDarkest"
+        page-color="transparent"
+        :stay-open="forceInfoSheetOpen"
+        show-close-button
+        :align-tabs="'start'"
       >
-        <!-- default slot appears under Information heading -->
-        <div v-if="showAlmaGalInfo">
-          ALMAGAL Survey Informational blurb
-        </div>
-        <div v-else>
+        <!-- each page registers its own tab, in this order -->
+        <InfoPage v-if="infoSheetTab === SOURCE_INFORMATION_TAB" title="ALMAGAL Source" value="source-information">
           <AlmaGalSourceInfoDisplay
             v-if="currentSource && !in3dView"
             :source="currentSource"
           />
-        </div>
+          <p v-else>
+            Hover over or click one of the green markers to see a clump's properties here.
+          </p>
+        </InfoPage>
+        
+        <InfoPage v-if="infoSheetTab === ALMAGAL_TAB" title="ALMAGAL">
+          <almagal-info-page />
+        </InfoPage>
+
+        <!-- The UserGuide itself is an InfoPage
+         so it can be included with wrapping it here.
+         Useful for long componenets that can be easily placed in a different file.
+          -->
+        <UserGuide v-if="infoSheetTab === USER_GUIDE_TAB" />
+
+        <InfoPage v-if="controlsInInfoSheet" title="CONTROLS" value="settings">
+          <ShowHideAutoToggle v-if="!showTour" v-model="displaySpreadsheet" variant="flat" />
+          <ControlPanel
+            :almagal-wtml="almagalWtml"
+            :foreground-image-loaded="foregroundImageLoaded"
+            :comparison-items="comparisonItems"
+            :current-comparison-description="currentComparisonDescription"
+            :comparisons-items-in-view="comparisonsInView"
+            :disable-filters="disabledFilters"
+            hide-disabled
+            :hide-clump-type="showTour"
+            @setup3d="setup3DView"
+            @go-to-comparison="goToComparison"
+            @step-comparison="stepComparison"
+          />
+        </InfoPage>
+        <!--  -->
       </InformationSheet>
-    </component>
+    </div>
   </v-app>
 </template>
 
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ref, reactive, computed, onMounted, watch, shallowRef } from "vue";
-import { useDisplay } from "vuetify";
+import { ref, reactive, computed, nextTick, onMounted, watch, shallowRef } from "vue";
 import { storeToRefs } from "pinia";
 
 /* WWT imports */
@@ -359,25 +514,19 @@ import { GotoRADecZoomParams, engineStore, ImageSetLayerState } from "@wwtelesco
 import {
   BackgroundImageset,
   skyBackgroundImagesets,
-  supportsTouchscreen,
   useWWTKeyboardControls,
   useFullscreen,
 } from "@cosmicds/vue-toolkit";
 import { D2R  } from "@wwtelescope/astro";
 import {
   WWTControl,
-  LayerManager,
-  Place,
-  ImageSetLayer,
-  Imageset,
-  TileCache,
   Coordinates,
   Color,
   SpreadSheetLayer,
 } from "@wwtelescope/engine";
 // scale types: linear, log, power, sqrt, histogramEqualization
-import { ScaleTypes, RAUnits, AltTypes, AltUnits, MarkerScales, PlotTypes } from "@wwtelescope/engine-types";
-import { addCustomColormaps, COLORMAPS, type Colormaps  } from "./wwt-colormaps/colormaps";
+import { RAUnits, AltUnits, MarkerScales } from "@wwtelescope/engine-types";
+import { addCustomColormaps, type Colormaps  } from "./wwt-colormaps/colormaps";
 addCustomColormaps();
 
 /* local components and composables */
@@ -386,26 +535,80 @@ const webglDisabled = ref(false);
 
 
 import SplashScreen from "./components/SplashScreen.vue";
+import SideDrawer from "./components/SideDrawer.vue";
 import InformationSheet from "./components/InformationSheet.vue";
+import ControlPanel from "./components/ControlPanel.vue";
+import InfoPage from "./components/InfoPage.vue";
+import DownloadAlmagal from "./components/DownloadAlmagal.vue";
+import UserGuide from "./components/UserGuide.vue";
 import ImagesetItem from "./components/ImagesetItem.vue";
 import RangeNumberInputs from "./components/RangeNumberInputs.vue";
 import Wwt3dSwitch from "./components/Wwt3dSwitch.vue";
+import TourPlayer from "./tour/TourPlayer.vue";
+import ImagesetOpacity from "./components/imageset_settings/ImagesetOpacity.vue";
+import ImagesetColormap from "./components/imageset_settings/ImagesetColormap.vue";
+import ImagesetStretch from "./components/imageset_settings/ImagesetStretch.vue";
+import AlmagalInfoPage from "./components/AlmagalInfoPage.vue";
+import TwoLevelExpansionPanelTitle from "./components/TwoLevelExpansionPanelTitle.vue";
+import InfoButton from "./components/InfoButton.vue";
+/* Catalog, filters and view flags shared with the tour; see almagal_state.ts */
+import {
+  CLUMP_TYPES,
+  FITS_LAYER_SETTINGS,  
+  almagalColumnRanges,
+  almagalSourceLayers,
+  cancelAlmagalSourceDownload,
+  downloadAlmagalSource,
+  almagalSourceList,
+  clumpTypeCheckColor,
+  clumpTypeColor,
+  clumpTypeFilter,
+  filterFields,
+  filterFunction,
+  filterSpec,
+  foregroundImage,
+  foregroundOpacity,
+  infoSheetTab,
+  pendingSourceIids,
+  selectedAlmagalSource,
+  showFilters,
+  showInfoSheet,
+  spreadsheetVisible,
+  resetFitsImagesetSettings,
+  displaySpreadsheet,
+  ALMAGAL_TAB,
+  SETTINGS_TAB,
+  SOURCE_INFORMATION_TAB,
+  USER_GUIDE_TAB,
+  comparisonIndex,
+  comparisonOpacity,
+  comparisonsVisible,
+  showAllComparisons,
+  hoveredSource,
+  type FilterField,
+  type InfoSheetTab,
+} from "./almagal_state";
 
+import {
+  goToSource,
+  ORION,
+  orion,
+  showBackground,
+} from "@/tour/tourActions";
 
+import { useAppLayout } from "./composables/useAppLayout";
 import { useWtmlLoader } from "./composables/useWtmlLoader";
 import { useHoverableSpreadsheetLayer } from "./composables/useHoverableSpreadsheetLayer";
 import { useSourcesInView } from "./composables/useSourcesInView";
-import { setFitsLayerSettings } from "./wwt-helpers";
+import { goToImageset, moveToImageset, setFitsLayerSettings, showImagesets, waitForLayerMaps } from "./wwt-helpers";
 
 import {
-  almagalSources,
-  getAlmagalSourceById,
-  getAlmagalSourceUrl,
-  formatSigFigs,
   type ALMAGalSource
 } from "./almagal_utils";
 import AlmaGalSourceInfoDisplay from "./components/AlmaGalSourceInfoDisplay.vue";
+import ShowHideAutoToggle from "./components/ShowHideAutoToggle.vue";
 import { useSpreadsheetLayer } from "./composables/useSpreadsheetLayer";
+import { drawPointList } from "./wwt-hacks";
 
 type CameraParams = Omit<GotoRADecZoomParams, "instant">;
 export interface WwtPlaygroundProps {
@@ -419,6 +622,11 @@ const kiosk = searchParams.get("kiosk")?.toLowerCase() === "true";
 if (kiosk) {
   document.body.classList.add("kiosk");
 }
+const scienceMode = ref(searchParams.get("science")?.toLowerCase() === "true");
+if (scienceMode.value) {
+  document.body.classList.add("science-mode");
+}
+const startedInScienceMode = scienceMode.value;
 
 const skipSplash = searchParams.get("splash")?.toLowerCase() === "false";
 console.log("kiosk mode?", kiosk);
@@ -430,12 +638,14 @@ const {
 
 useWWTKeyboardControls(store);
 
-/* Properties related to device/screen characteristics */
-const touchscreen = supportsTouchscreen();
-const  { smAndDown, width: viewportWidth, height: viewportHeight } = useDisplay();
-const isVertical = computed(() => viewportHeight.value > viewportWidth.value);
-const smallSize = computed(() => smAndDown.value);
-const isLandscape = computed(() => viewportWidth.value > viewportHeight.value * 1.25);
+const {
+  viewportWidth,
+  viewportHeight,
+  smallSize,
+  isLandscape,
+  sidePanel,
+  isMobile,
+} = useAppLayout();
 
 // default to the galactic center
 const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
@@ -451,48 +661,160 @@ const props = withDefaults(defineProps<WwtPlaygroundProps>(), {
 });
 
 const backgroundImagesets = reactive<BackgroundImageset[]>([]);
-const showInfoSheet = ref(false);
-const showAlmaGalInfo = ref(false);
-watch(showAlmaGalInfo, (v) => { if (v) showInfoSheet.value = true;});
-const showSearch = ref(false);
-const showSplashScreen = ref(false);
-const layersLoaded = ref(false);
-const positionSet = ref(false);
-const accentColor = ref("#306C9F");
-const accentColor2 = ref("#FC9954");
+const forceInfoSheetOpen = ref(true);
 
-const showFilters = ref(false);
 
-const CLUMP_TYPES = ["isolated", "empty", "simple", "rich", "unknown"];
-/* Get the source list first */
-import almagalClumps from "./assets/almagal_clump_props_WWT.json";
-// merge almagalClumps "type" and an "included field" based on iid/INTERNAL_ID
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function mergedCatalog(sources: ALMAGalSource[], clumps: any[]): ( ALMAGalSource & { type: string; included: boolean })[] {
-  const clumpMap = new Map(clumps.map(clump => [clump.INTERNAL_ID, clump]));
-  return sources.map(source => {
-    const clump = clumpMap.get(source.iid);
-    return {
-      ...source,
-      type: clump ? clump.TYPE : "unknown",
-      included: !!clump,
-      color: clump ? "#32CD32" : "#999999", // color sources with clumps green, others gray
-    };
-  });
+const infoGroupTabs: InfoSheetTab[] = [USER_GUIDE_TAB, ALMAGAL_TAB];
+const inInfoGroup = computed(() => infoGroupTabs.includes(infoSheetTab.value));
+
+// TODO: currently if the tab sheet is closed, we need to make sure we do two things
+// this seems bad
+function openSettings() {
+  infoSheetTab.value = SETTINGS_TAB;
+  showInfoSheet.value = true;
+}
+function openUserGuide() {
+  infoSheetTab.value = USER_GUIDE_TAB;
+  showInfoSheet.value = true;
+}
+function openAboutAlmagal() {
+  infoSheetTab.value = ALMAGAL_TAB;
+  showInfoSheet.value = true;
+}
+function openSourceInfo() {
+  if (showInfoSheet.value && infoSheetTab.value === SOURCE_INFORMATION_TAB) {
+    showInfoSheet.value = false;
+    return;
+  }
+  infoSheetTab.value = SOURCE_INFORMATION_TAB;
+  showInfoSheet.value = true;
 }
 
-const almagalSourceList = shallowRef(mergedCatalog(almagalSources, almagalClumps));
-const hoveredSource = ref<ALMAGalSource | null>(null);
+
+const showTour = ref(false);
+
+// like why roman, we will handle starting the tour/explore modes from a function
+// in case we need to do more work
+function startTour() {
+  showTour.value = true;
+}
+function startExploring() {
+  showTour.value = false;
+}
+const tourDrawerLayout = computed<"bottom" | "push" | "float">(() => {
+  if (!sidePanel.value) return "bottom";
+  // set to iewportHeight.value >= 700 ? "float" : "push"; to have the tour panel float
+  return viewportHeight.value >= 700 ? "push" : "push";
+});
+
+const tourDrawerWidth = computed(() => tourDrawerLayout.value === "push" ? "34%" : "50%");
+
+const tourStep = ref(1);
+
+// which Orion imageset the canvas buttons show as selected; steps 1 and 2
+// both open on Hubble (tourActions.ts, setupTourStep)
+const activeOrionImageset = ref(ORION.hubble);
+watch(tourStep, (n) => {
+  if (n === 1 || n === 2) activeOrionImageset.value = ORION.hubble;
+});
+function showOrionImageset(index: number) {
+  showImagesets(orion(), index);
+  activeOrionImageset.value = index;
+}
+
+// shared look for the tour's on WWT buttons. can also add classes here.
+const tourBtnProps = { color: "surface-variant" };
+
+// the steps that discuss the filters
+const CONTROL_PANEL_STEPS = [6, 7, 8];
+const tourWantsControls = computed(() =>
+  showTour.value && CONTROL_PANEL_STEPS.includes(tourStep.value));
+
+// step 6 (TourStep3b) only want L,M, L/M
+const TOUR_STEP_6_HIDDEN_FILTERS: FilterField[] = ["tdust", "dist_ag"];
+const SCIENCE_MODE_ONLY_FILTERS: FilterField[] = ["tbol"];
+const disabledFilters = computed<FilterField[]>(() => {
+  const disabled: FilterField[] = [];
+  if (!scienceMode.value) {
+    disabled.push(...SCIENCE_MODE_ONLY_FILTERS);
+  }
+  if (tourStep.value === 6) {
+    disabled.push(...TOUR_STEP_6_HIDDEN_FILTERS);
+  }
+  return disabled;
+});
+
+
+
+/* 
+We want the controls to share the space with the tour, everywhere except
+on mobile and when the tour is floating. 
+*/
+const controlsInTourSheet = computed(() => {
+  if (isMobile.value || !tourWantsControls.value) return false;
+  // floats over the view, so it has no room to give -- the info sheet takes it
+  if (tourDrawerLayout.value === "float") return false;
+  // full width along the bottom: side by side, if both fit
+  if (tourDrawerLayout.value === "bottom") {
+    return viewportWidth.value >= 800; // only on wide screens will we split the bottom panel
+  }
+  // 'push': a column of its own to split
+  return true;
+});
+
+const controlsInInfoSheet = computed(() => {
+  if (isMobile.value) return false;
+  if (showTour.value) return tourWantsControls.value && tourDrawerLayout.value === "float";
+  return infoSheetTab.value === SETTINGS_TAB;
+});
+
+// while the tour is up, the sheet is open exactly when the panel lives in it
+watch([controlsInInfoSheet, tourStep], ([inSheet]) => {
+  if (!showTour.value) return;
+  if (inSheet) infoSheetTab.value = SETTINGS_TAB;
+  showInfoSheet.value = inSheet;
+});
+
+
+const showSearch = ref(false);
+// match on aid, iid or orig_id -- whichever the user happens to have on hand
+function filterAlmagalSource(_title: string, query: string, item?: { raw: ALMAGalSource }) {
+  const q = query.trim().toLowerCase();
+  if (!q || !item) return true;
+  const source = item.raw;
+  return [source.iid, source.aid, source.orig_id].some(field => field.toLowerCase().includes(q));
+}
+
+function onSourceSearchSelect(source: ALMAGalSource | null) {
+  if (source && !in3dView.value) {
+    store.gotoRADecZoom({
+      raRad: source.ra * D2R,
+      decRad: source.dec * D2R,
+      zoomDeg: 0.4, // just go without zooming
+      rollRad: 0,
+      instant: false,
+    });
+  }
+}
+const queryShowSplash = searchParams.get("splash")?.toLowerCase() !== 'false';
+const showSplashScreen = ref(queryShowSplash);
+const layersLoaded = ref(false);
+const positionSet = ref(false);
+const almagalBlue = ref("#306C9F");
+const almagalBlueDarker = ref("#002f5c"); 
+const almagalOrange = ref("#FC9954");
+const almagalOrangeDarker = ref("##c05000");
+const almagalBrightBlue = ref("#4a8be0");
+const almagalPeriwinkle = ref("#a4bcff");
+const almagalSmoke = ref("#E8EFF7");
+const almagalSlate = ref("#939da8");
+const almagalBlueDarkest = ref("#0C1723");
 const MAX_ITEMS_TO_SHOW = 4;
 const sourcesInView= useSourcesInView(almagalSourceList.value);
 const showAllInView = computed(() => sourcesInView.count > 0 && sourcesInView.count <= MAX_ITEMS_TO_SHOW);
 
 function showAllSourcesInView() {
-  sourcesInView.sourcesInView.forEach(source => {
-    loadAlmaGalFitsSource(source.iid).then(layer => {
-      setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
-    });
-  });
+  sourcesInView.sourcesInView.forEach(source => downloadAlmagalSource(source.iid));
 }
 
 // { onPointerMove, onPointerClick, createLayer: setupSpreadsheet, setFilter, applyFilter, show: showSpreadsheet, hide: hideSpreadsheet, setVisible: setSpreadsheetVisible }
@@ -502,98 +824,201 @@ const almagalSpreadsheetLayer = useHoverableSpreadsheetLayer(
     name: "ALMAGAL Sources",
     color: "#32CD32",
     markerSize: 7,
-    markerType: "point",
+    markerType: "gaussian",
     distanceColumn: "dist_ag",
     raUnit: RAUnits.degrees,
     emitNull: true,
-    onHover: (row, index) => { 
+    onHover: (row, index) => {
       if (spreadsheetVisible.value) {
-        hoveredSource.value = row as ALMAGalSource | null; 
+        hoveredSource.value = row as ALMAGalSource | null;
       }
     },
     onClick: (row) => {
       if (spreadsheetVisible.value) {
         selectedAlmagalSource.value = row as ALMAGalSource;
+        if (row && !in3dView.value) {
+          store.gotoRADecZoom({
+            raRad: row.ra * D2R,
+            decRad: row.dec * D2R,
+            zoomDeg: store.zoomDeg, // just go without zooming
+            rollRad: 0,
+            instant: false,
+          });
+        }
+      }
+    },
+    onDoubleClick: (row) => {
+      if (spreadsheetVisible.value) {
+        selectedAlmagalSource.value = row as ALMAGalSource;
+        if (row && !in3dView.value) {
+          store.gotoRADecZoom({
+            raRad: row.ra * D2R,
+            decRad: row.dec * D2R,
+            zoomDeg: 0.1,
+            rollRad: 0,
+            instant: false,
+          });
+        }
       }
     },
   }
 );
-const spreadsheetVisible = ref(true);
 watch(spreadsheetVisible, (visible) => {
   almagalSpreadsheetLayer.setVisible(visible);
 });
 
-watch(zoomDeg, (zoom: number) => {
-  spreadsheetVisible.value = zoom > 0.5;
+const tooCloseForSpreadsheet = computed(() => zoomDeg.value < 0.5);
+
+watch(tooCloseForSpreadsheet, (tooClose: boolean) => {
+  if (displaySpreadsheet.value !== null) { return; }
+  spreadsheetVisible.value = !tooClose;
 });
 
-
-function moveToImageset(layer: ImageSetLayer, instant = true) {
-  const imageset = layer.get_imageSet();
-  // const roll = imageset.get_rotation() * D2R;
-
-  // @ts-expect-error _guessZoomSetting is internal; gives projection-aware zoom
-  const zoomDeg = imageset._guessZoomSetting(Number.POSITIVE_INFINITY);
-
-  return store.gotoRADecZoom({
-    raRad: imageset.get_centerX() * D2R,
-    decRad: imageset.get_centerY() * D2R,
-    zoomDeg,
-    rollRad: store.rollRad,
-    instant,
-  });
-}
+watch(displaySpreadsheet, (display) => {
+  spreadsheetVisible.value = display ?? !tooCloseForSpreadsheet.value;
+});
 
 /* Load WTMLS for different background layers.
    Don't forget to add them to `foregroundImageOptions` and the `foregroundImage` watcher!
 */
-// In principle we could use autoload: true. But it is useful to try to load things in order
-// newer GLIMPSE 360
 const glimpse = useWtmlLoader('./GLIMPSE_360.wtml', {autoload: false});
 
-// Start this disabled. Use herschelPacs.show() to show it. It has a black layer which
+// Start this disabled. Use herschelPacs.show() to show it. 
 const herschel = useWtmlLoader('./herschel_spire_rgb.wtml', {autoload: false, onLoad: (out) => {
   out.layer?.set_enabled(false);
 }});
 
-const decaps = useWtmlLoader('./decaps_dr1.wtml', {autoload: false, onLoad: (out) => {
-  out.layer?.set_enabled(false);
-}});
-
-const foregroundImage = ref<'glimpse' | 'herschel' | 'decaps'>('glimpse');
-const foregroundImageOptions = [
-  { label: 'GLIMPSE 360', value: 'glimpse' },
-  { label: 'Herschel SPIRE (color)', value: 'herschel' },
-  { label: 'DECAPS DR1', value: 'decaps' },
-];
-watch(foregroundImage, (val) => {
-  if (val === 'glimpse') { glimpse.show(); herschel.hide(); decaps.hide(); }
-  else if (val === 'herschel') { herschel.show(); glimpse.hide(); decaps.hide(); }
-  else if (val === 'decaps') { decaps.show(); glimpse.hide(); herschel.hide(); }
-  else { glimpse.show(); herschel.hide(); decaps.hide();  }
+const foregroundImageLoaded = computed(() => {
+  if (foregroundImage.value === 'glimpse') {
+    return glimpse.loaded.value;
+  } else if (foregroundImage.value === 'herschel') {
+    return herschel.loaded.value;
+  } else {
+    return true; // "none" is always loaded
+  }
 });
 
-/** settings that will be applied to each fits layer */
-const FITS_LAYER_SETTINGS = {
-  cmap: 'rdbu' as Colormaps,
-  opacity: 1.0,
-  stretch: {
-    stretch: ScaleTypes.log,
-    vmin: 0,
-    vmax: 0.015,
-  }
-};
 
-const FITS_LAYER_SETTINGS_RESET = {
-  cmap: 'rdbu' as Colormaps,
-  opacity: 1.0,
-  stretch: {
-    stretch: ScaleTypes.log,
-    vmin: 0,
-    vmax: 0.015,
-  }
-} as const;
+// const comparisons = reactive(useWtmlLoader('./almagal_sources_wwt_matches.wtml', {
+const comparisons = reactive(useWtmlLoader('./almagal_tour_images.wtml', {
+  autoload: false,
+  onLoad: (out) => out.layer?.set_enabled(false),
+}));
 
+/* Stepping through the comparison images.
+   Indexed rather than keyed by name: the WWT catalogs reuse names heavily (this
+   collection has eleven repeated names, five of them "Eta Carinae"), so a name
+   is not enough to identify a place. -1 means "nothing selected yet".
+*/
+const comparisonItems = computed(() => comparisons.places.map((place, index) => ({
+  // Number them so the repeated names stay tellable apart.
+  label: `${index + 1}. ${place.get_name()}`,
+  value: index,
+})));
+const currentComparisonDescription = computed(() => {
+  const place = comparisons.places[comparisonIndex.value];
+  if (!place) return null;
+  // Most entries only carry a description on the imageset (or none at all, just credits).
+  const imageset = place.get_studyImageset() ?? place.get_backgroundImageset();
+  return place.htmlDescription || imageset?.get_creditsText() || null;
+});
+
+const comparisionLocations = computed(() => comparisons.places.map(place => {
+  const imageset = place.get_studyImageset() ?? place.get_backgroundImageset();
+  if (!imageset) return null;
+  return {
+    ra: imageset.get_centerX(), // deg
+    dec: imageset.get_centerY(),  // deg
+  };
+}));
+
+import { refThrottled} from "@vueuse/core";
+function pointInView(raDeg, decDeg) {
+  const ctl = WWTControl.singleton;
+  const rc = ctl.renderContext;
+  const pt = ctl.getScreenPointForCoordinates(raDeg / 15, decDeg);
+  return (
+    pt.x >= 0 && pt.x < rc.width 
+    && pt.y >= 0 && pt.y < rc.height
+  );
+}
+// debounced ref to not recalculate on every move
+const wwtView = refThrottled(computed(() => [store.raRad, store.decRad, store.zoomDeg, store.rollRad]), 100);
+const comparisonsInView = computed(() => {
+  if (!wwtView.value) return []; // we just need the computed to respond to the view change
+  return comparisionLocations.value.map((loc, index) => {
+    if (!loc) return {index: index, inView: false};
+    return {index: index, inView: pointInView(loc.ra, loc.dec)};
+  });
+});
+
+/** Enable the comparison layers that should be showing. */
+function updateComparisonLayers() {
+  comparisons.imagesetLayers.forEach((layer, i) => {
+    const enabled = comparisonsVisible.value &&
+      (showAllComparisons.value || i === comparisonIndex.value);
+    layer.set_enabled(enabled);
+    if (enabled) {
+      layer.set_opacity(comparisonOpacity.value);
+    }
+  });
+}
+
+watch([comparisonsVisible, comparisonOpacity, showAllComparisons], updateComparisonLayers);
+
+function _toggleShowAllComparisons() {
+  showAllComparisons.value = !showAllComparisons.value;
+  if (showAllComparisons.value) {
+    // no point stacking them all up if they are see-through
+    comparisonOpacity.value = 1;
+  }
+  updateComparisonLayers();
+}
+
+function goToComparison(index: number | null) {
+  if (index === null) {
+    comparisonIndex.value = -1;
+    comparisonsVisible.value = false;
+    updateComparisonLayers();
+    return;
+  }
+  const layer = comparisons.imagesetLayers[index];
+  if (!layer) return;
+  comparisonIndex.value = index;
+  // Showing the image is implied by asking to fly to it, and asking for one
+  // image means one image.
+  comparisonsVisible.value = true;
+  showAllComparisons.value = false;
+  updateComparisonLayers();
+  moveToImageset(layer, store, true);
+}
+
+function stepComparison(delta: number) {
+  const count = comparisons.imagesetLayers.length;
+  if (count === 0) return;
+  // With nothing selected, Next should land on the first image and Back on the
+  // last, so start just outside whichever end we are stepping away from.
+  const from = comparisonIndex.value >= 0 ? comparisonIndex.value : (delta > 0 ? -1 : 0);
+  goToComparison((from + delta + count) % count);
+}
+
+
+watch(foregroundImage, (val) => {
+  // "none" falls through to hiding both, which leaves WWT's Gaia DR2 background
+  if (val === 'glimpse') { glimpse.show(); herschel.hide(); }
+  else if (val === 'herschel') { herschel.show(); glimpse.hide(); }
+  else { glimpse.hide(); herschel.hide(); }
+  applyForegroundOpacity();
+});
+
+/* The loaders' show()/hide() work on `enabled`, so opacity is a separate knob.
+   Applied to both collections: whichever is enabled is the one it shows on. */
+function applyForegroundOpacity() {
+  [glimpse, herschel].forEach(wtml => {
+    wtml.imagesetLayers.value.forEach(layer => layer.set_opacity(foregroundOpacity.value));
+  });
+}
+watch(foregroundOpacity, applyForegroundOpacity);
 
 // load either the individual image "./index.wtml" or the tiled version './gal_plane_toast/index_rel.wtml'
 const url = './almagal.wtml';
@@ -660,7 +1085,6 @@ function createSunLayer() {
     if (!layer) {
       throw new Error("Failed to create sun layer");
     }
-    layer.set_plotType(PlotTypes.gaussian);
     layer.set_opacity(1);
     layer.set_markerScale(MarkerScales.screen);
     store.applyTableLayerSettings({
@@ -673,6 +1097,9 @@ function createSunLayer() {
     return layer;
   });
 }
+
+import { useScaledZoom } from './composables/useScaledZoom';
+const { zoomSliderValue, onZoomSlider, zoomIn, zoomOut } = useScaledZoom();
 
 const sunLayer = ref<SpreadSheetLayer | null>(null);
 onMounted(() => {
@@ -687,26 +1114,41 @@ onMounted(() => {
     WWTControl.singleton.renderOneFrame = function() {};
     return;
   }
+  
 
 
   store.waitForReady().then(async () => {
+    await waitForLayerMaps();
+    console.log("WWT engine ready, setting up initial view");
+    console.log(WWTControl.singleton);
+
     // keeping it in RA/Dec for convenience. Easier to check if point are in view and to go to a matching 3D view
     store.applySetting(["galacticMode", true]); /* moves might be wierd, but convenient coord sys */
     store.applySetting(["solarSystemCosmos", false]);
     skyBackgroundImagesets.forEach(iset => backgroundImagesets.push(iset));
+    console.log("WWT engine ready, background imagesets:", backgroundImagesets);
     // get the Hipparcos catalog to start loading
-    store.setBackgroundImageByName("Solar System");
-    await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for Hipparcos to load so later swtich is quicker
-    store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
+    /* Deliberately not awaited: the pause below only exists to give Hipparcos a
+       head start, and nothing after it depends on the background imagery being
+       settled. Awaiting it would put 350ms of dead time in front of the layer
+       loading that the splash screen's buttons are waiting on. */
+    (async () => {
+      store.setBackgroundImageByName("Solar System");
+      await new Promise(resolve => setTimeout(resolve, 350)); // 250 - 500ms is about long enough to wait for Hipparcos to load so later swtich is quicker
+      store.setBackgroundImageByName('GAIA DR2'); // look at the Imagery list on the WWT page to see a list of background names
+    })();
     WWTControl.singleton.setSolarSystemMinZoom(15000 * 9 / 4);  // min zoom for showing the solar system.
 
     // wait for spreadhseet to load
     await almagalSpreadsheetLayer.createLayer().then(layer => {
       const colorCol = almagalSpreadsheetLayer.getColumnIndex("color");
+      layer?.set_scaleFactor(20);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore Circle hacking
+      layer.prepVertexBuffer(WWTControl.singleton.renderContext, layer.get_opacity()); layer.pointList.draw = drawPointList.bind(layer.pointList);
       if (layer && colorCol) {
         layer.set_colorMapColumn(colorCol);
       }
-        
     });
     almagalSpreadsheetLayer.applyFilter();
     sourcesInView.setup();
@@ -724,10 +1166,9 @@ onMounted(() => {
       herschel.hide();
     });
 
-    decaps.load();
-    await decaps.ready.then(() => {
-      decaps.hide();
-    });
+    // comparison images go above the background surveys but below ALMAGAL
+    comparisons.load();
+    await comparisons.ready;
 
     // wait for almagal toasted wtml to load, so that it is on top
     almagalWtml.load();
@@ -760,11 +1201,19 @@ function view3dFromGlonGlatDistkpc(glon: number, glat: number, dist_kpc: number)
   });
 }
 
-/* Tracks whether the WWT view is currently in 3D mode, kept in sync via wwt-3d-switch's v-model */
-const in3dView = ref(false);
+/* singleton wwt 3d controller */
+import { useWwt3dControl } from "./composables/wwt3dControl";
+const { in3D: in3dView, switchTo2D } = useWwt3dControl(store);
 
 watch(in3dView, (in3d) => {
   sunLayer.value?.set_enabled(in3d);
+});
+
+/* The tour's steps all set up 2D sky views, so opening it has to leave 3D. */
+watch(showTour, (open) => {
+  if (open && in3dView.value) {
+    switchTo2D();
+  }
 });
 
 let first3dswap = true;
@@ -773,13 +1222,18 @@ function setup3DView() {
     return;
   }
   // the swtich has already set the initial view and mode, now we want to zoom out and above the galactic plane
+  const initialTo = {
+    "raRad": -6.2204406298475154,
+    "decRad": 0.09487913429030448
+  };
   store.gotoRADecZoom({
-    raRad: -(store.raRad + Math.PI / 2),
-    decRad: -(store.decRad + 23.5 * D2R), // tilt up by 23.5 degrees to get above the galactic plane
+    // raRad: -(store.raRad + Math.PI / 2),
+    // decRad: -(store.decRad + 23.5 * D2R), // tilt up by 23.5 degrees to get above the galactic plane
+    ...initialTo,
     zoomDeg: 8 * 1000 * 206265,
     rollRad: 62.9 * Math.PI / 180,
     instant: false,
-    duration: 4,
+    duration: 3,
   }).then(() => {
     const [glon, glat] = Coordinates.j2000toGalactic(store.raRad / D2R, store.decRad / D2R);
     console.log("Current glon, glat:", glon, glat);
@@ -798,25 +1252,7 @@ function setup3DView() {
 }
 
 
-interface AlmaGalSourceFilterRange { max: number | null; min: number | null }
-type AlmaGalSourceFilterSpec = Map<keyof ALMAGalSource, AlmaGalSourceFilterRange>;
-
-// Numeric source fields exposed as range-filter sliders. Edit this list to add or remove sliders.
-const filterFields = ["mass", "lum", "lm", "tdust", "dist_ag", "tbol"] as const;
-const clumpTypeFilter = ref<string[]>(CLUMP_TYPES); // separate filter for clump type, since it is categorical not numeric
-
-// Human-readable labels for the filter sliders above.
-const filterFieldLabels: Record<typeof filterFields[number], string> = {
-  mass: "Mass (M<sub>⊙</sub>)",
-  lum: "Luminosity (L<sub>⊙</sub>)",
-  lm: "Lum. / Mass (L<sub>⊙</sub>/M<sub>⊙</sub>)",
-  tdust: "Dust Temp. (K)",
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  "dist_ag": "Distance (pc)",
-  tbol: "Bol. Temp. (K)",
-};
-
-const  filterFieldUnits: Record<typeof filterFields[number], string> = {
+const  _filterFieldUnits: Record<FilterField, string> = {
   mass: "M<sub>⊙</sub>",
   lum: "L<sub>⊙</sub>",
   lm: "L<sub>⊙</sub>/M<sub>⊙</sub>",
@@ -826,41 +1262,6 @@ const  filterFieldUnits: Record<typeof filterFields[number], string> = {
   tbol: "K",
 };
 
-// Full [min, max] of each filterable column, measured from the loaded sources.
-const almagalColumnRanges = filterFields.reduce((ranges, field) => {
-  let min = Infinity;
-  let max = -Infinity;
-  for (const source of almagalSourceList.value) {
-    const value = source[field];
-    if (typeof value !== "number" || Number.isNaN(value)) continue;
-    if (value === -999) continue; // -999 is missing value
-    if (value < min) min = value;
-    if (value > max) max = value;
-  }
-  ranges[field] = { min, max };
-  return ranges;
-}, {} as Record<typeof filterFields[number], { min: number; max: number }>);
-
-// Seed each filter at its column's full range, so nothing is filtered out until a slider is moved.
-const initialFilterSpec = new Map(
-  filterFields.map(field => [field, { max: almagalColumnRanges[field].max, min: almagalColumnRanges[field].min }])
-);
-const filterSpec = ref<AlmaGalSourceFilterSpec>(initialFilterSpec);
-// the use of a ref here means the function will always reflect the latest filter spec.
-function filterFunction(row: Record<string, string>) {
-  for (const [column, range] of filterSpec.value) {
-    const value = +row[column];
-    if (Number.isNaN(value)) return false; // empty value or something else -> false
-    if (range.min != null && value < range.min) return false;
-    if (range.max != null && value > range.max) return false;
-  }
-
-  const ctype = row["type"];
-  if (!clumpTypeFilter.value.includes(ctype)) return false;
-
-  return true;
-}
-
 // the filter function closes over a reactive, so this function changes as the filter spec changes.
 almagalSpreadsheetLayer.setFilter(filterFunction);
 
@@ -869,61 +1270,19 @@ watch(filterSpec, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 watch(clumpTypeFilter, () => almagalSpreadsheetLayer.applyFilter(), { deep: true });
 
 
-const selectedAlmagalSource = ref<ALMAGalSource | null>(null);
-const almagalSourceLayers = ref<Map<ALMAGalSource["iid"], ImageSetLayer>>(new Map());
-const pendingSourceIids = ref<ALMAGalSource["iid"][]>([]);
-
-/**
- * Create a fitsimage layer from an ALMAGal source id
- * The create layer get's added to almagalSourceLayers
- */
-function loadAlmaGalFitsSource(iid: ALMAGalSource["iid"]): Promise<ImageSetLayer> {
-  // make sure it has not already been loaded.
-  if (almagalSourceLayers.value.has(iid)) {
-    return Promise.resolve(almagalSourceLayers.value.get(iid)!);
-  }
-
-  // otherwise get it's url and load it as a new "fits" ImageSetLayer
-  const source = getAlmagalSourceById(iid);
-  if (!source) {
-    throw new Error(`Source with id ${iid} not found`);
-  }
-
-  // keep track of what is being loaded
-  if (!pendingSourceIids.value.includes(iid)) {
-    pendingSourceIids.value.push(iid);
-  }
-  const url = getAlmagalSourceUrl(source);
-  console.log("Loading ALMAGAL source from url:", source, url);
-  console.warn("The CORS is ok. It takes a moment to fetch via WWT Proxy");
-  return store.addImageSetLayer({
-    url: url,
-    mode: "fits",
-    name: source.aid,
-    goto: false,
-  }).then(layer => {
-    almagalSourceLayers.value.set(iid, layer);
-    const idx = pendingSourceIids.value.indexOf(iid);
-    if (idx !== -1) pendingSourceIids.value.splice(idx, 1);
-    return layer;
-  });
-}
-
-watch(selectedAlmagalSource, (newSource, oldSource) => {
-  if (newSource && !in3dView.value) {
-    store.gotoRADecZoom({
-      raRad: newSource.ra * D2R,
-      decRad: newSource.dec * D2R,
-      zoomDeg: store.zoomDeg, // just go without zooming
-      rollRad: 0,
-      instant: false,
-    });
-    loadAlmaGalFitsSource(newSource.iid).then(layer => {
-      setFitsLayerSettings(layer.id.toString(), store, FITS_LAYER_SETTINGS);
-    });
-  }
-  if (newSource && showAlmaGalInfo.value && showInfoSheet) {
-    showAlmaGalInfo.value = false;
+watch(selectedAlmagalSource, (newSource) => {
+  // if (newSource && !in3dView.value) {
+  //   store.gotoRADecZoom({
+  //     raRad: newSource.ra * D2R,
+  //     decRad: newSource.dec * D2R,
+  //     zoomDeg: store.zoomDeg, // just go without zooming
+  //     rollRad: 0,
+  //     instant: false,
+  //   });
+  // }
+  // picking a clump means the ALMAGAL blurb is not what is wanted
+  if (newSource && infoSheetTab.value === ALMAGAL_TAB) {
+    infoSheetTab.value = SOURCE_INFORMATION_TAB;
   }
 });
 
@@ -940,8 +1299,15 @@ const currentSource = computed(() => {
 /* This lets us inject component data into element CSS */
 const cssVars = computed(() => {
   return {
-    "--accent-color": accentColor.value,
-    "--accent-color-2": accentColor2.value
+    "--almagal-blue": almagalBlue.value,
+    "--almagal-orange": almagalOrange.value,
+    "--almagal-blue-darker": almagalBlueDarker.value,
+    "--almagal-orange-darker": almagalOrangeDarker.value,
+    "--almagal-bright-blue": almagalBrightBlue.value,
+    "--almagal-periwinkle": almagalPeriwinkle.value,
+    "--almagal-smoke": almagalSmoke.value,
+    "--almagal-slate": almagalSlate.value,
+    "--almagal-blue-darkest": almagalBlueDarkest.value,
   };
 });
 
@@ -1004,6 +1370,7 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
 #app {
   // Vuetify's root app element fills the viewport.
   overflow: hidden;
+  overscroll-behavior: none;
   // Vuetify's root app element is a column flex layout
   // lets #main-content take the remaining height
   // after `#bottom-drawer` takes its own height.
@@ -1015,16 +1382,19 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
 // so we need to apply height definitions here
 // for a display with a side-panel this is generally
 // what we want
-.v-application__wrap {
-  flex-direction: row;
+// Scoped under #app so these beat Vuetify's own `.v-application__wrap` rule,
+// which sets `flex-direction: column`. A bare `.v-application__wrap` selector
+// only ties it on specificity and loses on source order, which left the panel
+// stacked on top of the view at 34% width.
+// Default is the column/bottom-panel layout; a side panel opts in.
+#app > .v-application__wrap {
+  flex-direction: column;
   max-height: 100svh;  // force the application to be 100%
 }
 
-#app.app-is-small {
-  .v-application__wrap {
-    flex-direction: column;  // add for the side panel
-    max-height: 100svh;  // force the application to be 100%
-  }
+#app.app-side-panel > .v-application__wrap {
+  flex-direction: row;
+  max-height: 100svh;  // force the application to be 100%
 }
 
 
@@ -1033,16 +1403,41 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
   position: relative;
   display: block; // don't need to set width. block elements stretch to fill their container by default.
   // Its height is determined by the flex layout in `#app`.
-  flex: 1 0 auto;
+  // Shrinkable with no min-size floor, so an open drawer takes its share
+  // instead of pushing the view off the screen (SideDrawer.vue, note 3).
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
-  order: 2;
-  transition: height 0.1s ease-in-out;
-}
-
-#app.app-is-small #main-content {
+  // default (column layout): view on top, panel below it
   order: 1;
+  // transition: height 0.1s ease-in-out;
 }
 
+// side-panel layout: #side-drawer follows #main-content in the DOM, so flipping
+// the order is what puts the panel on the left of the view
+#app.app-side-panel {
+  #main-content {
+    order: 2;
+  }
+
+  #side-drawer {
+    order: 1;
+  }
+}
+
+/* OLD: overlay version. Taken out of flow with `position: absolute`, so it
+   slid over #main-content and the WWT view never changed size.
+<v-select
+                      v-model="foregroundImage"
+                      class="almagal-v-select"
+                      :items="foregroundImageOptions"
+                      item-title="label"
+                      item-value="value"
+                      hide-details
+                      autofocus
+                      label="Background survey"
+                    />
 #side-drawer {
   position: absolute;
   bottom: 0;
@@ -1060,8 +1455,6 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
   }
 }
 
-
-
 #side-drawer.info-bottom {
   left: 0;
   width: 100%;
@@ -1075,7 +1468,90 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
     height: 34vh;
   }
 }
+*/
 
+// NEW: in-flow flex sibling of #main-content, so opening it shrinks the WWT
+// view instead of covering it (same idea as artemis-ii / why-roman).
+// Default is the bottom panel: full width, growing in height.
+#side-drawer {
+  flex: 0 0 auto;
+  overflow: hidden;
+  order: 2;
+  width: 100%;
+  height: 0;
+  // transition: height 0.3s ease-in-out;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+
+  &.side-drawer-open {
+    height: 34%;
+  }
+}
+
+// side panel: full height, growing in width
+#app.app-side-panel #side-drawer {
+  width: 0;
+  height: 100%;
+  // transition: width 0.3s ease-in-out;
+  border-top-left-radius: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+
+  &.side-drawer-open {
+    width: 34%;
+  }
+}
+
+
+/* SideDrawer sizes its own box; where it sits and what it looks like are ours.
+   Stacked, its own `order: 1` would put it above the view. */
+#tour-drawer.drawer-bottom {
+  order: 2;
+}
+
+#tour-drawer .tour-sheet {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1em 1.25em;
+  color: #e6e6e6;
+  background-color: var(--almagal-blue-darker);
+}
+
+/* Teleported into #bottom-content, so it is an ordinary flex item in the
+   overlay's bottom row rather than a box pinned to the corner. Undo the
+   absolute positioning SideDrawer gives this layout -- the row places it now,
+   and the control bar flows beside it instead of being padded past it. The
+   overlay is pointer-events: none, so the drawer has to opt back in. */
+#tour-drawer.drawer-float {
+  position: relative;
+  inset: auto;
+  border-radius: 5px;
+  box-shadow: 0 0 1rem #000a;
+  pointer-events: auto;
+}
+
+#tour-drawer.drawer-float .tour-sheet {
+  border-radius: 5px;
+}
+
+#tour-drawer.drawer-push .tour-sheet {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#tour-drawer.drawer-bottom .tour-sheet {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.tour-sheet-close {
+  position: absolute;
+  top: 0.25em;
+  right: 0.25em;
+  color: white;
+}
 
 /* The WWT host is out of flow so its measured size does not affect #main-content. */
 // by using inset: 0, .wwttelescope-component fills #main-content and automatically resizes with it,
@@ -1104,7 +1580,7 @@ If any of those happen, the ResizeObserver composable may be needed again to pus
   bottom: 0;
   right: 0;
   // The composable sets the host element's inline width/height from #main-content.
-  transition: height 0.2s ease-in-out;
+  // transition: height 0.2s ease-in-out;
   opacity: 1;
 }
 
@@ -1166,7 +1642,7 @@ and remember, position:absolute is still a positioned parent, so children can be
   flex-direction: column;
   gap: 10px;
   align-items: flex-start;
-
+  margin-bottom: 5px;
 }
 
 .top-buttons-row,
@@ -1208,33 +1684,34 @@ and remember, position:absolute is still a positioned parent, so children can be
   }
 
 
+// two rows: the tour-and-controls row, then the logos
 #bottom-content {
   display: grid;
   grid-template-columns: auto;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto;
+  gap: 0.5em;
   pointer-events: none;
   align-items: flex-end;
 }
 
 #bottom-content {
-  .bottom-row-1 {
-    grid-row: 1 / 2;
+  // the floating tour and the control bar share this row, bottom-aligned
+  .bottom-main {
     display: flex;
-    justify-content: space-between;
-    align-items:flex-end;
-    gap: 1em;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 1rem;
+    min-width: 0;
   }
 
-  .bottom-row-2 {
-    grid-row: 2 / 3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  // `contents` so the empty slot takes no room, and the teleported drawer
+  // becomes a flex item of .bottom-main directly
+  #tour-float-slot {
+    display: contents;
   }
 
   #body-logos {
     align-self: flex-end;
-    grid-row:  3 / 4;
   }
 
   #body-logos.small-logos {
@@ -1316,6 +1793,8 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 .source-controls {
   display: flex;
+  align-items: start;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -1345,14 +1824,26 @@ and remember, position:absolute is still a positioned parent, so children can be
   width: 100%;
 }
 
+.on-canvas {
+  background-color: rgba(0, 0, 0, 0.364);
+  border: 1px solid rgba(255, 255, 255, 0.541);
+  border-radius: 5px;
+  backdrop-filter: blur(10px);
+}
+
 .almagal-v-select {
   pointer-events: auto;
-  width: 100%;
-  min-width: 250px;
-  background-color: rgba(0, 0, 0, 0.364);
-  backdrop-filter: blur(10px);
-  outline: 1px solid white;
   border-radius: 4px;
+  min-width: 250px;
+}
+
+// the overlay is pointer-events: none, so these have to opt back in
+.tour-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5em;
+  pointer-events: auto;
 }
 
 .hovered-source-info {
@@ -1365,67 +1856,6 @@ and remember, position:absolute is still a positioned parent, so children can be
 }
 
 
-.almagal-filterset {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  width: 100%;
-  max-width: 230px;
-  max-height: 50vh;
-  overflow-y: scroll;
-  pointer-events: auto;
-  padding: 0.5em 0.75em;
-  background-color: rgba(0, 0, 0, 0.364);
-  backdrop-filter: blur(8px);
-  border-radius: 8px;
-  font-size: 0.9em;
-  padding-bottom: 1em;
-  padding-right: 1em;
-  scrollbar-gutter: stable;
-  border: 1px solid white;
-}
-
-.filter-slider label {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.fiducial-display {
-  background-color: #c7d8fd;
-  min-width: 50px;
-  margin-left: auto;
-  text-align: right;
-  color: black;
-  padding-inline: 4px;
-  border-radius: 3px;
-}
-
-// style the legend to be centerd
-.almagal-filterset > legend {
-  margin-inline: auto;
-  padding: 0 5px;
-}
-
-.almagal-filterset label > span {
-  font-weight: bold;
-}
-
-.almagal-filterset > .clump-type-filter {
-  margin: 0.5em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-}
-
-.clump-type-filter > span {
-  font-weight: bold;
-}
-.clump-type-filter > .clump-type-options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 0.25em;
-}
 
 .pending-source-label {
   color: white;
@@ -1438,12 +1868,17 @@ and remember, position:absolute is still a positioned parent, so children can be
   max-width: 300px;
 }
 
-#bottom-content > .control-bar {
+// takes whatever the tour leaves, and centres its buttons in that
+#bottom-content .control-bar {
+  flex: 1 1 auto;
+  min-width: 0;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  gap: 2em;
+  align-items: flex-end;
+  gap: 0.75em;
+  padding-inline: 0.5em;
 }
 
 .v-field__outline {
@@ -1453,38 +1888,132 @@ and remember, position:absolute is still a positioned parent, so children can be
 
 
 
-.learn-more-card {
+// adjust the wwt-3d switch 
+.wwt-3d-swtich-container .v-input.v-switch > .v-input__prepend {
+  margin-right: 4px;
+  font-size: 20px;
+}
+.wwt-3d-swtich-container .v-input.v-switch > .v-input__append {
+  margin-left: 4px;
+  font-size: 20px;
+}
+
+/* -- 2D / 3D toggle ---------------------------------------------------- */
+
+.settings-page .wwt-3d-swtich-container {
+  .v-switch__thumb { background: var(--panel-accent); }
+  .v-switch__track { background: var(--panel-border); opacity: 1; }
+}
+
+/* ===================================================== control panel skin ==
+   One token set for the settings drawer. The drawer is the quietest surface
+   and the cards sit above it, so the panel stops competing with the nebula in
+   the canvas behind it. Everything below is scoped to .settings-page (or to
+   the sheet that holds it) so it cannot leak into the other info-sheet tabs. */
+#app {
+  --panel-drawer: var(--almagal-blue-darkest);   // drawer ground, behind the cards
+  --panel-card: var(--almagal-blue-darker);     // card ground
+  --panel-border: var(--almagal-bright-blue);   // card borders, dividers, segmented-control seams
+  --panel-track: var(--almagal-slate);    // slider track, unfilled
+  --panel-accent: var(--almagal-periwinkle); // slider fill, chevrons, links
+  --panel-accent2: var(--almagal-orange); // card subheaders
+  --panel-thumb: var(--almagal-smoke);    // slider thumbs
+  --panel-title: #FFF;    // card titles
+  --panel-label: var(--almagal-smoke);    // control names and subsection labels
+  --panel-value: #FFF;    // numeric readouts
+  --panel-muted: var(--almagal-slate);    // helper text, disabled labels
+  --panel-text: var(--almagal-smoke);
+  --bhal: #939da8;  
+
+  /* A three-step type scale, in rem rather than px or a fluid clamp. rem is
+     anchored to the root, so it inherits the reader's browser font-size setting
+     and doesn't compound the way em does through drawer -> card -> label. Fixed
+     rather than fluid because the drawer's width is near-constant (about 420px
+     of content at a 1440px viewport, 256px at 360px), and because 12px has no
+     room to shrink. To scale the panel on small screens, move these three here
+     rather than making each size fluid on its own. */
+  --panel-font-title: 1.1rem;     
+  --panel-font-body: 0.95rem;        
+  --panel-font-small: 0.75rem;    
   
-  flex-direction: row;
+  --tour-sheet-background: var(--almagal-blue-darkest);
+}
+
+// Anchors the close button against a title instead of leaving it floating.
+// The title itself is styled in InformationSheet.vue, next to the tab rules it
+// mirrors; the row only has to stop stretching it to full height.
+.cds-info-sheet-header {
   display: flex;
-  align-items: center;
-  gap: 0.75em;
-  padding: 0.5em 0.75em;
-  
-  text-align: left;
-  font-size: 0.95em;
-  font-weight: bold;
+  align-items: flex-end;
+}
 
-  backdrop-filter: blur(10px);
+
+/* zoom control */
+.zoom-control {
   background-color: rgba(0, 0, 0, 0.364);
-  
-  border: 1px solid white;
-  border-radius: 8px;
-  cursor: pointer;
-  
-  width: fit-content;
-  max-width: 250px;
-  pointer-events: auto;
-
+  backdrop-filter: blur(2px);
+  border-radius: 5px;
 }
 
-.learn-more-text {
-  flex: 1;
+/* The drawer holds two sheets. After the .tour-sheet rule above, so this
+   overflow beats its overflow-y. */
+#tour-drawer .tour-stack {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 0.5em;
 }
 
-.learn-more-logo {
-  height: 2.75em;
-  width: auto;
-  border-radius: 4px;
+#tour-drawer .tour-sheet {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // the step scrolls instead (TourPlayer.vue)
+  flex: 1 0 auto;
+}
+
+#tour-drawer .tour-sheet > .tour-player {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+// the tour takes whatever the panel does not
+#tour-drawer .controls-sheet {
+  flex: 0 1 auto;
+  min-height: 0;
+  // max-height: 50%;
+  overflow-y: auto;
+  color: #e6e6e6;
+  background-color: var(--tour-sheet-background);
+  border-radius: 5px;
+}
+
+/* Across the bottom there is width to spare but no height. No flag needed:
+   too narrow and the panel is not rendered, and a row of one still fills. */
+#tour-drawer.drawer-bottom .tour-stack {
+  flex-direction: row;
+
+  > .tour-sheet {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  > .controls-sheet {
+    flex: 0 0 34%;
+    min-width: 0;
+    max-height: none;
+  }
+}
+
+// A wide window makes the column wide, so cap the text (not the sheet --
+// the breadcrumbs want the width). 60ch measures ~60 characters.
+#tour-drawer.drawer-push .tour-window {
+  max-width: 60ch;
+}
+
+.almagal-logo-v-btn {
+  background-image: url("/almagal-header.png");
+  background-size: cover;
+  background-position: center;
 }
 </style>

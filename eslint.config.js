@@ -39,7 +39,7 @@ export default typescriptEslint.config(
         },
         {
           selector: ["variable"],
-          modifiers: ["global", "const"],
+          modifiers: ["const"],
           format: ["camelCase", "UPPER_CASE"],
           leadingUnderscore: "allow"
         },
@@ -102,6 +102,11 @@ export default typescriptEslint.config(
     rules: {
       'vue/multi-word-component-names': 'off',
       'vue/html-self-closing': 'off',
+      'vue/max-attributes-per-line': ['error', { singleline: 3, multiline: { max: 3 } }],
+      'vue/first-attribute-linebreak': ["error", {
+        "singleline": "ignore",
+        "multiline": "ignore"
+      }],
       'vue/require-default-prop': 'warn',
       'vue/no-v-html': 'off',
     },

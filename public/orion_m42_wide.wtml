@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Folder Browseable="True" Group="Explorer" Name="Orion Nebula wide field (Hubble + Spitzer + WISE)" Searchable="True">
+  <Place Angle="0" AngularSize="1" Classification="Nebula" Constellation="ORI" DataSetType="Sky" Dec="-5.41333333333333" Magnitude="0" Name="Messier 42;M42" Opacity="100" RA="5.58611111111111" Rotation="0" ZoomLevel="15.9233333333333">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="0.911005070122704" BaseTileLevel="0" BottomsUp="False" CenterX="83.7901366042835" CenterY="-5.41320529849934" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Messier 42;M42" Projection="Tan" QuadTreeMap="0123" Rotation="1.2490009027033e-15" Sparse="True" StockSet="False" TileLevels="7" Url="http://r{S:0}.ortho.tiles.virtualearth.net/tiles/wsa0000011320{Q}?g=138" WidthFactor="2" Xcxstatus="in:65e5f0f4affb32cbf1d97d16">
+        <Credits>NASA,ESA, M. Robberto (Space Telescope Science Institute/ESA) and the Hubble Space Telescope Orion Treasury Project Team</Credits>
+        <CreditsUrl>https://hubblesite.org/contents/media/images/2006/01/1826-Image.html</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=hst_m42_7</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="1" Classification="Nebula" Constellation="ORI" DataSetType="Sky" Dec="-5.44416666666667" Magnitude="0" Name="Orion Nebula (Spitzer wide field)" Opacity="100" RA="5.58083333333333" Rotation="0" ZoomLevel="19.59">
+    <ForegroundImageSet>
+      <ImageSet BandPass="IR" BaseDegreesPerTile="1.96346468744749" BaseTileLevel="0" BottomsUp="False" CenterX="83.8182846882" CenterY="-6.01419780121" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Orion Nebula" OffsetX="0.0709178234238621" OffsetY="0.608970674418923" Projection="Tan" QuadTreeMap="0123" Rotation="0.032767158621583" Sparse="True" StockSet="False" TileLevels="5" Url="http://r{S:1}.ortho.tiles.virtualearth.net/tiles/wsa0000011021{Q}?g=131" WidthFactor="2" Xcxstatus="in:64b741f8a15b29de42b304af">
+        <Credits>Courtesy NASA/JPL-Caltech</Credits>
+        <CreditsUrl>https://www.spitzer.caltech.edu/image/ssc2006-16a-orions-inner-beauty</CreditsUrl>
+        <ThumbnailUrl>http://www.worldwidetelescope.org/wwtweb/thumbnail.aspx?name=1675689727</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+  <Place Angle="0" AngularSize="0" Constellation="ORI" DataSetType="Sky" Dec="-5.39111" Magnitude="0" Name="Orion Nebula (WISE wide field)" Opacity="100" RA="5.58813866666667" Rotation="0" Thumbnail="http://wwtfiles.blob.core.windows.net/vamp/thumb-Wise-WISE2013-001.jpg" ZoomLevel="18.204459008">
+    <ForegroundImageSet>
+      <ImageSet BandPass="Visible" BaseDegreesPerTile="4.551114752" BaseTileLevel="0" BottomsUp="False" CenterX="83.82208" CenterY="-5.39111" DataSetType="Sky" ElevationModel="False" FileType=".png" Generic="False" Name="Orion Nebula" Projection="Tan" QuadTreeMap="" Rotation="0" Sparse="True" StockSet="False" TileLevels="5" Url="http://wwtfiles.blob.core.windows.net/vamp/Wise-WISE2013-001L{1}X{2}Y{3}.png" WidthFactor="1" Xastropix_ids="wise|WISE2013-001" Xcxstatus="in:649e45e51e6961df10c19595">
+        <Credits>NASA/JPL-Caltech/UCLA; The Great Nebula in Orion is featured in this sweeping image from NASA’s Wide-field Infrared Survey Explorer, or WISE. The const...</Credits>
+        <CreditsUrl>http://wise.astro.ucla.edu</CreditsUrl>
+        <ThumbnailUrl>http://wwtfiles.blob.core.windows.net/vamp/thumb-Wise-WISE2013-001.jpg</ThumbnailUrl>
+      </ImageSet>
+    </ForegroundImageSet>
+  </Place>
+</Folder>
