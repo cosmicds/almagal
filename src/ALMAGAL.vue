@@ -4,6 +4,114 @@
     :style="cssVars"
     :class="[smallSize ? 'app-is-small' : '', isLandscape ? 'app-is-landscape' : '', sidePanel ? 'app-side-panel' : '']"
   >
+    <div
+      v-show="!showTour"
+      id="control-side-bar"
+    >
+      <v-btn-group
+        :direction="sidePanel ? 'vertical' : 'horizontal'"
+      >
+        <v-tooltip
+          text="View settings"
+          location="bottom"
+          density="comfortable"
+        >
+          <template #activator="p">
+            <v-btn
+              v-bind="{...p.props, ...controlButtonProps}"
+              :class="{'active': infoSheetTab === SETTINGS_TAB}"
+              aria-label="Comparison image settings"
+              @click="openSettings"
+            >
+              <div class="side-bar-btn-content">
+                <v-icon>mdi-tune-vertical</v-icon>
+                <div>Settings</div>
+              </div>
+            </v-btn>
+          </template>
+        </v-tooltip>
+
+
+        <v-tooltip
+          text="User guide"
+          location="bottom"
+        >
+          <template #activator="p">
+            <v-btn
+              v-bind="{...p.props, ...controlButtonProps}"
+              :class="{'active': infoSheetTab === USER_GUIDE_TAB}"
+              aria-label="Open the user guide"
+              @click="openUserGuide"
+            >
+              <div class="side-bar-btn-content">
+                <v-icon>mdi-help</v-icon>
+                <div>Help</div>
+              </div>
+            </v-btn>
+          </template>
+        </v-tooltip>
+
+
+        <v-tooltip
+          text="About ALMAGAL"
+          location="bottom"
+        >
+          <template #activator="p">
+            <v-btn
+              v-bind="{...p.props, ...controlButtonProps}"
+              :class="{'active': infoSheetTab === ALMAGAL_TAB}"
+              aria-label="About ALMAGAL"
+              @click="openAboutAlmagal"
+            >
+              <div class="side-bar-btn-content">
+                <span class="almagal-logo-icon" />
+                <div>About</div>
+              </div>
+            </v-btn>
+          </template>
+        </v-tooltip>
+
+
+        <v-tooltip
+          text="tour"
+          location="bottom"
+        >
+          <template #activator="p">
+            <v-btn
+              v-bind="{...p.props, ...controlButtonProps}"
+              aria-label="Start the tour"
+              @click="showTour = !showTour"
+            >
+              <div class="side-bar-btn-content">
+                <v-icon>mdi-transit-connection-variant</v-icon>
+                <div>Tour</div>
+              </div>
+            </v-btn>
+          </template>
+        </v-tooltip>
+
+
+        <v-tooltip
+          v-if="startedInScienceMode"
+          :text="`Switch to ${scienceMode ? 'public' : 'science'} mode`"
+          location="bottom"
+        >
+          <template #activator="p">
+            <v-btn
+              v-bind="{...p.props, ...controlButtonProps}"
+              :color="`${scienceMode ? almagalOrange : 'surface-variant'}`"
+              :aria-label="`Switch to ${scienceMode ? 'explore' : 'public'} mode`"
+              @click="scienceMode = !scienceMode"
+            >
+              <div class="side-bar-btn-content">
+                <v-icon>{{ scienceMode ? 'mdi-school' : 'mdi-account-group' }}</v-icon>
+                <div>{{ scienceMode ? 'Science' : 'Public' }}</div>
+              </div>
+            </v-btn>
+          </template>
+        </v-tooltip>
+      </v-btn-group>
+    </div>
     <!-- ahead of #main-content in the markup so the tab order follows the
          visual one; `order` moves a flex item without moving it for the keyboard.
 
@@ -134,91 +242,6 @@
                     />
                   </template>
                 </div>
-
-
-                
-                <v-tooltip
-                  v-if="!showTour"
-                  text="View settings"
-                  location="bottom"
-                >
-                  <template #activator="p">
-                    <v-btn
-                      v-bind="p.props"
-                      icon="mdi-tune-vertical"
-                      size="small"
-                      color="surface-variant"
-                      aria-label="Comparison image settings"
-                      @click="openSettings"
-                    />
-                  </template>
-                </v-tooltip>
-
-                <v-tooltip
-                  v-if="!showTour"
-                  text="User guide"
-                  location="bottom"
-                >
-                  <template #activator="p">
-                    <v-btn
-                      v-bind="p.props"
-                      icon="mdi-help"
-                      size="small"
-                      color="surface-variant"
-                      aria-label="Open the user guide"
-                      @click="openUserGuide"
-                    />
-                  </template>
-                </v-tooltip>
-                <v-tooltip
-                  v-if="!showTour"
-                  text="About ALMAGAL"
-                  location="bottom"
-                >
-                  <template #activator="p">
-                    <v-btn
-                      v-bind="p.props"
-                      class="almagal-logo-v-btn"
-                      icon
-                      size="small"
-                      color="surface-variant"
-                      aria-label="About ALMAGAL"
-                      @click="openAboutAlmagal"
-                    />
-                  </template>
-                </v-tooltip>
-                <v-tooltip
-                  v-if="!showTour"
-                  text="tour"
-                  location="bottom"
-                >
-                  <template #activator="p">
-                    <v-btn
-                      v-bind="p.props"
-                      icon="mdi-transit-connection-variant"
-                      size="small"
-                      color="surface-variant"
-                      aria-label="Start the tour"
-                      @click="showTour = !showTour"
-                    />
-                  </template>
-                </v-tooltip>
-                <v-tooltip
-                  v-if="startedInScienceMode"
-                  :text="`Switch to ${scienceMode ? 'public' : 'science'} mode`"
-                  location="bottom"
-                >
-                  <template #activator="p">
-                    <v-btn
-                      v-bind="p.props"
-                      :icon="`${scienceMode ? 'mdi-school' : 'mdi-account-group'}`"
-                      size="small"
-                      :color="`${scienceMode ? almagalOrange : 'surface-variant'}`"
-                      :aria-label="`Switch to ${scienceMode ? 'explore' : 'public'} mode`"
-                      @click="scienceMode = !scienceMode"
-                    />
-                  </template>
-                </v-tooltip>
               </div>
             </div>
           </div>
@@ -1359,6 +1382,13 @@ watch(() => almagalWtmlState.value ? almagalWtmlState.value.settings.opacity : n
   }
 });
 
+import { type ExtractPropTypes } from "vue";
+import { VBtn } from "vuetify/components";
+
+const controlButtonProps: Partial<ExtractPropTypes<VBtn>> = { 
+  color: "surface",
+};
+
 </script>
 
 <style lang="less">
@@ -2011,9 +2041,91 @@ and remember, position:absolute is still a positioned parent, so children can be
   max-width: 60ch;
 }
 
-.almagal-logo-v-btn {
-  background-image: url("/almagal-header.png");
-  background-size: cover;
-  background-position: center;
+#control-side-bar {
+  --sbu: 0.4rem;
+  --side-bar-tile: calc(var(--sbu) * 5.5);
+
+  display: flex;
+  flex-direction: column;
+  padding: var(--sbu);
+  background-color: rgb(var(--v-theme-surface));
+
+  // separate tiles rather than one joined strip
+  .v-btn-group {
+    gap: calc(var(--sbu) * 1.15);
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  // v-btn pins its height (and min-width) to fixed values; let the
+  // stacked icon + label size it instead
+  .v-btn {
+    height: auto;
+    min-width: 0;
+    padding-block: var(--sbu);
+    padding-inline: 4px;
+    border-radius: calc(var(--sbu) / 2);
+    font-size: calc(var(--sbu) * 2);
+    text-transform: none;
+    letter-spacing: normal;
+  }
+  
+  .v-btn.active {
+    background-color: rgba(var(--v-theme-primary), 0.2) !important;
+  }
+
+  // icon stacked over its label
+  .side-bar-btn-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sbu);
+  }
+
+  // the icon sits on its own tile, above the label
+  .v-icon {
+    width: var(--side-bar-tile);
+    height: var(--side-bar-tile);
+    font-size: calc(var(--side-bar-tile) - var(--sbu)*2);
+    border-radius: calc(var(--sbu));
+    background-color: rgba(var(--v-theme-on-surface), 0.1);
+  }
+  
+  // stands in for the v-icon in the About button, so match its tile
+  .almagal-logo-icon {
+    display: block;
+    width: var(--side-bar-tile);
+    height: var(--side-bar-tile);
+    border-radius: 50%;
+    background-image: url("/almagal-header.png");
+    background-size: cover;
+    background-position: center;
+  }
 }
+
+// No side panel means the tour drawer sits under the view (small screens),
+// so the bar turns into a row along the very bottom: view (1), tour (2), bar (3).
+#app:not(.app-side-panel) #control-side-bar {
+  --sbu: 0.35rem;  // a bit smaller, to save height
+
+  order: 3;
+  flex-direction: row;
+
+  .v-btn-group {
+    flex: 1 1 auto;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  // share the width evenly
+  .v-btn {
+    flex: 1 1 0;
+  }
+
+  // icon beside its label, to keep the row short
+  .side-bar-btn-content {
+    flex-direction: row;
+  }
+}
+
 </style>
