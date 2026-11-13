@@ -7,6 +7,10 @@ import TourStep3 from "./steps/TourStep3.vue";
 import TourStep3b from "./steps/TourStep3b.vue";
 import TourStep4 from "./steps/TourStep4.vue";
 import TourStep4b from "./steps/TourStep4b.vue";
+import TourStepJ1 from "./steps/TourStep_J1.vue";
+import TourStepJ2 from "./steps/TourStep_J2.vue";
+import TourStepJ3 from "./steps/TourStep_J3.vue";
+import TourStepJ4 from "./steps/TourStep_J4.vue";
 
 /**
  * Ordered list of tour steps: each of the scientists' four sections, followed by
@@ -14,6 +18,10 @@ import TourStep4b from "./steps/TourStep4b.vue";
  * in `setupTourStep`.
  */
 export const TOUR_STEPS: Component[] = [
+  TourStepJ1,
+  TourStepJ2,
+  TourStepJ3,
+  TourStepJ4,
   TourStep1,
   TourStep1b,
   TourStep2,
