@@ -19,6 +19,7 @@
           <template #activator="p">
             <v-btn
               v-bind="{...p.props, ...controlButtonProps}"
+              :class="{'active': infoSheetTab === SETTINGS_TAB}"
               aria-label="Comparison image settings"
               @click="openSettings"
             >
@@ -38,6 +39,7 @@
           <template #activator="p">
             <v-btn
               v-bind="{...p.props, ...controlButtonProps}"
+              :class="{'active': infoSheetTab === USER_GUIDE_TAB}"
               aria-label="Open the user guide"
               @click="openUserGuide"
             >
@@ -57,6 +59,7 @@
           <template #activator="p">
             <v-btn
               v-bind="{...p.props, ...controlButtonProps}"
+              :class="{'active': infoSheetTab === ALMAGAL_TAB}"
               aria-label="About ALMAGAL"
               @click="openAboutAlmagal"
             >
@@ -2060,11 +2063,15 @@ and remember, position:absolute is still a positioned parent, so children can be
     height: auto;
     min-width: 0;
     padding-block: var(--sbu);
-    padding-inline: 0;
+    padding-inline: 4px;
     border-radius: calc(var(--sbu) / 2);
     font-size: calc(var(--sbu) * 2);
     text-transform: none;
     letter-spacing: normal;
+  }
+  
+  .v-btn.active {
+    background-color: rgba(var(--v-theme-primary), 0.2) !important;
   }
 
   // icon stacked over its label
